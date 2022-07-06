@@ -6,7 +6,10 @@ jspm_packages
 .serverless
 
 # Build files
-.build/**/*
+.build
+
+# Offline development support
+.dynamodb
 
 # Environment
-.env*
+.env
