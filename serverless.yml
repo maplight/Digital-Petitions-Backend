@@ -16,3 +16,6 @@ functions:
 plugins:
   - serverless-plugin-typescript
   - serverless-dynamodb-local
+  - serverless-appsync-plugin
+  - serverless-appsync-simulator
+  - serverless-offline

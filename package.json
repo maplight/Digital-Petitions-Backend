@@ -1,7 +1,10 @@
 {
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
+    "serverless-appsync-plugin": "^1.13.0",
+    "serverless-appsync-simulator": "^0.20.0",
     "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^8.8.0",
     "serverless-plugin-typescript": "^2.1.2"
   }
 }
