@@ -5,5 +5,8 @@ jspm_packages
 # Serverless directories
 .serverless
 
+# Build files
+.build/**/*
+
 # Environment
 .env*
