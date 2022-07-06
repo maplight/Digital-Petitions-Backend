@@ -12,3 +12,7 @@ provider:
 functions:
   hello:
     handler: functions/handler.hello
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
