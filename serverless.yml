@@ -3,6 +3,7 @@ app: e-signatures-sls-test
 service: digital-petitions-backend
 
 frameworkVersion: '3'
+useDotenv: true
 
 provider:
   name: aws
@@ -10,4 +11,4 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: functions/handler.hello
