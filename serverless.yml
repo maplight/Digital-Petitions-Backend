@@ -1,0 +1,13 @@
+org: drmollineda
+app: e-signatures-sls-test
+service: digital-petitions-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  hello:
+    handler: handler.hello
