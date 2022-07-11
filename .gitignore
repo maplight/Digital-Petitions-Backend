@@ -6,7 +6,7 @@ jspm_packages
 .serverless
 
 # Build files
-.build
+.esbuild
 
 # Offline development support
 .dynamodb
