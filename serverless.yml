@@ -11,11 +11,53 @@ provider:
 
 functions:
   hello:
-    handler: src/functions/handler.hello
+    handler: src/functions/hello.default
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-esbuild
   - serverless-dynamodb-local
   - serverless-appsync-plugin
   - serverless-appsync-simulator
   - serverless-offline
+
+resources:
+  Resources:
+    DynamoDBTable: ${file(src/resources/data-dynamodb-table.yml)}
+
+custom:
+  # configure TS compilation using esbuild
+  esbuild:
+    watch:
+      pattern: ['src/**/*.ts']
+
+  # use a local in-memory database for testing
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true
+
+  # Simulate AppSync for local development
+  appsync-simulator:
+    apiKey: da2-fakeApiId123456
+  
+  # setup AppSync-related data
+  appSync:
+    name: DigitalPetitionsAPI
+
+    schema: src/schema/schema.graphql
+    authenticationType: API_KEY
+
+    mappingTemplatesLocation: src/templates
+
+    mappingTemplates:
+      - dataSource: DynamoDBDataSource
+        type: Mutation
+        field: point
+
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: DynamoDBDataSource
+        config:
+          tableName: { Ref: DynamoDBTable }
