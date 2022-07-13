@@ -12,7 +12,7 @@
     "serverless-appsync-simulator": "^0.20.0",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-esbuild": "^1.31.0",
-    "serverless-offline": "^8.8.0",
+    "serverless-offline": "^8.8.1",
     "ts-node": "^10.8.2"
   },
   "scripts": {
