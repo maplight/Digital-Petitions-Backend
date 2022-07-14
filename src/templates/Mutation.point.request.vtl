@@ -1,0 +1,11 @@
+{
+    "version": "2017-02-28",
+    "operation": "PutItem",
+    "key": {
+        "PK" : $util.dynamodb.toDynamoDBJson($ctx.args.primary),
+        "SK" : $util.dynamodb.toDynamoDBJson($ctx.args.sorting)
+    },
+    "condition": {
+        "expression": "attribute_not_exists(PK)"
+    }
+}

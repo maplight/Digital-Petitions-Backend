@@ -1,0 +1,7 @@
+#set($items = [])
+
+#foreach($item in [1..10])
+    $util.qr($items.add({ "primary": $ctx.result.get(0).primary, "sorting": "sorting-$item" }))
+#end
+
+$util.toJson($items)

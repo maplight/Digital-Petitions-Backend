@@ -1,0 +1,13 @@
+type Query {
+    points(primary: String!): [Point]!
+    @aws_auth(cognito_groups: ["CityStaff", "Issuers"])
+}
+
+type Mutation {
+    point(primary: String!, sorting: String!): Point!
+}
+
+type Point {
+    primary: String!
+    sorting: String!
+}

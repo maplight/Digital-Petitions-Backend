@@ -1,0 +1,94 @@
+# Authentication - AWS Cognito-related resource definitions
+
+Resources:
+  UserPool:
+    Type: "AWS::Cognito::UserPool"
+    
+    Properties:
+      UserPoolName: ${self:custom.appSync.name}-user-pool
+
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: "verified_email"
+            Priority: 1
+
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+
+      AutoVerifiedAttributes:
+        - "email"
+
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
+
+      Schema:
+        - Name: "address"
+          AttributeDataType: "String"
+          Mutable: true
+          Required: true
+
+        - Name: "name"
+          AttributeDataType: "String"
+          Mutable: true
+          Required: true
+
+        - Name: "email"
+          AttributeDataType: "String"
+          Mutable: true
+          Required: true
+
+      AliasAttributes:
+        - "email"
+
+  UserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    
+    Properties:
+      ClientName: ${self:custom.appSync.name}-cognito-client
+      GenerateSecret: false
+      PreventUserExistenceErrors: "ENABLED"
+      UserPoolId: { Ref: UserPool }
+
+  UserPoolAdminGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    
+    Properties:
+      Description: "Administrative users"
+      GroupName: "CityStaff"
+      Precedence: 0
+      UserPoolId: { Ref: UserPool }
+
+  UserPoolIssuerGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+
+    Properties:
+      Description: "Regular users, able to issue petitions"
+      GroupName: "Issuers"
+      UserPoolId: { Ref: UserPool }
+
+  DefaultAdminUser:
+    Type: "AWS::Cognito::UserPoolUser"
+
+    Properties:
+      DesiredDeliveryMediums:
+        - "EMAIL"
+
+      UserAttributes:
+        - Name: "email"
+          Value: ${env:default_admin_user}
+
+        - Name: "address"
+          Value: "{}"
+
+        - Name: "name"
+          Value: "Master Admin"
+
+      UserPoolId: { Ref: UserPool }
+
+  DefaultAdminUserGroupMembership:
+    Type: "AWS::Cognito::UserPoolUserToGroupAttachment"
+    
+    Properties:
+      GroupName: { Ref: UserPoolAdminGroup }
+      Username: { Ref: DefaultAdminUser }
+      UserPoolId: { Ref: UserPool }

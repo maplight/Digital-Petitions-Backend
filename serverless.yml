@@ -8,10 +8,15 @@ useDotenv: true
 provider:
   name: aws
   runtime: nodejs14.x
+  region: ${opt:region, "us-east-1"}
+  stage: ${opt:stage, "dev"}
 
 functions:
-  hello:
-    handler: src/functions/hello.default
+  sample:
+    handler: src/functions/sample.default
+
+  echo:
+    handler: src/functions/echo.default
 
 plugins:
   - serverless-esbuild
@@ -21,8 +26,8 @@ plugins:
   - serverless-offline
 
 resources:
-  Resources:
-    DynamoDBTable: ${file(src/resources/data-dynamodb-table.yml)}
+  - ${file(src/resources/data.yml)}
+  - ${file(src/resources/auth.yml)}
 
 custom:
   # configure TS compilation using esbuild
@@ -44,20 +49,44 @@ custom:
   
   # setup AppSync-related data
   appSync:
-    name: DigitalPetitionsAPI
-
+    name: ${self:provider.stage}-digital-petitions-api
     schema: src/schema/schema.graphql
-    authenticationType: API_KEY
 
-    mappingTemplatesLocation: src/templates
-
-    mappingTemplates:
-      - dataSource: DynamoDBDataSource
-        type: Mutation
-        field: point
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: { Ref: AWS::Region }
+      defaultAction: DENY
+      userPoolId: { Ref: UserPool }
 
     dataSources:
       - type: AMAZON_DYNAMODB
         name: DynamoDBDataSource
+        
         config:
           tableName: { Ref: DynamoDBTable }
+          iamRoleStatements:
+            - Effect: Allow
+              Action:
+                - "dynamodb:GetItem"
+                - "dynamodb:PutItem"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:Query"
+              Resource:
+                - { Fn::GetAtt: [DynamoDBTable, Arn] }
+                - { Fn::Join: ['', [{ Fn::GetAtt: [DynamoDBTable, Arn] }, "/*"]] }
+
+      - type: AWS_LAMBDA
+        name: EchoDebugLambdaDataSource
+
+        config:
+          functionName: echo
+
+    mappingTemplatesLocation: src/templates
+
+    mappingTemplates:
+      - dataSource: EchoDebugLambdaDataSource
+        type: Mutation
+        field: point
+      - dataSource: EchoDebugLambdaDataSource
+        type: Query
+        field: points
