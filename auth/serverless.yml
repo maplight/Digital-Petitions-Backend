@@ -1,0 +1,16 @@
+app: e-signatures
+org: maplight
+service: backend-auth
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  hello:
+    handler: lambda/hello/index
+
+plugins:
+  - serverless-esbuild
