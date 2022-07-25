@@ -36,5 +36,5 @@ const callback: Callback = (err, res) => {
 test("Simple Lambda test", async () => {
     const result = await hello({ name: "MapLight" }, dummy, callback);
 
-    expect(result).toMatchObject({ statusCode: 200, body: "Hello, MapLight" });
+    expect(result).toMatchObject({ statusCode: 200, body: "Hello, MapLight, this is a test lambda function" });
 });
