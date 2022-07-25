@@ -1,5 +1,5 @@
 app: e-signatures
-org: maplight
+org: maplighttech
 service: backend-auth
 
 frameworkVersion: '3'
