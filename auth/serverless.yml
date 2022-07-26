@@ -67,10 +67,6 @@ resources:
           - "name"
           - "email"
 
-  Outputs:
-    UserPoolId:
-      Value:
-        Ref: UserPool
-    UserPoolClientId:
-      Value:
-        Ref: UserPoolWebClient
+outputs:
+  UserPoolId: { Ref: UserPool }
+  UserPoolClientId: { Ref: UserPoolWebClient }
