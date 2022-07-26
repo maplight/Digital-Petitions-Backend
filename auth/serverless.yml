@@ -50,7 +50,7 @@ resources:
         AliasAttributes:
           - "email"
 
-    UserPoolClient:
+    UserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
         ClientName: ${self:provider.stage}-UserPoolClient
@@ -65,3 +65,11 @@ resources:
           - "address"
           - "name"
           - "email"
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: UserPool
+    UserPoolClientId:
+      Value:
+        Ref: UserPoolWebClient
