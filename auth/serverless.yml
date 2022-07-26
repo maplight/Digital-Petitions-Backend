@@ -7,6 +7,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
 
 functions:
   hello:
@@ -14,3 +15,37 @@ functions:
 
 plugins:
   - serverless-esbuild
+
+resources:
+  Resources:
+    UserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        UserPoolName: ${self:provider.stage}-UserPool
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: "verified_email"
+              Priority: 1
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: false
+        AutoVerifiedAttributes:
+          - "email"
+        Schema:
+          - Name: "address"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: true
+          - Name: "name"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: true
+          - Name: "email"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: true
+          - Name: "access_group"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: false
+        AliasAttributes:
+          - "email"
