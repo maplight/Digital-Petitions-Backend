@@ -49,3 +49,19 @@ resources:
             Required: false
         AliasAttributes:
           - "email"
+
+    UserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: ${self:provider.stage}-UserPoolClient
+        UserPoolId: { Ref: UserPool }
+        PreventUserExistenceErrors: ENABLED
+        GenerateSecret: false
+        ExplicitAuthFlows:
+          - "ALLOW_ADMIN_USER_PASSWORD_AUTH"
+          - "ALLOW_USER_SRP_AUTH"
+          - "ALLOW_USER_PASSWORD_AUTH"
+        WriteAttributes:
+          - "address"
+          - "name"
+          - "email"
