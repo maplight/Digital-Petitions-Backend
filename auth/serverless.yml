@@ -62,6 +62,8 @@ resources:
         UserPoolId: { Ref: UserPool }
         PreventUserExistenceErrors: ENABLED
         GenerateSecret: false
+        SupportedIdentityProviders:
+          - "COGNITO"
         ExplicitAuthFlows:
           - "ALLOW_ADMIN_USER_PASSWORD_AUTH"
           - "ALLOW_USER_SRP_AUTH"
@@ -83,7 +85,11 @@ resources:
         IdentityPoolName: ${self:provider.stage}-IdentityPool
         AllowUnauthenticatedIdentities: true
         CognitoIdentityProviders:
-          - ClientId: { Ref: UserPoolWebClient }
+          - ClientId:
+              Ref: UserPoolWebClient
+            ProviderName:
+              Fn::GetAtt:
+                [UserPool, ProviderName]
             ServerSideTokenCheck: true
 
 outputs:
