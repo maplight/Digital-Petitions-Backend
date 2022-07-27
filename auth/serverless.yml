@@ -18,6 +18,9 @@ plugins:
 
 resources:
   Resources:
+    
+    # The user pool used to provide authenticated
+    # users
     UserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
@@ -50,6 +53,8 @@ resources:
         AliasAttributes:
           - "email"
 
+    # The client identity used by the webapp
+    # to interact with Cognito
     UserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
@@ -67,6 +72,21 @@ resources:
           - "name"
           - "email"
 
+    # The identity pool that will be used to link roles to
+    # entities. Particularly for allowing unauthenticated access
+    # to parts of the API. 
+    # Roles attached to it will also determine user capabilities
+    # when interacting with Cognito services
+    UserIdentityPool:
+      Type: "AWS::Cognito::IdentityPool"
+      Properties:
+        IdentityPoolName: ${self:provider.stage}-IdentityPool
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders:
+          - ClientId: { Ref: UserPoolWebClient }
+            ServerSideTokenCheck: true
+
 outputs:
   UserPoolId: { Ref: UserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
+  UserIdentityPoolId: { Ref: UserIdentityPool }
