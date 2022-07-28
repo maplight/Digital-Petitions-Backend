@@ -112,7 +112,6 @@ resources:
       Properties:
         DesiredDeliveryMediums:
           - "EMAIL"
-        Username: "root"
         UserAttributes:
           - Name: "email"
             Value: ${param:rootEmail}
