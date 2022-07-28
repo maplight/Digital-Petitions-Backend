@@ -123,6 +123,6 @@ outputs:
   UserPoolId: { Ref: UserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
   UserIdentityPoolId: { Ref: UserIdentityPool }
-  PetitionerGroup: { Fn::GetAtt: [PetitionerUserGroup, GroupName] }
-  CityStaffGroup: { Fn::GetAtt: [CityStaffUserGroup, GroupName] }
-  AdminGroup: { Fn::GetAtt: [AdminUserGroup, GroupName] }
+  PetitionerGroup: { Ref: PetitionerUserGroup }
+  CityStaffGroup: { Ref: CityStaffUserGroup }
+  AdminGroup: { Ref: AdminUserGroup }
