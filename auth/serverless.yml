@@ -74,11 +74,38 @@ resources:
           - "name"
           - "email"
 
+    # User groups.
+    # These define the access level a user has when interacting with the API
+    # From least to most priviledged group/role:
+    # Petitioner -> City Staff -> Admin
+
+    PetitionerUserGroup:
+      Type: "AWS::Cognito::UserPoolGroup"
+      Properties:
+        GroupName: ${self:provider.stage}-PetitionerGroup
+        Description: "Users that can issue petitions to the city"
+        Precedence: 2
+        UserPoolId: { Ref: UserPool }
+
+    CityStaffUserGroup:
+      Type: "AWS::Cognito::UserPoolGroup"
+      Properties:
+        GroupName: ${self:provider.stage}-CityStaffGroup
+        Description: "Users that can review and approve or reject petitions"
+        Precedence: 1
+        UserPoolId: { Ref: UserPool }
+
+    AdminUserGroup:
+      Type: "AWS::Cognito::UserPoolGroup"
+      Properties:
+        GroupName: ${self:provider.stage}-AdminGroup
+        Description: "Admin users. Have a superset of City Staff access rights"
+        Precedence: 0
+        UserPoolId: { Ref: UserPool }
+
     # The identity pool that will be used to link roles to
     # entities. Particularly for allowing unauthenticated access
     # to parts of the API. 
-    # Roles attached to it will also determine user capabilities
-    # when interacting with Cognito services
     UserIdentityPool:
       Type: "AWS::Cognito::IdentityPool"
       Properties:
@@ -96,3 +123,6 @@ outputs:
   UserPoolId: { Ref: UserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
   UserIdentityPoolId: { Ref: UserIdentityPool }
+  PetitionerGroup: { Ref: PetitionerUserGroup }
+  CityStaffGroup: { Ref: CityStaffUserGroup }
+  AdminGroup: { Ref: AdminUserGroup }
