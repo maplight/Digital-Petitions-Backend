@@ -38,7 +38,11 @@ resources:
             AttributeDataType: "String"
             Mutable: true
             Required: true
-          - Name: "name"
+          - Name: "given_name"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: true
+          - Name: "family_name"
             AttributeDataType: "String"
             Mutable: true
             Required: true
@@ -71,7 +75,8 @@ resources:
           - "ALLOW_REFRESH_TOKEN_AUTH"
         WriteAttributes:
           - "address"
-          - "name"
+          - "given_name"
+          - "family_name"
           - "email"
 
     # User groups.
@@ -115,7 +120,9 @@ resources:
         UserAttributes:
           - Name: "email"
             Value: ${param:rootEmail}
-          - Name: "name"
+          - Name: "given_name"
+            Value: "Admin"
+          - Name: "family_name"
             Value: "MapLight"
           - Name: "address"
             Value: "{}"
