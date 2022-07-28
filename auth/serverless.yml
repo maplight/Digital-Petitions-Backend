@@ -122,6 +122,8 @@ resources:
             Value: "{}"
           - Name: "custom:access_group"
             Value: "admin"
+          - Name: "email_verified"
+            Value: "true"
         UserPoolId: { Ref: UserPool }
 
     # Attach the root user to the admin group by default.
