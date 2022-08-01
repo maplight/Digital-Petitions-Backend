@@ -178,7 +178,7 @@ resources:
 
         # actual permissions
         Policies:
-          - PolicyName: ${self:provider-stage}-UserGroupMembershipLambdaAccessPolicy
+          - PolicyName: ${self:provider.stage}-UserGroupMembershipLambdaAccessPolicy
             PolicyDocument: 
               Version: "2012-10-17"
               Statement:
@@ -190,7 +190,9 @@ resources:
                     - cognito-idp:GetGroup
                     - cognito-idp:Getuser
                     - cognito-idp:ListGroups
-                  Resource: { Fn::GetAtt: [UserPool, Arn] }
+                  Resource: 
+                    - { Fn::GetAtt: [UserPool, Arn] }
+                    - { Fn::Join: ["/", { Fn::GetAtt: [UserPool, Arn] }, "*"] }
 
 outputs:
   UserPoolId: { Ref: UserPool }
