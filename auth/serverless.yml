@@ -10,8 +10,8 @@ provider:
   stage: ${opt:stage, "dev"}
 
 functions:
-  hello:
-    handler: lambda/hello/index
+  assignGroup:
+    handler: lambda/assign-group/index
 
 plugins:
   - serverless-esbuild
@@ -157,6 +157,40 @@ resources:
               Fn::GetAtt:
                 [UserPool, ProviderName]
             ServerSideTokenCheck: true
+
+    # The role to be assumed by the lambda function that is to
+    # automatically assign users to user groups after the user is
+    # confirmed
+    UserGroupMembershipLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-UserGroupMembershipLambdaRole
+
+        # allow lambdas to assume this role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+
+        # actual permissions
+        Policies:
+          - PolicyName: ${self:provider-stage}-UserGroupMembershipLambdaAccessPolicy
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - cognito-idp:DescribeUserPool
+                    - cognito-idp:AdminAddUserToGroup
+                    - cognito-idp:AdminListGroupsForUser
+                    - cognito-idp:GetGroup
+                    - cognito-idp:Getuser
+                    - cognito-idp:ListGroups
+                  Resource: { Fn::GetAtt: [UserPool, Arn] }
 
 outputs:
   UserPoolId: { Ref: UserPool }
