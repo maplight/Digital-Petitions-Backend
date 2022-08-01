@@ -38,7 +38,11 @@ resources:
             AttributeDataType: "String"
             Mutable: true
             Required: true
-          - Name: "name"
+          - Name: "given_name"
+            AttributeDataType: "String"
+            Mutable: true
+            Required: true
+          - Name: "family_name"
             AttributeDataType: "String"
             Mutable: true
             Required: true
@@ -71,7 +75,8 @@ resources:
           - "ALLOW_REFRESH_TOKEN_AUTH"
         WriteAttributes:
           - "address"
-          - "name"
+          - "given_name"
+          - "family_name"
           - "email"
 
     # User groups.
@@ -102,6 +107,40 @@ resources:
         Description: "Admin users. Have a superset of City Staff access rights"
         Precedence: 0
         UserPoolId: { Ref: UserPool }
+
+    # Default admin user that is to be created on site deployment.
+    # Should be granted the highest access level and allow creating other
+    # admin users after login, since admin/staff users should only be
+    # able to be created through invitation
+    RootUser:
+      Type: "AWS::Cognito::UserPoolUser"
+      Properties:
+        DesiredDeliveryMediums:
+          - "EMAIL"
+        UserAttributes:
+          - Name: "email"
+            Value: ${param:rootEmail}
+          - Name: "given_name"
+            Value: "Admin"
+          - Name: "family_name"
+            Value: "MapLight"
+          - Name: "address"
+            Value: "{}"
+          - Name: "custom:access_group"
+            Value: "admin"
+          - Name: "email_verified"
+            Value: "true"
+        UserPoolId: { Ref: UserPool }
+
+    # Attach the root user to the admin group by default.
+    # We can likely rely on the post-sign up lambda for this once
+    # that's implemented, but let's do it explicitly for now
+    RootUserGroupMembership:
+      Type: "AWS::Cognito::UserPoolUserToGroupAttachment"
+      Properties:
+        GroupName: { Ref: AdminUserGroup }
+        UserPoolId: { Ref: UserPool }
+        Username: { Ref: RootUser }
 
     # The identity pool that will be used to link roles to
     # entities. Particularly for allowing unauthenticated access
