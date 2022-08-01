@@ -192,7 +192,7 @@ resources:
                     - cognito-idp:ListGroups
                   Resource: 
                     - { Fn::GetAtt: [UserPool, Arn] }
-                    - { Fn::Join: ["/", { Fn::GetAtt: [UserPool, Arn] }, "*"] }
+                    - { Fn::Join: ["/", [{ Fn::GetAtt: [UserPool, Arn] }, "*"]] }
 
 outputs:
   UserPoolId: { Ref: UserPool }
