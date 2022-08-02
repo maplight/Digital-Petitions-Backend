@@ -1,32 +1,53 @@
 import type { PostConfirmationTriggerHandler } from "aws-lambda";
+
+import type { GroupNameLookup } from "../common";
 import { AccessGroupKeys, ACCESS_GROUP_ATTR } from "../common";
 
 import {
     CognitoIdentityProviderClient,
-    AdminAddUserToGroupCommand
+    AdminAddUserToGroupCommand,
+    AdminUpdateUserAttributesCommand,
+    ListGroupsCommand
 } from "@aws-sdk/client-cognito-identity-provider";
 
 const client = new CognitoIdentityProviderClient({});
 
-const mapGroupName = (accessGroup: string): string | undefined => {
-    switch (accessGroup as AccessGroupKeys) {
-        case AccessGroupKeys.Admin:
-            return process.env.ADMIN_GROUP;
+const getGroups = async (userPool: string): Promise<GroupNameLookup> =>
+    (await client.send(new ListGroupsCommand({ UserPoolId: userPool }))).Groups?.map(
+        (_) => _.GroupName ?? "Unknown"
+    )?.reduce((dict, group) => {
+        if (group.indexOf("Petitioner") > 0) {
+            dict[AccessGroupKeys.Petitioner] = group;
+        } else if (group.indexOf("CityStaff") > 0) {
+            dict[AccessGroupKeys.CityStaff] = group;
+        } else if (group.indexOf("Admin") > 0) {
+            dict[AccessGroupKeys.Admin] = group;
+        }
 
-        case AccessGroupKeys.CityStaff:
-            return process.env.CITY_STAFF_GROUP;
-
-        default:
-            return process.env.PETITIONER_GROUP;
-    }
-};
+        return dict;
+    }, {} as GroupNameLookup) ?? {};
 
 export const handler: PostConfirmationTriggerHandler = async (event): Promise<any> => {
-    const targetGroup = mapGroupName(
-        event.request.userAttributes[ACCESS_GROUP_ATTR] ?? AccessGroupKeys.Petitioner
-    );
+    const groups = await getGroups(event.userPoolId);
 
-    if (typeof targetGroup !== "string") return event;
+    let targetGroup = groups[event.request.userAttributes[ACCESS_GROUP_ATTR] as AccessGroupKeys];
+
+    if (typeof targetGroup !== "string") {
+        await client.send(
+            new AdminUpdateUserAttributesCommand({
+                Username: event.userName,
+                UserPoolId: event.userPoolId,
+                UserAttributes: [
+                    {
+                        Name: ACCESS_GROUP_ATTR,
+                        Value: AccessGroupKeys.Petitioner
+                    }
+                ]
+            })
+        );
+
+        targetGroup = groups[AccessGroupKeys.Petitioner];
+    }
 
     const command = new AdminAddUserToGroupCommand({
         GroupName: targetGroup,
@@ -34,11 +55,7 @@ export const handler: PostConfirmationTriggerHandler = async (event): Promise<an
         UserPoolId: event.userPoolId
     });
 
-    try {
-        await client.send(command);
-    } catch (err) {
-        console.log("Failed", err);
-    }
+    await client.send(command);
 
     return event;
 };
