@@ -11,5 +11,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.141.0"
   }
 }
