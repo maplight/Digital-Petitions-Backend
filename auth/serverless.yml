@@ -20,6 +20,7 @@ functions:
 
     events:
       - cognitoUserPool:
+          existing: true
           pool: UserPool
           trigger: PostConfirmation
 
@@ -27,6 +28,7 @@ functions:
     handler: lambda/group-validate/index
     events:
       - cognitoUserPool:
+          existing: true
           pool: UserPool
           trigger: PreSignUp
 
