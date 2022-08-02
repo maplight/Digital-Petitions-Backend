@@ -4,14 +4,26 @@ service: backend-auth
 
 frameworkVersion: '3'
 
+custom:
+  esbuild:
+    minify: true
+    watch:
+      pattern: ["lambda/**/*.ts"]
+      ignore: ["./serverles/**/*", ".build"]
+
 provider:
   name: aws
   runtime: nodejs14.x
   stage: ${opt:stage, "dev"}
 
 functions:
-  hello:
-    handler: lambda/hello/index
+  assignGroup:
+    handler: lambda/group-assign/index.handler
+    role: UserGroupMembershipLambdaRole
+    events:
+      - cognitoUserPool:
+          pool: AppUserPool
+          trigger: PostConfirmation
 
 plugins:
   - serverless-esbuild
@@ -21,7 +33,7 @@ resources:
     
     # The user pool used to provide authenticated
     # users
-    UserPool:
+    CognitoUserPoolAppUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
         UserPoolName: ${self:provider.stage}-UserPool
@@ -63,7 +75,7 @@ resources:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
         ClientName: ${self:provider.stage}-UserPoolClient
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
         PreventUserExistenceErrors: ENABLED
         GenerateSecret: false
         SupportedIdentityProviders:
@@ -90,7 +102,7 @@ resources:
         GroupName: ${self:provider.stage}-PetitionerGroup
         Description: "Users that can issue petitions to the city"
         Precedence: 2
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
     CityStaffUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
@@ -98,7 +110,7 @@ resources:
         GroupName: ${self:provider.stage}-CityStaffGroup
         Description: "Users that can review and approve or reject petitions"
         Precedence: 1
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
     AdminUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
@@ -106,7 +118,7 @@ resources:
         GroupName: ${self:provider.stage}-AdminGroup
         Description: "Admin users. Have a superset of City Staff access rights"
         Precedence: 0
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
     # Default admin user that is to be created on site deployment.
     # Should be granted the highest access level and allow creating other
@@ -130,7 +142,7 @@ resources:
             Value: "admin"
           - Name: "email_verified"
             Value: "true"
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
     # Attach the root user to the admin group by default.
     # We can likely rely on the post-sign up lambda for this once
@@ -139,7 +151,7 @@ resources:
       Type: "AWS::Cognito::UserPoolUserToGroupAttachment"
       Properties:
         GroupName: { Ref: AdminUserGroup }
-        UserPoolId: { Ref: UserPool }
+        UserPoolId: { Ref: CognitoUserPoolAppUserPool }
         Username: { Ref: RootUser }
 
     # The identity pool that will be used to link roles to
@@ -155,11 +167,55 @@ resources:
               Ref: UserPoolWebClient
             ProviderName:
               Fn::GetAtt:
-                [UserPool, ProviderName]
+                [CognitoUserPoolAppUserPool, ProviderName]
             ServerSideTokenCheck: true
 
+    # The role to be assumed by the lambda function that is to
+    # automatically assign users to user groups after the user is
+    # confirmed
+    UserGroupMembershipLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-UserGroupLambdaRole
+
+        # allow lambdas to assume this role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+
+        # actual permissions
+        Policies:
+          - PolicyName: ${self:provider.stage}-UserGroupLambdaPolicy
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement:
+                # give access to logging features,
+                # similar to the default role Serverless
+                # creates for all lambdas
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - { Fn::Join: [":", ["arn:aws:logs", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "log-group:/aws/lambda/*:*:*"]] }
+
+                # give access to Cognito resources
+                - Effect: Allow
+                  Action:
+                    - cognito-idp:AdminAddUserToGroup
+                    - cognito-idp:AdminUpdateUserAttributes
+                    - cognito-idp:ListGroups
+                  Resource: 
+                    - { Fn::Join: [":", ["arn:aws:cognito-idp", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "userpool/*"]] }
+
 outputs:
-  UserPoolId: { Ref: UserPool }
+  UserPoolId: { Ref: CognitoUserPoolAppUserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
   UserIdentityPoolId: { Ref: UserIdentityPool }
   PetitionerGroup: { Ref: PetitionerUserGroup }
