@@ -21,7 +21,7 @@ const mapGroupName = (accessGroup: string): string | undefined => {
     }
 };
 
-export default <PostConfirmationTriggerHandler>(async (event): Promise<any> => {
+export const handler: PostConfirmationTriggerHandler = async (event): Promise<any> => {
     const targetGroup = mapGroupName(
         event.request.userAttributes[ACCESS_GROUP_ATTR] ?? AccessGroupKeys.Petitioner
     );
@@ -41,4 +41,4 @@ export default <PostConfirmationTriggerHandler>(async (event): Promise<any> => {
     }
 
     return event;
-});
+};

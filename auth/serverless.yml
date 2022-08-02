@@ -4,6 +4,13 @@ service: backend-auth
 
 frameworkVersion: '3'
 
+custom:
+  esbuild:
+    minify: true
+    watch:
+      pattern: ["lambda/**/*.ts"]
+      ignore: ["./serverles/**/*", ".build"]
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -11,7 +18,7 @@ provider:
 
 functions:
   assignGroup:
-    handler: lambda/group-assign/index
+    handler: lambda/group-assign/index.handler
     role: UserGroupMembershipLambdaRole
     events:
       - cognitoUserPool:
@@ -19,7 +26,7 @@ functions:
           trigger: PostConfirmation
 
   validateGroup:
-    handler: lambda/group-validate/index
+    handler: lambda/group-validate/index.handler
     events:
       - cognitoUserPool:
           pool: AppUserPool

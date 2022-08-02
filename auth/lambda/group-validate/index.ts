@@ -10,7 +10,7 @@ const allowedAccessGroups: AccessGroupKeys[] = [
 const isAllowed = (value: string): boolean =>
     allowedAccessGroups.includes(value as AccessGroupKeys);
 
-export default <PreSignUpTriggerHandler>(async (event): Promise<any> => {
+export const handler: PreSignUpTriggerHandler = async (event): Promise<any> => {
     if (
         event.triggerSource !== "PreSignUp_AdminCreateUser" ||
         !isAllowed(event.request.userAttributes[ACCESS_GROUP_ATTR])
@@ -19,4 +19,4 @@ export default <PreSignUpTriggerHandler>(async (event): Promise<any> => {
     }
 
     return event;
-});
+};
