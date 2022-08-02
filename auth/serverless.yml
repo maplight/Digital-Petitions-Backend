@@ -164,7 +164,7 @@ resources:
     UserGroupMembershipLambdaRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: ${self:provider.stage}-UserGroupMembershipLambdaRole
+        RoleName: ${self:provider.stage}-UserGroupLambdaRole
 
         # allow lambdas to assume this role
         AssumeRolePolicyDocument:
@@ -178,7 +178,7 @@ resources:
 
         # actual permissions
         Policies:
-          - PolicyName: ${self:provider.stage}-UserGroupMembershipLambdaAccessPolicy
+          - PolicyName: ${self:provider.stage}-UserGroupLambdaPolicy
             PolicyDocument: 
               Version: "2012-10-17"
               Statement:
