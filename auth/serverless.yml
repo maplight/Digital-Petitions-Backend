@@ -18,17 +18,8 @@ functions:
       CITY_STAFF_GROUP: { Ref: CityStaffUserGroup }
       ADMIN_GROUP: { Ref: AdminUserGroup }
 
-    events:
-      - cognitoUserPool:
-          pool: AppUsers
-          trigger: PostConfirmation
-
   validateGroup:
     handler: lambda/group-validate/index
-    events:
-      - cognitoUserPool:
-          pool: AppUsers
-          trigger: PreSignUp
 
 plugins:
   - serverless-esbuild
@@ -38,7 +29,7 @@ resources:
     
     # The user pool used to provide authenticated
     # users
-    CognitoUserPoolAppUsers:
+    UserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
         UserPoolName: ${self:provider.stage}-UserPool
@@ -50,6 +41,12 @@ resources:
           AllowAdminCreateUserOnly: false
         AutoVerifiedAttributes:
           - "email"
+
+        # event trigger configuration
+        LambdaConfig:
+          PreSignUp: { Fn::GetAtt: ["validateGroup", "Arn"] }
+          PostConfirmation: { Fn::GetAtt: ["assignGroup", "Arn"] }
+
         Schema:
           - Name: "address"
             AttributeDataType: "String"
@@ -80,7 +77,7 @@ resources:
       Type: "AWS::Cognito::UserPoolClient"
       Properties:
         ClientName: ${self:provider.stage}-UserPoolClient
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
         PreventUserExistenceErrors: ENABLED
         GenerateSecret: false
         SupportedIdentityProviders:
@@ -107,7 +104,7 @@ resources:
         GroupName: ${self:provider.stage}-PetitionerGroup
         Description: "Users that can issue petitions to the city"
         Precedence: 2
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
 
     CityStaffUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
@@ -115,7 +112,7 @@ resources:
         GroupName: ${self:provider.stage}-CityStaffGroup
         Description: "Users that can review and approve or reject petitions"
         Precedence: 1
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
 
     AdminUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
@@ -123,7 +120,7 @@ resources:
         GroupName: ${self:provider.stage}-AdminGroup
         Description: "Admin users. Have a superset of City Staff access rights"
         Precedence: 0
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
 
     # Default admin user that is to be created on site deployment.
     # Should be granted the highest access level and allow creating other
@@ -147,7 +144,7 @@ resources:
             Value: "admin"
           - Name: "email_verified"
             Value: "true"
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
 
     # Attach the root user to the admin group by default.
     # We can likely rely on the post-sign up lambda for this once
@@ -156,7 +153,7 @@ resources:
       Type: "AWS::Cognito::UserPoolUserToGroupAttachment"
       Properties:
         GroupName: { Ref: AdminUserGroup }
-        UserPoolId: { Ref: CognitoUserPoolAppUsers }
+        UserPoolId: { Ref: UserPool }
         Username: { Ref: RootUser }
 
     # The identity pool that will be used to link roles to
@@ -172,7 +169,7 @@ resources:
               Ref: UserPoolWebClient
             ProviderName:
               Fn::GetAtt:
-                [CognitoUserPoolAppUsers, ProviderName]
+                [UserPool, ProviderName]
             ServerSideTokenCheck: true
 
     # The role to be assumed by the lambda function that is to
@@ -220,11 +217,11 @@ resources:
                     - cognito-idp:Getuser
                     - cognito-idp:ListGroups
                   Resource: 
-                    - { Fn::GetAtt: [CognitoUserPoolAppUsers, Arn] }
-                    - { Fn::Join: ["/", [{ Fn::GetAtt: [CognitoUserPoolAppUsers, Arn] }, "*"]] }
+                    - { Fn::GetAtt: [UserPool, Arn] }
+                    - { Fn::Join: ["/", [{ Fn::GetAtt: [UserPool, Arn] }, "*"]] }
 
 outputs:
-  UserPoolId: { Ref: CognitoUserPoolAppUsers }
+  UserPoolId: { Ref: UserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
   UserIdentityPoolId: { Ref: UserIdentityPool }
   PetitionerGroup: { Ref: PetitionerUserGroup }
