@@ -11,7 +11,24 @@ provider:
 
 functions:
   assignGroup:
-    handler: lambda/assign-group/index
+    handler: lambda/group-assign/index
+    role: UserGroupMembershipLambdaRole
+    environment:
+      PETITIONER_GROUP: { Ref: PetitionerUserGroup }
+      CITY_STAFF_GROUP: { Ref: CityStaffUserGroup }
+      ADMIN_GROUP: { Ref: AdminUserGroup }
+
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PostConfirmation
+
+  validateGroup:
+    handler: lambda/group-validate/index
+    events:
+      - cognitoUserPool:
+          pool: UserPool
+          trigger: PreSignUp
 
 plugins:
   - serverless-esbuild
@@ -182,6 +199,18 @@ resources:
             PolicyDocument: 
               Version: "2012-10-17"
               Statement:
+                # give access to logging features,
+                # similar to the default role Serverless
+                # creates for all lambdas
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - { Fn::Join: [":", ["arn:aws:logs", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "log-group:/aws/lambda/*:*:*"]] }
+
+                # give access to Cognito resources
                 - Effect: Allow
                   Action:
                     - cognito-idp:DescribeUserPool
