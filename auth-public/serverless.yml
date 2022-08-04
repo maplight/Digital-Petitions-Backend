@@ -29,6 +29,22 @@ resources:
       Type: "AWS::IAM::Role"
       Properties:
         RoleName: ${self:provider.stage}-APIPublicAccessRole
+
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action:
+                - sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud":
+                    Ref: UserIdentityPool
+                  "ForAnyValue:StringLike":
+                    "cognito-identity.amazonaws.com:amr": unauthenticated
+
         Policies:
           - PolicyName: ${self:provider.stage}-APIPublicAccessPolicy
             PolicyDocument:
@@ -45,6 +61,22 @@ resources:
       Type: "AWS::IAM::Role"
       Properties:
         RoleName: ${self:provider.stage}-APIAuthenticatedRole
+
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action:
+                - sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud":
+                    Ref: UserIdentityPool
+                  "ForAnyValue:StringLike":
+                    "cognito-identity.amazonaws.com:amr": authenticated
+
         Policies:
           - PolicyName: ${self:provider.stage}-APIAuthenticatedPolicy
             PolicyDocument:
@@ -58,6 +90,14 @@ resources:
                     - appsync:GraphQL
                   Resource:
                     - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "*"]] }
+
+    UserIdentityPoolRoleAttachment:
+      Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+      Properties:
+        IdentityPoolId: { Ref: UserIdentityPool }
+        Roles:
+          authenticated: { Fn::GetAtt: [AuthenticatedAccessRole, Arn] }
+          unauthenticated: { Fn::GetAtt: [PublicAccessRole, Arn] }
 
 outputs:
   UserIdentityPoolId: { Ref: UserIdentityPool }
