@@ -41,6 +41,23 @@ resources:
                   Resource:
                     - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "types/*/fields/public*"]] }
 
+    AuthenticatedAccessRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-APIAuthenticatedRole
+        Policies:
+          - PolicyName: ${self:provider.stage}-APIAuthenticatedPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                # Allows access to all queries
+                # further restrictions are based off
+                # user group membership
+                - Effect: Allow
+                  Action:
+                    - appsync:GraphQL
+                  Resource:
+                    - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "*"]] }
 
 outputs:
   UserIdentityPoolId: { Ref: UserIdentityPool }
