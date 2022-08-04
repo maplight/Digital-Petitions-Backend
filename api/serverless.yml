@@ -50,13 +50,13 @@ custom:
           functionName: echo
 
     xrayEnabled: true
-    wafConfig:
-      enabled: true
-      name: ${self:provider.stage}-WafConfig
-      defaultAction: Allow
-      rules:
-        - throttle: 100
-        - disableIntrospection
+    # wafConfig:
+    #   enabled: true
+    #   name: AppSyncWafConfig
+    #   defaultAction: Allow
+    #   rules:
+    #     - throttle: 100
+    #     - disableIntrospection
 
 provider:
   name: aws
