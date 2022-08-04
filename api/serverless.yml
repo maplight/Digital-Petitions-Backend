@@ -18,13 +18,13 @@ custom:
   appSync:
     name: ${self:provider.stage}-ESignaturesAPI
 
-    authenticationType: AMAZON_COGNITO_USER_POOLS
-    userPoolConfig:
-      defaultAction: ALLOW
-      userPoolId: ${output:backend-auth.UserPoolId}
+    authenticationType: AWS_IAM
 
     additionalAuthenticationProviders:
-      - authenticationType: AWS_IAM
+      - authenticationType: AMAZON_COGNITO_USER_POOLS
+        userPoolConfig:
+          defaultAction: DENY
+          userPoolId: ${output:backend-auth.UserPoolId}
 
     mappingTemplatesLocation: templates
     defaultMappingTemplates:
