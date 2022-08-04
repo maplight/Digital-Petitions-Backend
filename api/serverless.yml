@@ -64,5 +64,5 @@ provider:
   stage: ${opt:stage, "dev"}
 
 plugins:
-  - serverless-esbuild
   - serverless-appsync-plugin
+  - serverless-esbuild
