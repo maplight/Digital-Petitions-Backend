@@ -1,3 +1,6 @@
 services:
   backend-auth:
     path: auth
+
+  backend-api:
+    path: api
