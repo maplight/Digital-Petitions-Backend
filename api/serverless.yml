@@ -20,7 +20,7 @@ custom:
 
     authenticationType: AMAZON_COGNITO_USER_POOLS
     userPoolConfig:
-      defaultAction: DENY
+      defaultAction: ALLOW
       userPoolId: ${output:backend-auth.UserPoolId}
 
     additionalAuthenticationProviders:
