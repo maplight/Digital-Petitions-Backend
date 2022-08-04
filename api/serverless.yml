@@ -64,4 +64,4 @@ plugins:
   - serverless-esbuild
 
 outputs:
-  ApiId: { Ref: GraphQLApi }
+  ApiId: { Ref: GraphQlApi }

@@ -20,7 +20,7 @@ resources:
         IdentityPoolName: ${self:provider.stage}-IdentityPool
         AllowUnauthenticatedIdentities: true
         CognitoIdentityProviders:
-          - ClientId: ${output:backend-auth.UserPoolWebClient}
+          - ClientId: ${output:backend-auth.UserPooClientId}
             ProviderName: ${output:backend-auth.UserPoolProviderName}
             ServerSideTokenCheck: true
 
