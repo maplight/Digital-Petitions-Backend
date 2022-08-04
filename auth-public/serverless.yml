@@ -1,0 +1,10 @@
+app: e-signatures
+org: maplighttech
+service: backend-auth-public
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
