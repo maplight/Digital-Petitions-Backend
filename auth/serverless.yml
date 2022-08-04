@@ -154,22 +154,6 @@ resources:
         UserPoolId: { Ref: CognitoUserPoolAppUserPool }
         Username: { Ref: RootUser }
 
-    # The identity pool that will be used to link roles to
-    # entities. Particularly for allowing unauthenticated access
-    # to parts of the API. 
-    UserIdentityPool:
-      Type: "AWS::Cognito::IdentityPool"
-      Properties:
-        IdentityPoolName: ${self:provider.stage}-IdentityPool
-        AllowUnauthenticatedIdentities: true
-        CognitoIdentityProviders:
-          - ClientId:
-              Ref: UserPoolWebClient
-            ProviderName:
-              Fn::GetAtt:
-                [CognitoUserPoolAppUserPool, ProviderName]
-            ServerSideTokenCheck: true
-
     # The role to be assumed by the lambda function that is to
     # automatically assign users to user groups after the user is
     # confirmed
@@ -217,7 +201,7 @@ resources:
 outputs:
   UserPoolId: { Ref: CognitoUserPoolAppUserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
-  UserIdentityPoolId: { Ref: UserIdentityPool }
+  UserPoolProviderName: { Fn::GetAtt: [CognitoUserPoolAppUserPool, ProviderName] }
   PetitionerGroup: { Ref: PetitionerUserGroup }
   CityStaffGroup: { Ref: CityStaffUserGroup }
   AdminGroup: { Ref: AdminUserGroup }

@@ -23,7 +23,6 @@ custom:
     additionalAuthenticationProviders:
       - authenticationType: AMAZON_COGNITO_USER_POOLS
         userPoolConfig:
-          defaultAction: DENY
           userPoolId: ${output:backend-auth.UserPoolId}
 
     mappingTemplatesLocation: templates
@@ -63,3 +62,6 @@ provider:
 plugins:
   - serverless-appsync-plugin
   - serverless-esbuild
+
+outputs:
+  ApiId: { Ref: GraphQLApi }

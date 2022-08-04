@@ -4,3 +4,6 @@ services:
 
   backend-api:
     path: api
+
+  backend-auth-public:
+    path: auth-public
