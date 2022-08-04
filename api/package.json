@@ -11,9 +11,5 @@
   },
   "scripts": {
     "test": "jest --passWithNoTests"
-  },
-  "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.141.0",
-    "@aws-sdk/signature-v4-crt": "^3.130.0"
   }
 }
