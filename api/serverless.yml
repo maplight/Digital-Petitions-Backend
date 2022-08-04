@@ -1,0 +1,17 @@
+app: e-signatures
+org: maplighttech
+service: backend-api
+
+frameworkVersion: '3'
+
+custom:
+  esbuild:
+    minify: true
+    watch:
+      pattern: ["lambda/**/*.ts"]
+      ignore: ["./serverles/**/*", ".build"]
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
