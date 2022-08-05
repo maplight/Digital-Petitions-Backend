@@ -1,0 +1,101 @@
+app: e-signatures
+org: maplighttech
+service: backend-auth-public
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+resources:
+  Resources:
+    # The identity pool that will be used to link roles to
+    # entities. Particularly for allowing unauthenticated access
+    # to parts of the API. 
+    UserIdentityPool:
+      Type: "AWS::Cognito::IdentityPool"
+      Properties:
+        IdentityPoolName: ${self:provider.stage}-IdentityPool
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders:
+          - ClientId: ${output:backend-auth.UserPoolClientId}
+            ProviderName: ${output:backend-auth.UserPoolProviderName}
+            ServerSideTokenCheck: true
+
+    # The role that will allow public access to API endpoints
+    PublicAccessRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-APIPublicAccessRole
+
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action: sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud":
+                    Ref: UserIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": "unauthenticated"
+
+        Policies:
+          - PolicyName: ${self:provider.stage}-APIPublicAccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                # Allow calling select queries
+                - Effect: Allow
+                  Action:
+                    - appsync:GraphQL
+                  Resource:
+                    - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "types/*/fields/public*"]] }
+
+    AuthenticatedAccessRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-APIAuthenticatedRole
+
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action: sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud":
+                    Ref: UserIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": "authenticated"
+
+        Policies:
+          - PolicyName: ${self:provider.stage}-APIAuthenticatedPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                # Allows access to all queries
+                # further restrictions are based off
+                # user group membership
+                - Effect: Allow
+                  Action:
+                    - appsync:GraphQL
+                  Resource:
+                    - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "*"]] }
+
+    UserIdentityPoolRoleAttachment:
+      Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+      Properties:
+        IdentityPoolId: { Ref: UserIdentityPool }
+        Roles:
+          authenticated: { Fn::GetAtt: [AuthenticatedAccessRole, Arn] }
+          unauthenticated: { Fn::GetAtt: [PublicAccessRole, Arn] }
+
+outputs:
+  UserIdentityPoolId: { Ref: UserIdentityPool }

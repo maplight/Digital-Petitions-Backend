@@ -99,7 +99,7 @@ resources:
     PetitionerUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
       Properties:
-        GroupName: ${self:provider.stage}-PetitionerGroup
+        GroupName: PetitionerGroup
         Description: "Users that can issue petitions to the city"
         Precedence: 2
         UserPoolId: { Ref: CognitoUserPoolAppUserPool }
@@ -107,7 +107,7 @@ resources:
     CityStaffUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
       Properties:
-        GroupName: ${self:provider.stage}-CityStaffGroup
+        GroupName: CityStaffGroup
         Description: "Users that can review and approve or reject petitions"
         Precedence: 1
         UserPoolId: { Ref: CognitoUserPoolAppUserPool }
@@ -115,7 +115,7 @@ resources:
     AdminUserGroup:
       Type: "AWS::Cognito::UserPoolGroup"
       Properties:
-        GroupName: ${self:provider.stage}-AdminGroup
+        GroupName: AdminGroup
         Description: "Admin users. Have a superset of City Staff access rights"
         Precedence: 0
         UserPoolId: { Ref: CognitoUserPoolAppUserPool }
@@ -153,22 +153,6 @@ resources:
         GroupName: { Ref: AdminUserGroup }
         UserPoolId: { Ref: CognitoUserPoolAppUserPool }
         Username: { Ref: RootUser }
-
-    # The identity pool that will be used to link roles to
-    # entities. Particularly for allowing unauthenticated access
-    # to parts of the API. 
-    UserIdentityPool:
-      Type: "AWS::Cognito::IdentityPool"
-      Properties:
-        IdentityPoolName: ${self:provider.stage}-IdentityPool
-        AllowUnauthenticatedIdentities: true
-        CognitoIdentityProviders:
-          - ClientId:
-              Ref: UserPoolWebClient
-            ProviderName:
-              Fn::GetAtt:
-                [CognitoUserPoolAppUserPool, ProviderName]
-            ServerSideTokenCheck: true
 
     # The role to be assumed by the lambda function that is to
     # automatically assign users to user groups after the user is
@@ -217,7 +201,7 @@ resources:
 outputs:
   UserPoolId: { Ref: CognitoUserPoolAppUserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
-  UserIdentityPoolId: { Ref: UserIdentityPool }
+  UserPoolProviderName: { Fn::GetAtt: [CognitoUserPoolAppUserPool, ProviderName] }
   PetitionerGroup: { Ref: PetitionerUserGroup }
   CityStaffGroup: { Ref: CityStaffUserGroup }
   AdminGroup: { Ref: AdminUserGroup }

@@ -1,0 +1,9 @@
+type Query {
+    publicType(ping: String!): String!
+
+    adminType(ping: String!): String!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
+
+    petitionerType(ping: String!): String!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+}

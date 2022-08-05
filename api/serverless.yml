@@ -4,6 +4,10 @@ service: backend-api
 
 frameworkVersion: '3'
 
+functions:
+  echo:
+    handler: lambda/echo/index.handler
+
 custom:
   esbuild:
     minify: true
@@ -11,7 +15,53 @@ custom:
       pattern: ["lambda/**/*.ts"]
       ignore: ["./serverles/**/*", ".build"]
 
+  appSync:
+    name: ${self:provider.stage}-ESignaturesAPI
+
+    authenticationType: AWS_IAM
+
+    additionalAuthenticationProviders:
+      - authenticationType: AMAZON_COGNITO_USER_POOLS
+        userPoolConfig:
+          userPoolId: ${output:backend-auth.UserPoolId}
+
+    mappingTemplatesLocation: templates
+    defaultMappingTemplates:
+      request: echo.request.vtl
+      response: echo.response.vtl
+
+    mappingTemplates:
+      - dataSource: EchoDataSource
+        type: Query
+        field: publicType
+      - dataSource: EchoDataSource
+        type: Query
+        field: adminType
+      - dataSource: EchoDataSource
+        type: Query
+        field: petitionerType
+
+    dataSources:
+      - type: AWS_LAMBDA
+        name: EchoDataSource
+        description: "A simple lambda datasource for testing"
+        config:
+          functionName: echo
+
+    xrayEnabled: true
+    wafConfig:
+      rules:
+        - throttle: 100
+        - disableIntrospection
+
 provider:
   name: aws
   runtime: nodejs14.x
   stage: ${opt:stage, "dev"}
+
+plugins:
+  - serverless-appsync-plugin
+  - serverless-esbuild
+
+outputs:
+  ApiId: { Ref: GraphQlApi }
