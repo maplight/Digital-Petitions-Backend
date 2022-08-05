@@ -41,8 +41,8 @@ resources:
                 StringEquals:
                   "cognito-identity.amazonaws.com:aud":
                     Ref: UserIdentityPool
-                  "ForAnyValue:StringLike":
-                    "cognito-identity.amazonaws.com:amr": unauthenticated
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": "unauthenticated"
 
         Policies:
           - PolicyName: ${self:provider.stage}-APIPublicAccessPolicy
@@ -72,8 +72,8 @@ resources:
                 StringEquals:
                   "cognito-identity.amazonaws.com:aud":
                     Ref: UserIdentityPool
-                  "ForAnyValue:StringLike":
-                    "cognito-identity.amazonaws.com:amr": authenticated
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": "authenticated"
 
         Policies:
           - PolicyName: ${self:provider.stage}-APIAuthenticatedPolicy
