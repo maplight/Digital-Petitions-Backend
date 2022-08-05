@@ -4,6 +4,10 @@ services:
 
   backend-api:
     path: api
+    dependsOn: backend-auth
 
   backend-auth-public:
     path: auth-public
+    dependsOn: 
+      - backend-api
+      - backend-auth
