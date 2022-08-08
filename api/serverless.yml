@@ -18,6 +18,9 @@ custom:
   appSync:
     name: ${self:provider.stage}-ESignaturesAPI
 
+    logConfig:
+      level: ERROR
+
     authenticationType: AWS_IAM
 
     additionalAuthenticationProviders:
