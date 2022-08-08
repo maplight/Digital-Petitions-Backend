@@ -3,7 +3,7 @@
     "status": "NEW"
 })
 
-$util.quiet($data.put("createdAt", $util.time.nowISO8061()))
+$util.quiet($data.put("createdAt", $util.time.nowISO8601()))
 $util.quiet($data.put("owner", $context.identity.sub))
 
 #foreach ($entry in $context.arguments.data.entrySet())
