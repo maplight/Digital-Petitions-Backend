@@ -43,7 +43,7 @@ custom:
         type: Query
         field: petitionerType
 
-      - $(file(./templates/submitIssuePetition.yml)
+      - ${file(./templates/submitIssuePetition.yml)}
 
     dataSources:
       - type: AWS_LAMBDA
