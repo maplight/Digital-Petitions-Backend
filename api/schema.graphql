@@ -36,7 +36,7 @@ type SignatureData {
 }
 
 interface Petition {
-    id: ID!
+    PK: ID!
     createdAt: AWSDateTime!
     
     type: PetitionType!
@@ -50,7 +50,7 @@ interface Petition {
 }
 
 type IssuePetition implements Petition {
-    id: ID!
+    PK: ID!
     createdAt: AWSDateTime!
 
     type: PetitionType!
