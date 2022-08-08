@@ -1,0 +1,63 @@
+app: e-signatures
+org: maplighttech
+service: backend-data
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+resources:
+  Resources:
+    # Table for petitions
+    PetitionsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: ${self:provider.stage}-PetitionTable
+
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: owner
+            AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+          - AttributeName: type
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+
+        GlobalSecondaryIndexes:
+          - IndexName: byOwnerIndex
+            KeySchema:
+              - AttributeName: owner
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+
+          - IndexName: byTypeIndex
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: status
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+
+        # This is a placeholder value, may need reviewing
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+outputs:
+  PetitionsTableName: { Ref: PetitionsTable }
