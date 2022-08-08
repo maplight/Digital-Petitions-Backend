@@ -47,6 +47,7 @@ custom:
         description: "A simple lambda datasource for testing"
         config:
           functionName: echo
+      - ${file(./data/petitions.yml)}
 
     xrayEnabled: true
     wafConfig:
