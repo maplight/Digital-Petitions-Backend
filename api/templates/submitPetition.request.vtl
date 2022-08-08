@@ -1,0 +1,20 @@
+#set($data = { 
+    "type": "ISSUE",
+    "status": "NEW"
+})
+
+$util.quiet($data.put("createdAt", $util.time.nowISO8061()))
+$util.quiet($data.put("owner", $context.identity.sub))
+
+#foreach ($entry in $context.arguments.entrySet())
+    $util.quiet($data.put($entry.key, $entry.value))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "PutItem",
+    "key": {
+        "PK": $util.dynamodb.toDynamoDBJson($util.autoId())
+    },
+    "attributeValues": $util.dynamodb.toMapValuesJson($data)
+}
