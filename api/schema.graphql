@@ -7,3 +7,57 @@ type Query {
     petitionerType(ping: String!): String!
     @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
 }
+
+type Mutation {
+    submitIssuePetition(data: IssuePetitionInput): Petition!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+}
+
+enum PetitionType {
+    ISSUE,
+    CANDIDATE
+}
+
+enum PetitionStatus {
+    NEW,
+    ACTIVE,
+    CANCEL,
+    WITHDRAWN,
+    QUALIFIED,
+    REJECTED
+}
+
+type SignatureData {
+    required: Int!
+    approved: Int!
+
+    submitted: Int
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup"])
+}
+
+interface Petition {
+    id: ID!
+    type: PetitionType!
+    status: PetitionStatus!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureData
+}
+
+type IssuePetition implements Petition {
+    id: ID!
+    type: PetitionType!
+    status: PetitionStatus!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureData
+}
+
+input IssuePetitionInput {
+    title: String!
+    detail: String!
+}
