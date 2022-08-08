@@ -37,8 +37,11 @@ type SignatureData {
 
 interface Petition {
     id: ID!
+    createdAt: AWSDateTime!
+    
     type: PetitionType!
     status: PetitionStatus!
+    owner: ID!
 
     title: String!
     detail: String!
@@ -48,8 +51,11 @@ interface Petition {
 
 type IssuePetition implements Petition {
     id: ID!
+    createdAt: AWSDateTime!
+
     type: PetitionType!
     status: PetitionStatus!
+    owner: ID!
 
     title: String!
     detail: String!
