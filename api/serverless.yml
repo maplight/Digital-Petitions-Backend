@@ -34,12 +34,16 @@ custom:
       - dataSource: EchoDataSource
         type: Query
         field: publicType
+
       - dataSource: EchoDataSource
         type: Query
         field: adminType
+
       - dataSource: EchoDataSource
         type: Query
         field: petitionerType
+
+      - $(file(./templates/submitIssuePetition.yml)
 
     dataSources:
       - type: AWS_LAMBDA
