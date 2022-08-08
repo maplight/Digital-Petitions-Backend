@@ -1,5 +1,5 @@
 type: AMAZON_DYNAMODB
-name: ${self:provider.stage}-PetitionDatasource
+name: PetitionDatasource
 description: "Datasource giving access to petition data, backed by a DynamoDB table"
 config:
   tableName: ${output:backend-data.PetitionsTableName}
@@ -15,4 +15,3 @@ config:
       Resource:
         - ${output:backend-data.PetitionsTableArn}
         - { Fn::Join: ["/", ["${output:backend-data.PetitionsTableArn}", "*"]] }
-  
