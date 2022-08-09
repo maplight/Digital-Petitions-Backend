@@ -18,6 +18,8 @@ custom:
   appSync:
     name: ${self:provider.stage}-ESignaturesAPI
 
+    schema: "./schema/**/*.graphql"
+
     logConfig:
       level: ERROR
 
