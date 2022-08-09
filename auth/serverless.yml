@@ -198,10 +198,16 @@ resources:
                   Resource: 
                     - { Fn::Join: [":", ["arn:aws:cognito-idp", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "userpool/*"]] }
 
+  Outputs:
+    userPoolId: { Value: { Ref: CognitoUserPoolAppUserPool } }
+    userPoolClientId: { Value: { Ref: UserPoolWebClient } }
+    userPoolProviderName: { Value: { Fn::GetAtt: [CognitoUserPoolAppUserPool, ProviderName] } }
+
 outputs:
   UserPoolId: { Ref: CognitoUserPoolAppUserPool }
   UserPoolClientId: { Ref: UserPoolWebClient }
   UserPoolProviderName: { Fn::GetAtt: [CognitoUserPoolAppUserPool, ProviderName] }
+
   PetitionerGroup: { Ref: PetitionerUserGroup }
   CityStaffGroup: { Ref: CityStaffUserGroup }
   AdminGroup: { Ref: AdminUserGroup }

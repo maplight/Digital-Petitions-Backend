@@ -8,7 +8,16 @@ functions:
   echo:
     handler: lambda/echo/index.handler
 
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
 custom:
+  myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+  myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
+  myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
+
   esbuild:
     minify: true
     watch:
@@ -28,7 +37,7 @@ custom:
     additionalAuthenticationProviders:
       - authenticationType: AMAZON_COGNITO_USER_POOLS
         userPoolConfig:
-          userPoolId: ${output:backend-auth.UserPoolId}
+          userPoolId: ${self:custom.myUserPoolId}
 
     mappingTemplatesLocation: templates
     defaultMappingTemplates:
@@ -64,14 +73,13 @@ custom:
         - throttle: 100
         - disableIntrospection
 
-provider:
-  name: aws
-  runtime: nodejs14.x
-  stage: ${opt:stage, "dev"}
-
 plugins:
   - serverless-appsync-plugin
   - serverless-esbuild
+
+resources:
+  Outputs:
+    apiId: { Value: { Ref: GraphQlApi } }
 
 outputs:
   ApiId: { Ref: GraphQlApi }

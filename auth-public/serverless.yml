@@ -9,6 +9,11 @@ provider:
   runtime: nodejs14.x
   stage: ${opt:stage, "dev"}
 
+custom:
+  myUserPoolClientId: ${param:userPoolClientId, output:backend-auth.UserPoolClientId}
+  myUserPoolProviderName: ${param:userPoolProviderName, output:backend-auth.UserPoolProviderName}
+  myApiId: ${param:apiId, output:backend-api.ApiId}
+
 resources:
   Resources:
     # The identity pool that will be used to link roles to
@@ -20,8 +25,8 @@ resources:
         IdentityPoolName: ${self:provider.stage}-IdentityPool
         AllowUnauthenticatedIdentities: true
         CognitoIdentityProviders:
-          - ClientId: ${output:backend-auth.UserPoolClientId}
-            ProviderName: ${output:backend-auth.UserPoolProviderName}
+          - ClientId: ${self:custom.myUserPoolClientId}
+            ProviderName: ${self:custom.myUserPoolProviderName}
             ServerSideTokenCheck: true
 
     # The role that will allow public access to API endpoints
@@ -54,7 +59,7 @@ resources:
                   Action:
                     - appsync:GraphQL
                   Resource:
-                    - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "types/*/fields/public*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/*/fields/public*"]] }
 
     AuthenticatedAccessRole:
       Type: "AWS::IAM::Role"
@@ -87,7 +92,7 @@ resources:
                   Action:
                     - appsync:GraphQL
                   Resource:
-                    - { Fn::Join: ["/", ["${output:backend-api.ApiId}", "*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "*"]] }
 
     UserIdentityPoolRoleAttachment:
       Type: "AWS::Cognito::IdentityPoolRoleAttachment"
@@ -96,6 +101,9 @@ resources:
         Roles:
           authenticated: { Fn::GetAtt: [AuthenticatedAccessRole, Arn] }
           unauthenticated: { Fn::GetAtt: [PublicAccessRole, Arn] }
+
+  Outputs:
+    userIdentityPoolId: { Value: { Ref: UserIdentityPool } }
 
 outputs:
   UserIdentityPoolId: { Ref: UserIdentityPool }

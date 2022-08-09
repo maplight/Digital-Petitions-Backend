@@ -4,15 +4,17 @@ services:
 
   backend-api:
     path: api
-    dependsOn: 
-      - backend-auth
-      - backend-data
+    params:
+      userPoolId: ${backend-auth.userPoolId}
+      petitionTableArn: ${backend-data.petitionTableArn}
+      petitionTableName: ${backend-data.petitionTableName}
 
   backend-auth-public:
     path: auth-public
-    dependsOn: 
-      - backend-api
-      - backend-auth
+    params:
+      apiId: ${backend-api.apiId}
+      userPoolClientId: ${backend-auth.userPoolClientId}
+      userPoolProviderName: ${backend-auth.userPoolProviderName}
 
   backend-data:
     path: data
