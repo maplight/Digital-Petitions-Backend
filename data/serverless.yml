@@ -59,6 +59,10 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
 
+  Outputs:
+    petitionTableName: { Value: { Ref: PetitionsTable } }
+    petitionTableArn: { Value: { Fn::GetAtt: [PetitionsTable, Arn] } }
+
 outputs:
   PetitionsTableName: { Ref: PetitionsTable }
   PetitionsTableArn: {  Fn::GetAtt: [PetitionsTable, Arn] }
