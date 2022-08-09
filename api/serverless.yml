@@ -45,26 +45,10 @@ custom:
       response: echo.response.vtl
 
     mappingTemplates:
-      - dataSource: EchoDataSource
-        type: Query
-        field: publicType
-
-      - dataSource: EchoDataSource
-        type: Query
-        field: adminType
-
-      - dataSource: EchoDataSource
-        type: Query
-        field: petitionerType
-
       - ${file(./templates/submitIssuePetition.yml)}
+      - ${file(./templates/submitCandidatePetition.yml)}
 
     dataSources:
-      - type: AWS_LAMBDA
-        name: EchoDataSource
-        description: "A simple lambda datasource for testing"
-        config:
-          functionName: echo
       - ${file(./data/petitions.yml)}
 
     xrayEnabled: true
