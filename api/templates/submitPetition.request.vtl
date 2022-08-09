@@ -1,8 +1,12 @@
-#set($data = { 
-    "type": "ISSUE",
-    "status": "NEW"
-})
+#set($data = { "status": "NEW" })
 
+#if ($context.info.fieldName == "submitIssuePetition")
+    #set($resolvedType = "ISSUE")
+#else
+    #set($resolvedType = "CANDIDATE")
+#end
+
+$util.quiet($data.put("type", $resolvedType))
 $util.quiet($data.put("createdAt", $util.time.nowISO8601()))
 $util.quiet($data.put("owner", $context.identity.sub))
 
