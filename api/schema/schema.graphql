@@ -1,0 +1,17 @@
+type Query {
+    publicType(ping: String!): String!
+
+    adminType(ping: String!): String!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
+
+    petitionerType(ping: String!): String!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+}
+
+type Mutation {
+    submitIssuePetition(data: IssuePetitionInput!): IssuePetition!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+
+    submitCandidatePetition(data: CandidatePetitionInput!): CandidatePetition!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+}

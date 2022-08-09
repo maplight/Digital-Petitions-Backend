@@ -1,0 +1,15 @@
+type AddressData {
+    address: String!
+    number: String
+    city: String
+    state: String!
+    zipCode: String
+}
+
+input AddressInput {
+    address: String!
+    number: String
+    city: String
+    state: String!
+    zipCode: String
+}

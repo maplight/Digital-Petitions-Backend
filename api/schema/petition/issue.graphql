@@ -1,0 +1,18 @@
+type IssuePetition implements Petition {
+    PK: ID!
+    createdAt: AWSDateTime!
+
+    type: PetitionType!
+    status: PetitionStatus!
+    owner: ID!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureSummary
+}
+
+input IssuePetitionInput {
+    title: String!
+    detail: String!
+}
