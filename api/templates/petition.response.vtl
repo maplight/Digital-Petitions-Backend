@@ -1,0 +1,10 @@
+#set($type = $context.result.type)
+
+#if ($type == "ISSUE")
+    #set($resolvedType = "IssuePetition")
+#elseif ($type == "CANDIDATE")
+    #set($resolvedType = "CandidatePetition")
+#end
+
+$util.quiet($context.result.put("__typename", $resolvedType))
+$util.toJson($context.result)

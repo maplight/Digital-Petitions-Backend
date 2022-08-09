@@ -18,6 +18,9 @@ custom:
   appSync:
     name: ${self:provider.stage}-ESignaturesAPI
 
+    logConfig:
+      level: ERROR
+
     authenticationType: AWS_IAM
 
     additionalAuthenticationProviders:
@@ -34,12 +37,16 @@ custom:
       - dataSource: EchoDataSource
         type: Query
         field: publicType
+
       - dataSource: EchoDataSource
         type: Query
         field: adminType
+
       - dataSource: EchoDataSource
         type: Query
         field: petitionerType
+
+      - ${file(./templates/submitIssuePetition.yml)}
 
     dataSources:
       - type: AWS_LAMBDA
@@ -47,6 +54,7 @@ custom:
         description: "A simple lambda datasource for testing"
         config:
           functionName: echo
+      - ${file(./data/petitions.yml)}
 
     xrayEnabled: true
     wafConfig:

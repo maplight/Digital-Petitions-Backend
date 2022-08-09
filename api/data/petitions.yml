@@ -1,0 +1,17 @@
+type: AMAZON_DYNAMODB
+name: PetitionDataSource
+description: "Datasource giving access to petition data, backed by a DynamoDB table"
+config:
+  tableName: ${output:backend-data.PetitionsTableName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:UpdateItem
+      Resource:
+        - ${output:backend-data.PetitionsTableArn}
+        - { Fn::Join: ["/", ["${output:backend-data.PetitionsTableArn}", "*"]] }
