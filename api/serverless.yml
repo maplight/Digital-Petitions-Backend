@@ -64,6 +64,8 @@ plugins:
 resources:
   Outputs:
     apiId: { Value: { Ref: GraphQlApi } }
+    apiEndpoint: { Value: { Fn::GetAtt: [GraphQlApi, GraphQLUrl] } }
 
 outputs:
   ApiId: { Ref: GraphQlApi }
+  ApiEndpoint: { Fn::GetAtt: [GraphQlApi, GraphQLUrl] }
