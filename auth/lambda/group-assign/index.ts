@@ -16,11 +16,11 @@ const getGroups = async (userPool: string): Promise<GroupNameLookup> =>
     (await client.send(new ListGroupsCommand({ UserPoolId: userPool }))).Groups?.map(
         (_) => _.GroupName ?? "Unknown"
     )?.reduce((dict, group) => {
-        if (group.indexOf("Petitioner") > 0) {
+        if (group.indexOf("Petitioner") >= 0) {
             dict[AccessGroupKeys.Petitioner] = group;
-        } else if (group.indexOf("CityStaff") > 0) {
+        } else if (group.indexOf("CityStaff") >= 0) {
             dict[AccessGroupKeys.CityStaff] = group;
-        } else if (group.indexOf("Admin") > 0) {
+        } else if (group.indexOf("Admin") >= 0) {
             dict[AccessGroupKeys.Admin] = group;
         }
 
