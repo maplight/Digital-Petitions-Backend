@@ -45,11 +45,13 @@ custom:
       response: echo.response.vtl
 
     mappingTemplates:
+      - ${file(./templates/echo.yml)}
       - ${file(./templates/submitIssuePetition.yml)}
       - ${file(./templates/submitCandidatePetition.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
+      - ${file(./data/echo.yml)}
 
     xrayEnabled: true
     wafConfig:
