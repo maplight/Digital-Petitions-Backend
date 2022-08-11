@@ -1,4 +1,4 @@
-type IssuePetition implements Petition {
+type IssuePetition implements Petition @aws_iam @aws_cognito_user_pools {
     PK: ID!
     createdAt: AWSDateTime!
 
