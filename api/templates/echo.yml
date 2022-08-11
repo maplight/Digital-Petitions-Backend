@@ -1,0 +1,5 @@
+- dataSource: EchoDataSource
+  type: Query
+  field: publicEcho
+  request: false
+  response: false
