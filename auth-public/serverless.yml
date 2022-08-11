@@ -59,7 +59,13 @@ resources:
                   Action:
                     - appsync:GraphQL
                   Resource:
+                    # grant access to any field prefixed as "public"
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/*/fields/public*"]] }
+                    # grant read access to petition types and common data
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/IssuePetition/*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/CandidatePetition/*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/SignatureSummary/*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/AddressData/*"]] }
 
     AuthenticatedAccessRole:
       Type: "AWS::IAM::Role"
