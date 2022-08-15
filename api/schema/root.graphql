@@ -1,0 +1,11 @@
+type Query {
+    publicEcho(ping: String!): String!
+}
+
+type Mutation {
+    submitIssuePetition(data: IssuePetitionInput!): IssuePetition!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+
+    submitCandidatePetition(data: CandidatePetitionInput!): CandidatePetition!
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+}

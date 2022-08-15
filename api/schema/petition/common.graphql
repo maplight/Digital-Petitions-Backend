@@ -1,0 +1,37 @@
+enum PetitionType {
+    ISSUE,
+    CANDIDATE
+}
+
+enum PetitionStatus {
+    NEW,
+    ACTIVE,
+    CANCELED,
+    WITHDRAWN,
+    QUALIFIED,
+    REJECTED
+}
+
+type SignatureSummary @aws_iam @aws_cognito_user_pools {
+    required: Int!
+    approved: Int!
+
+    deadline: AWSDateTime
+
+    submitted: Int!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup"])
+}
+
+interface Petition {
+    PK: ID!
+    createdAt: AWSDateTime!
+
+    type: PetitionType!
+    status: PetitionStatus!
+    owner: ID!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureSummary
+}

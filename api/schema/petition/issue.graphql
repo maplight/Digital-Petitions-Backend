@@ -1,0 +1,18 @@
+type IssuePetition implements Petition @aws_iam @aws_cognito_user_pools {
+    PK: ID!
+    createdAt: AWSDateTime!
+
+    type: PetitionType!
+    status: PetitionStatus!
+    owner: ID!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureSummary
+}
+
+input IssuePetitionInput {
+    title: String!
+    detail: String!
+}

@@ -1,0 +1,30 @@
+type CandidatePetition implements Petition @aws_iam @aws_cognito_user_pools {
+    PK: ID!
+    createdAt: AWSDateTime!
+
+    type: PetitionType!
+    status: PetitionStatus!
+    owner: ID!
+
+    title: String!
+    detail: String!
+
+    signatureSummary: SignatureSummary
+
+    address: AddressData!
+
+    # These may need to be updated based
+    # on how this defined
+    # ID is meant to be serialized as a string
+    # so this can be made to work
+
+    party: ID!
+    office: ID!
+}
+
+input CandidatePetitionInput {
+    name: String!
+    address: AddressInput!
+    party: ID!
+    office: ID!
+}

@@ -27,6 +27,8 @@ custom:
   appSync:
     name: ${self:provider.stage}-ESignaturesAPI
 
+    schema: "./schema/**/*.graphql"
+
     logConfig:
       level: ERROR
 
@@ -43,27 +45,13 @@ custom:
       response: echo.response.vtl
 
     mappingTemplates:
-      - dataSource: EchoDataSource
-        type: Query
-        field: publicType
-
-      - dataSource: EchoDataSource
-        type: Query
-        field: adminType
-
-      - dataSource: EchoDataSource
-        type: Query
-        field: petitionerType
-
+      - ${file(./templates/echo.yml)}
       - ${file(./templates/submitIssuePetition.yml)}
+      - ${file(./templates/submitCandidatePetition.yml)}
 
     dataSources:
-      - type: AWS_LAMBDA
-        name: EchoDataSource
-        description: "A simple lambda datasource for testing"
-        config:
-          functionName: echo
       - ${file(./data/petitions.yml)}
+      - ${file(./data/echo.yml)}
 
     xrayEnabled: true
     wafConfig:
@@ -78,6 +66,8 @@ plugins:
 resources:
   Outputs:
     apiId: { Value: { Ref: GraphQlApi } }
+    apiEndpoint: { Value: { Fn::GetAtt: [GraphQlApi, GraphQLUrl] } }
 
 outputs:
   ApiId: { Ref: GraphQlApi }
+  ApiEndpoint: { Fn::GetAtt: [GraphQlApi, GraphQLUrl] }

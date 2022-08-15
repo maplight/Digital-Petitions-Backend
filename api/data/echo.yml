@@ -1,0 +1,5 @@
+- type: AWS_LAMBDA
+  name: EchoDataSource
+  description: "A simple lambda datasource for testing"
+  config:
+    functionName: echo

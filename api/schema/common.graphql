@@ -1,0 +1,15 @@
+type AddressData @aws_iam @aws_cognito_user_pools {
+    address: String!
+    number: String
+    city: String
+    state: String!
+    zipCode: String
+}
+
+input AddressInput {
+    address: String!
+    number: String
+    city: String
+    state: String!
+    zipCode: String
+}
