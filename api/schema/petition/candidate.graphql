@@ -1,6 +1,9 @@
 type CandidatePetition implements Petition @aws_iam @aws_cognito_user_pools {
     PK: ID!
+
     createdAt: AWSDateTime!
+    updatedAt: AWSDateTime!
+    version: Int!
 
     type: PetitionType!
     status: PetitionStatus!
@@ -26,4 +29,14 @@ input CandidatePetitionInput {
     address: AddressInput!
     party: ID!
     office: ID!
+}
+
+input EditCandidatePetitionInput {
+    PK: ID!
+
+    address: AddressInput
+    party: ID
+    office: ID
+
+    expectedVersion: Int!
 }
