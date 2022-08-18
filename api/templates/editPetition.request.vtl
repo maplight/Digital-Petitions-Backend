@@ -1,0 +1,76 @@
+#if ($context.info.fieldName == "editCandidatePetition")
+    #set($typeCheck = "CANDIDATE")
+#else
+    #set($typeCheck = "ISSUE")
+#end
+
+#set($expressionNames = {})
+#set($expressionValues = {})
+#set($expressionSet = {})
+
+#foreach ($entry in $context.arguments.data.entrySet())
+    #if ($entry.key != "PK" && $entry.key != "expectedVersion")
+        #if ((!$entry.value) && ("$!{entry.value}" == ""))
+            ## skip!
+        #else
+            $util.quiet($expressionSet.put("#${entry.key}", ":${entry.key}"))
+            $util.quiet($expressionNames.put("#${entry.key}", "$entry.key"))
+            $util.quiet($expressionValues.put(":${entry.key}", $entry.value))
+        #end
+    #end
+#end
+
+#set($expression = "")
+
+#if (!${expressionSet.isEmpty()})
+    $util.quiet($expressionSet.put("#updatedAt", ":updatedAt"))
+    $util.quiet($expressionNames.put("#updatedAt", "updatedAt"))
+    $util.quiet($expressionValues.put(":updatedAt", $util.time.nowISO8601()))
+
+	$util.quiet($expressionNames.put("#version", "version"))
+    $util.quiet($expressionValues.put(":one", 1))
+
+    #set($expression = "SET")
+    
+    #foreach ($entry in $expressionSet.entrySet())
+        #set($expression = "${expression} ${entry.key} = ${entry.value}")
+        
+        #if ($foreach.hasNext)
+            #set($expression = "${expression},")
+        #end
+    #end
+
+    #set($operation = "UpdateItem")
+#else
+    #set($operation = "GetItem")
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "$operation",
+    "key": {
+        "PK": $util.dynamodb.toDynamoDBJson($context.arguments.data.PK)
+    }
+#if ($operation == "UpdateItem")
+    ,"update": {
+        "expression": "$expression ADD #version :one",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues),
+    },
+    "condition": {
+        "expression": "(#owner = :owner) AND (#status = :status) AND (#version = :version) AND (#type = :type)",
+        "expressionNames": {
+            "#owner": "owner",
+            "#status": "status",
+            "#version": "version",
+            "#type": "type"
+        },
+        "expressionValues": {
+            ":owner": $util.dynamodb.toDynamoDBJson($context.identity.sub),
+            ":status": $util.dynamodb.toDynamoDBJson("NEW"),
+            ":version": $util.dynamodb.toDynamoDBJson($context.arguments.data.expectedVersion),
+            ":type": $util.dynamodb.toDynamoDBJson($typeCheck)
+        }
+    }    
+#end
+}
