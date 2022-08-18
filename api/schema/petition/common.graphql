@@ -30,8 +30,5 @@ interface Petition {
     status: PetitionStatus!
     owner: ID!
 
-    title: String!
-    detail: String!
-
     signatureSummary: SignatureSummary
 }
