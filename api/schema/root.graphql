@@ -1,7 +1,7 @@
 type Query {
     publicEcho(ping: String!): String!
 
-    publicPetitions(filter: AllPetitionsFilterInput!): PetitionConnection!
+    publicPetitions(filter: PublicPetitionListInput): PetitionConnection!
 }
 
 type Mutation {

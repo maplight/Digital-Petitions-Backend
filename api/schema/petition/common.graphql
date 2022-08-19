@@ -4,12 +4,18 @@ enum PetitionType {
 }
 
 enum PetitionStatus {
-    NEW,
-    ACTIVE,
-    CANCELED,
-    WITHDRAWN,
-    QUALIFIED,
-    REJECTED
+    #----[NOT PUBLIC, INACTIVE]----#
+    A_NEW,
+    A_CANCELED,
+    A_WITHDRAWN,
+    A_REJECTED,
+    
+    #----[PUBLIC, INACTIVE]--------#
+    B_QUALIFIED,
+    B_NOT_QUALIFIED,
+    
+    #----[PUBLIC, ACTIVE]----------#
+    C_ACTIVE,
 }
 
 type SignatureSummary @aws_iam @aws_cognito_user_pools {
@@ -34,4 +40,22 @@ interface Petition {
     owner: ID!
 
     signatureSummary: SignatureSummary
+}
+
+type PetitionConnection @aws_iam @aws_cognito_user_pools {
+    items: [Petition!]!
+    token: ID
+}
+
+enum PetitionListStatusCheck {
+    ACTIVE,
+    INACTIVE,
+    QUALIFIED,
+    NOT_QUALIFIED
+}
+
+input PublicPetitionListInput {
+    type: PetitionType
+    status: PetitionListStatusCheck
+    limit: Int
 }
