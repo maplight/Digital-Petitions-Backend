@@ -24,7 +24,10 @@ type SignatureSummary @aws_iam @aws_cognito_user_pools {
 
 interface Petition {
     PK: ID!
+
     createdAt: AWSDateTime!
+    updatedAt: AWSDateTime!
+    version: Int!
 
     type: PetitionType!
     status: PetitionStatus!

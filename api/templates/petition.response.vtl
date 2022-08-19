@@ -1,10 +1,19 @@
-#set($type = $context.result.type)
+#if ($context.result.status == "NEW" && $context.identity.sub != $context.result.owner)
+    $util.error("You are not authorized to access this item")
+    $util.toJson({})
+#else
+    #set($type = $context.result.type)
+    
+    #if ($type == "ISSUE")
+        #set($resolvedType = "IssuePetition")
+    #elseif ($type == "CANDIDATE")
+        #set($resolvedType = "CandidatePetition")
+    #end
 
-#if ($type == "ISSUE")
-    #set($resolvedType = "IssuePetition")
-#elseif ($type == "CANDIDATE")
-    #set($resolvedType = "CandidatePetition")
+    #if (!$context.result.updatedAt)
+        $util.quiet($context.result.put("updatedAt", $context.result.createdAt))
+    #end
+
+    $util.quiet($context.result.put("__typename", $resolvedType))
+    $util.toJson($context.result)
 #end
-
-$util.quiet($context.result.put("__typename", $resolvedType))
-$util.toJson($context.result)

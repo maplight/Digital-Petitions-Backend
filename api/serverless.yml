@@ -48,16 +48,17 @@ custom:
       - ${file(./templates/echo.yml)}
       - ${file(./templates/submitIssuePetition.yml)}
       - ${file(./templates/submitCandidatePetition.yml)}
+      - ${file(./templates/editCandidatePetition.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
       - ${file(./data/echo.yml)}
 
     xrayEnabled: true
-    wafConfig:
-      rules:
-        - throttle: 100
-        - disableIntrospection
+    # wafConfig:
+    #   rules:
+    #     - throttle: 100
+    #     - disableIntrospection
 
 plugins:
   - serverless-appsync-plugin

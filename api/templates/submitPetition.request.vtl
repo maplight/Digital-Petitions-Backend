@@ -8,7 +8,9 @@
 
 $util.quiet($data.put("type", $resolvedType))
 $util.quiet($data.put("createdAt", $util.time.nowISO8601()))
+$util.quiet($data.put("updatedAt", $data.createdAt))
 $util.quiet($data.put("owner", $context.identity.sub))
+$util.quiet($data.put("version", 1))
 
 #foreach ($entry in $context.arguments.data.entrySet())
     $util.quiet($data.put($entry.key, $entry.value))
