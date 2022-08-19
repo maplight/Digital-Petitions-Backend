@@ -19,3 +19,12 @@ input IssuePetitionInput {
     title: String!
     detail: String!
 }
+
+input EditIssuePetitionInput {
+    PK: ID!
+
+    title: String
+    detail: String
+
+    expectedVersion: Int!
+}

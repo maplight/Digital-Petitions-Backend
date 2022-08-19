@@ -47,6 +47,7 @@ custom:
     mappingTemplates:
       - ${file(./templates/echo.yml)}
       - ${file(./templates/submitIssuePetition.yml)}
+      - ${file(./templates/editIssuePetition.yml)}
       - ${file(./templates/submitCandidatePetition.yml)}
       - ${file(./templates/editCandidatePetition.yml)}
 

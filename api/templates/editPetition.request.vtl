@@ -11,7 +11,7 @@
 #foreach ($entry in $context.arguments.data.entrySet())
     #if ($entry.key != "PK" && $entry.key != "expectedVersion")
         #if ((!$entry.value) && ("$!{entry.value}" == ""))
-            ## skip!
+            ## skip empty or null entries
         #else
             $util.quiet($expressionSet.put("#${entry.key}", ":${entry.key}"))
             $util.quiet($expressionNames.put("#${entry.key}", "$entry.key"))
@@ -20,15 +20,12 @@
     #end
 #end
 
-#set($expression = "")
-
 #if (!${expressionSet.isEmpty()})
+    ## build update expression
+
     $util.quiet($expressionSet.put("#updatedAt", ":updatedAt"))
     $util.quiet($expressionNames.put("#updatedAt", "updatedAt"))
     $util.quiet($expressionValues.put(":updatedAt", $util.time.nowISO8601()))
-
-	$util.quiet($expressionNames.put("#version", "version"))
-    $util.quiet($expressionValues.put(":one", 1))
 
     #set($expression = "SET")
     
@@ -41,6 +38,36 @@
     #end
 
     #set($operation = "UpdateItem")
+    #set($expression = "${expression} ADD #version :one")
+
+	$util.quiet($expressionNames.put("#version", "version"))
+    $util.quiet($expressionValues.put(":one", 1))
+
+    ## build condition check expression
+
+    #set($conditionSet = { 
+        "owner": $context.identity.sub, 
+        "version": $context.arguments.data.expectedVersion,
+        "type": $typeCheck,
+        "status": "NEW"
+    })
+
+    #set($conditionNames = {})
+    #set($conditionValues = {})
+    #set($conditionExpression = "")
+
+    #foreach ($entry in $conditionSet.entrySet())
+        #set($conditionItem = "(#${entry.key} = :${entry.key})")
+
+        #if ($conditionExpression != "")
+            #set($conditionExpression = "${conditionExpression} AND ${conditionItem}")
+        #else
+            #set($conditionExpression = "${conditionItem}")
+        #end
+
+        $util.quiet($conditionNames.put("#${entry.key}", $entry.key))
+        $util.quiet($conditionValues.put(":${entry.key}", $entry.value))
+    #end
 #else
     #set($operation = "GetItem")
 #end
@@ -53,24 +80,14 @@
     }
 #if ($operation == "UpdateItem")
     ,"update": {
-        "expression": "$expression ADD #version :one",
+        "expression": "$expression",
         "expressionNames": $util.toJson($expressionNames),
         "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues),
     },
     "condition": {
-        "expression": "(#owner = :owner) AND (#status = :status) AND (#version = :version) AND (#type = :type)",
-        "expressionNames": {
-            "#owner": "owner",
-            "#status": "status",
-            "#version": "version",
-            "#type": "type"
-        },
-        "expressionValues": {
-            ":owner": $util.dynamodb.toDynamoDBJson($context.identity.sub),
-            ":status": $util.dynamodb.toDynamoDBJson("NEW"),
-            ":version": $util.dynamodb.toDynamoDBJson($context.arguments.data.expectedVersion),
-            ":type": $util.dynamodb.toDynamoDBJson($typeCheck)
-        }
+        "expression": "$conditionExpression",
+        "expressionNames": $util.toJson($conditionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($conditionValues)
     }    
 #end
 }

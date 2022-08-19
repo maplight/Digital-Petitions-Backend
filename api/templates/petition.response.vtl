@@ -1,9 +1,10 @@
-#if ($context.result.status == "NEW" && $context.identity.sub != $context.result.owner)
-    $util.error("You are not authorized to access this item")
-    $util.toJson({})
+#if ($context.error.type == "DynamoDB:ConditionalCheckFailedException")
+	$util.error("InvalidItemCheck")
+#elseif ($context.result.status == "NEW" && $context.identity.sub != $context.result.owner)
+	$util.unauthorized()
 #else
     #set($type = $context.result.type)
-    
+
     #if ($type == "ISSUE")
         #set($resolvedType = "IssuePetition")
     #elseif ($type == "CANDIDATE")
