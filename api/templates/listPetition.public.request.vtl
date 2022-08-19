@@ -1,0 +1,46 @@
+#set($query = $context.arguments.query)
+
+#set($expression = "#type = :type")
+#set($expressionNames = { "#type": "type", "#status": "status" })
+#set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
+
+#set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+
+#set($limit = $util.defaultIfNull(${query.limit}, 10))
+
+#if ($limit < 10)
+    #set($limit = 10)
+#end
+
+#if ($status == "INACTIVE")
+    #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
+
+    $util.quiet($expressionValues.put(":lo", "B"))
+    $util.quiet($expressionValues.put(":hi", "C"))
+#else
+    #set($expression = "${expression} AND #status = :status")
+
+    #if ($status == "ACTIVE")
+        #set($statusValue = "C_ACTIVE")
+    #else
+        #set($statusValue = "B_${status}")
+    #end
+
+    $util.quiet($expressionValues.put(":status", "${statusValue}"))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "index": "byTypeIndex",
+    "limit": $limit,
+    "scanIndexForward": true,
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+#if ($query.cursor)
+    ,"nextToken": "${query.cursor}"
+#end
+}
