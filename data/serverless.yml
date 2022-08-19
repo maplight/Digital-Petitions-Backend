@@ -36,6 +36,8 @@ resources:
             KeySchema:
               - AttributeName: owner
                 KeyType: HASH
+              - AttributeName: status
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
