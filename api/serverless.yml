@@ -50,6 +50,7 @@ custom:
       - ${file(./templates/editIssuePetition.yml)}
       - ${file(./templates/submitCandidatePetition.yml)}
       - ${file(./templates/editCandidatePetition.yml)}
+      - ${file(./templates/publicPetitions.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
