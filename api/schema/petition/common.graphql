@@ -58,4 +58,5 @@ input PublicPetitionListInput {
     type: PetitionType
     status: PetitionListStatusCheck
     limit: Int
+    cursor: ID
 }
