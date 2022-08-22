@@ -32,7 +32,7 @@ resources:
             KeyType: HASH
 
         GlobalSecondaryIndexes:
-          - IndexName: byOwnerIndex
+          - IndexName: byOwnerIndexV2
             KeySchema:
               - AttributeName: owner
                 KeyType: HASH
