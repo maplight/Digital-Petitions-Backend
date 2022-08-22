@@ -46,11 +46,12 @@ custom:
 
     mappingTemplates:
       - ${file(./templates/echo.yml)}
-      - ${file(./templates/submitIssuePetition.yml)}
-      - ${file(./templates/editIssuePetition.yml)}
-      - ${file(./templates/submitCandidatePetition.yml)}
-      - ${file(./templates/editCandidatePetition.yml)}
-      - ${file(./templates/publicPetitions.yml)}
+      - ${file(./templates/submitPetition.issue.yml)}
+      - ${file(./templates/editPetition.issue.yml)}
+      - ${file(./templates/submitPetition.candidate.yml)}
+      - ${file(./templates/editPetition.candidate.yml)}
+      - ${file(./templates/listPetition.public.yml)}
+      - ${file(./templates/listPetition.byOwner.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
