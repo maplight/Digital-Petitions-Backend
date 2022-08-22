@@ -2,7 +2,7 @@
 
 #set($expression = "#owner = :owner")
 #set($expressionNames = { "#owner": "owner", "#status": "status" })
-#set($expressionValues = { ":owner": $util.defaultIfNull(${query.type}, "ISSUE") })
+#set($expressionValues = { ":owner": $query.owner })
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
 #set($limit = $util.defaultIfNull(${query.limit}, ${defaultPageSize}))
