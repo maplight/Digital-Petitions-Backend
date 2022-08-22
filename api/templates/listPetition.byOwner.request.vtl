@@ -1,0 +1,78 @@
+#set($query = $context.arguments.query)
+
+#set($expression = "#owner = :owner")
+#set($expressionNames = { "#owner": "owner", "#status": "status" })
+#set($expressionValues = { ":owner": $util.defaultIfNull(${query.type}, "ISSUE") })
+
+#set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+
+#set($limit = $util.defaultIfNull(${query.limit}, 10))
+
+#if ($limit < 10)
+    #set($limit = 10)
+#end
+
+## check for access control:
+## staff and admins can look at all items from every petitioner
+## petitioners can only look at their own items or the public items of other petitioners
+
+#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED"])
+
+## owner has access to everything
+#set($isAuthorized = $context.identity.sub == $query.owner)
+#set($isPublic = !$isAuthorized)
+
+## public data is visible to everyone
+#set($isAuthorized = $isAuthorized || $publicAccess.contains($status))
+
+## finally, check for administrative access
+#if (!$isAuthorized)
+    #foreach ($group in $context.identity.claims.get("cognito:groups"))
+        #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+            #set($isAuthorized = true)
+            #set($isPublic = false)
+        #end
+    #end
+#end
+
+#if ($status == "INACTIVE")
+    #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
+
+    #if ($isPublic)
+        $util.quiet($expressionValues.put(":lo", "B"))
+    #else
+        $util.quiet($expressionValues.put(":lo", "A2"))
+    #end
+
+    $util.quiet($expressionValues.put(":hi", "C"))
+#else
+    #set($expression = "${expression} AND #status = :status")
+
+    #set($statusMap = {
+        "NEW": "A1",
+        "CANCELED": "A2",
+        "WITHDRAWN": "A3",
+        "REJECTED": "A4"
+        "ACTIVE": "C1",
+        "NOT_QUALIFIED": "B1",
+        "QUALIFIED": "B2"
+    })
+
+    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "index": "byOwnerIndexV2",
+    "limit": $limit,
+    "scanIndexForward": true,
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+#if ($query.cursor)
+    ,"nextToken": "${query.cursor}"
+#end
+}
