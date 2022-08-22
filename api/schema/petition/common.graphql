@@ -5,17 +5,17 @@ enum PetitionType {
 
 enum PetitionStatus {
     #----[NOT PUBLIC, INACTIVE]----#
-    A_NEW,
-    A_CANCELED,
-    A_WITHDRAWN,
-    A_REJECTED,
+    NEW,
+    CANCELED,
+    WITHDRAWN,
+    REJECTED,
     
     #----[PUBLIC, INACTIVE]--------#
-    B_QUALIFIED,
-    B_NOT_QUALIFIED,
+    QUALIFIED,
+    NOT_QUALIFIED,
     
     #----[PUBLIC, ACTIVE]----------#
-    C_ACTIVE,
+    ACTIVE,
 }
 
 type SignatureSummary @aws_iam @aws_cognito_user_pools {

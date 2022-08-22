@@ -20,13 +20,13 @@
 #else
     #set($expression = "${expression} AND #status = :status")
 
-    #if ($status == "ACTIVE")
-        #set($statusValue = "C_ACTIVE")
-    #else
-        #set($statusValue = "B_${status}")
-    #end
+    #set($statusMap = {
+        "ACTIVE": "C1",
+        "QUALIFIED": "B1",
+        "NOT_QUALIFIED": "B2"
+    })
 
-    $util.quiet($expressionValues.put(":status", "${statusValue}"))
+    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
 #end
 
 {
