@@ -11,7 +11,13 @@
 #set($conditionValues = {})
 
 #foreach ($entry in $conditionSet.entrySet())
-    #set($conditionItem = "(#${entry.key} = :${entry.key})")
+    #if ($entry.key == "status")
+        #set($prop = "statusCheck")
+    #else
+        #set($prop = "${entry.key}")
+    #end
+
+    #set($conditionItem = "(#${prop} = :${prop})")
 
     #if ($conditionExpression != "")
         #set($conditionExpression = "${conditionExpression} AND ${conditionItem}")
@@ -19,8 +25,8 @@
         #set($conditionExpression = "${conditionItem}")
     #end
 
-    $util.quiet($conditionNames.put("#${entry.key}", $entry.key))
-    $util.quiet($conditionValues.put(":${entry.key}", $entry.value))
+    $util.quiet($conditionNames.put("#${prop}", $entry.key))
+    $util.quiet($conditionValues.put(":${prop}", $entry.value))
 #end
 
 ## build the actual update expression
@@ -36,10 +42,16 @@
 #set($expression = "SET")
 
 #foreach ($entry in $expressionSet.entrySet())
-    #set($expression = "${expression} #${entry.key} = :${entry.key}")
+    #if ($entry.key == "status")
+        #set($prop = "statusUpdate")
+    #else
+        #set($prop = "${entry.key}")
+    #end
 
-    $util.quiet($expressionNames.put("#${entry.key}", "${entry.key}"))
-    $util.quiet($expressionValues.put(":${entry.key}", $entry.value))
+    #set($expression = "${expression} #${prop} = :${prop}")
+
+    $util.quiet($expressionNames.put("#${prop}", "${entry.key}"))
+    $util.quiet($expressionValues.put(":${prop}", $entry.value))
 
     #if ($foreach.hasNext)
         #set($expression = "${expression},")
