@@ -2,6 +2,9 @@ type Query {
     publicEcho(ping: String!): String!
 
     publicPetitions(query: PublicPetitionListInput): PetitionConnection!
+
+    ownedPetitions(query: OwnedPetitionListInput): PetitionConnection!
+    @aws_cognito_user_pools
 }
 
 type Mutation {

@@ -60,3 +60,10 @@ input PublicPetitionListInput {
     limit: Int
     cursor: ID
 }
+
+input OwnedPetitionListInput {
+    owner: ID!
+    type: PetitionStatus
+    limit: Int
+    cursor: ID
+}
