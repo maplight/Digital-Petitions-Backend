@@ -44,6 +44,9 @@ custom:
       request: echo.request.vtl
       response: echo.response.vtl
 
+    substitutions:
+      defaultPageSize: 10
+
     mappingTemplates:
       - ${file(./templates/echo.yml)}
       - ${file(./templates/submitPetition.issue.yml)}

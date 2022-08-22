@@ -5,11 +5,10 @@
 #set($expressionValues = { ":owner": $util.defaultIfNull(${query.type}, "ISSUE") })
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+#set($limit = $util.defaultIfNull(${query.limit}, $defaultPageSize))
 
-#set($limit = $util.defaultIfNull(${query.limit}, 10))
-
-#if ($limit < 10)
-    #set($limit = 10)
+#if ($limit < $defaultPageSize)
+    #set($limit = $defaultPageSize)
 #end
 
 ## check for access control:
@@ -33,6 +32,13 @@
             #set($isPublic = false)
         #end
     #end
+#end
+
+## if we've come this far and isAuthorized is still false
+## then we must deny access
+
+#if (!$isAuthorized)
+    $util.unauthorized()
 #end
 
 #if ($status == "INACTIVE")

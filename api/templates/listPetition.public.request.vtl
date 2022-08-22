@@ -5,11 +5,10 @@
 #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+#set($limit = $util.defaultIfNull(${query.limit}, $defaultPageSize))
 
-#set($limit = $util.defaultIfNull(${query.limit}, 10))
-
-#if ($limit < 10)
-    #set($limit = 10)
+#if ($limit < $defaultPageSize)
+    #set($limit = $defaultPageSize)
 #end
 
 #if ($status == "INACTIVE")
