@@ -54,6 +54,17 @@ enum PetitionListStatusCheck {
     NOT_QUALIFIED
 }
 
+enum OwnedPetitionListStatusCheck {
+    NEW,
+    CANCELED,
+    WITHDRAWN,
+    REJECTED,
+    QUALIFIED,
+    NOT_QUALIFIED,
+    ACTIVE,
+    INACTIVE
+}
+
 input PublicPetitionListInput {
     type: PetitionType
     status: PetitionListStatusCheck
@@ -63,7 +74,7 @@ input PublicPetitionListInput {
 
 input OwnedPetitionListInput {
     owner: ID!
-    type: PetitionStatus
+    status: OwnedPetitionListStatusCheck
     limit: Int
     cursor: ID
 }
