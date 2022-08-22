@@ -25,7 +25,11 @@
 
 ## build the actual update expression
 
-#set($expressionSet = { "updatedAt": $util.time.nowISO8601() })
+#set($expressionSet = { 
+    "updatedAt": $util.time.nowISO8601(),
+    "status": "C1"
+})
+
 #set($expressionValues = {})
 #set($expressionNames = {})
 
