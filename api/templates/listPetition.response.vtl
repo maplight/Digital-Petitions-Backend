@@ -8,8 +8,14 @@
     "C1": "ACTIVE"
 })
 
+#set($typeMap = {
+    "ISSUE": "IssuePetition",
+    "CANDIDATE": "CandidatePetition"
+})
+
 #foreach ($item in $context.result.items)
     $util.quiet($item.put("status", $statusMap.get($item.status)))
+    $util.quiet($item.put("__typename", $typeMap.get($item.type)))
 #end
 
 {
