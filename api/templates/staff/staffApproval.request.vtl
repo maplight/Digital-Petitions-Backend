@@ -4,7 +4,7 @@
 
 #set($conditionSet = {
     "version": $context.arguments.data.expectedVersion,
-    "status": "A1"
+    "status": "${STATUS_NEW}"
 })
 
 #set($conditionNames = {})
@@ -31,9 +31,15 @@
 
 ## build the actual update expression
 
+#if ($context.info.fieldName == "approvePetition")
+    #set($targetStatus = "${STATUS_ACTIVE}")
+#else
+    #set($targetStatus = "${STATUS_REJECTED}")
+#end
+
 #set($expressionSet = { 
     "updatedAt": $util.time.nowISO8601(),
-    "status": "C1"
+    "status": "${targetStatus}"
 })
 
 #set($expressionValues = {})

@@ -22,13 +22,13 @@
     #end
 
     #set($statusMap = {
-        "A1": "NEW",
-        "A2": "CANCELED",
-        "A3": "WITHDRAWN",
-        "A4": "REJECTED",
-        "B1": "NOT_QUALIFIED",
-        "B2": "QUALIFIED",
-        "C1": "ACTIVE"
+        "${STATUS_NEW}": "NEW",
+        "${STATUS_CANCELED}": "CANCELED",
+        "${STATUS_WITHDRAWN}": "WITHDRAWN",
+        "${STATUS_REJECTED}": "REJECTED",
+        "${STATUS_NOT_QUALIFIED}": "NOT_QUALIFIED",
+        "${STATUS_QUALIFIED}": "QUALIFIED",
+        "${STATUS_ACTIVE}": "ACTIVE"
     })
 
     #if (!$context.result.updatedAt)

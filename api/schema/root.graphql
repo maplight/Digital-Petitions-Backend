@@ -1,9 +1,10 @@
 type Query {
     publicEcho(ping: String!): String!
 
-    publicPetitions(query: PublicPetitionListInput): PetitionConnection!
+    getPetitionsByType(query: PetitionsByTypeInput): PetitionConnection!
+    @aws_iam @aws_cognito_user_pools
 
-    ownedPetitions(query: OwnedPetitionListInput): PetitionConnection!
+    getPetitionsByOwner(query: PetitionsByOwnerInput): PetitionConnection!
     @aws_cognito_user_pools
 }
 
@@ -20,6 +21,9 @@ type Mutation {
     editIssuePetition(data: EditIssuePetitionInput!): IssuePetition
     @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
 
-    approvePetition(data: ApprovePetitionInput!): Petition
+    approvePetition(data: TargetPetitionInput!): Petition
+    @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
+
+    rejectPetition(data: TargetPetitionInput!): Petition
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
 }

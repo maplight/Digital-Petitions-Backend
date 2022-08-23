@@ -1,0 +1,100 @@
+#set($query = $context.arguments.query)
+#set($target = $context.info.fieldName)
+
+#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED", "INACTIVE", "ANY"])
+
+#set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+#set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
+
+#if ($limit < ${DEFAULT_PAGE_SIZE})
+    #set($limit = ${DEFAULT_PAGE_SIZE})
+#end
+
+#foreach ($group in $context.identity.claims.get("cognito:groups"))
+    #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+        #set($isAuthorized = true)
+        #set($isPublic = false)
+    #end
+#end
+
+#if ($target == "getPetitionsByType")
+    #set($expression = "#type = :type")
+    #set($expressionNames = { "#type": "type" })
+    #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
+
+    #set($indexName = "byTypeIndex")
+
+    #if (!$isAuthorized)
+        #set($isAuthorized = $publicAccess.contains($status))
+        #set($isPublic = true)
+    #end
+#elseif ($target == "getPetitionsByOwner")
+    #set($expression = "#owner = :owner")
+    #set($expressionNames = { "#owner": "owner" })
+    #set($expressionValues = { ":owner": $query.owner })
+
+    #set($indexName = "byOwnerIndexV2")
+
+    #if (!$isAuthorized)
+        #set($isAuthorized = $context.identity.sub == $query.owner)
+        #set($isPublic = !$isAuthorized)
+
+        #set($isAuthorized = ($isAuthorized || $publicAccess.contains($status)))
+    #end
+#else
+    $util.error("UnsupportedQuery")
+#end
+
+#if (!$isAuthorized)
+    $util.unauthorized()
+#end
+
+#if ($status != "ANY" || $isPublic)
+    $util.quiet($expressionNames.put("#status", "status"))
+#end
+
+#if ($status == "INACTIVE")
+    #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
+
+    #if ($isPublic)
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+    #else
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_LOWER_BOUND}"))
+    #end
+
+    $util.quiet($expressionValues.put(":hi", "${STATUS_INACTIVE_UPPER_BOUND}"))
+#elseif ($status != "ANY")
+    #set($expression = "${expression} AND #status = :status")
+
+    #set($statusMap = {
+        "NEW": "${STATUS_NEW}",
+        "CANCELED": "${STATUS_CANCELED}",
+        "WITHDRAWN": "${STATUS_WITHDRAWN}",
+        "REJECTED": "${STATUS_REJECTED}",
+        "ACTIVE": "${STATUS_ACTIVE}",
+        "NOT_QUALIFIED": "${STATUS_NOT_QUALIFIED}",
+        "QUALIFIED": "${STATUS_QUALIFIED}"
+    })
+
+    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
+#elseif ($isPublic)
+    #set($expression = "${expression} AND #status > :status")
+
+    $util.quiet($expressionValues.put(":status", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "index": "$indexName",
+    "limit": $limit,
+    "scanIndexForward": true,
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+#if ($query.cursor)
+    ,"nextToken": "${query.cursor}"
+#end
+}

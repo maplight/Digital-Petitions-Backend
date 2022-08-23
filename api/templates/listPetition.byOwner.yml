@@ -1,5 +1,5 @@
 - dataSource: PetitionDataSource
   type: Query
-  field: ownedPetitions
-  request: listPetition.byOwner.request.vtl
+  field: getPetitionsByOwner
+  request: listPetition.request.vtl
   response: listPetition.response.vtl
