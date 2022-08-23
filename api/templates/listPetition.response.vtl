@@ -1,0 +1,26 @@
+#set($statusMap = {
+    "A1": "NEW",
+    "A2": "CANCELED",
+    "A3": "WITHDRAWN",
+    "A4": "REJECTED",
+    "B1": "NOT_QUALIFIED",
+    "B2": "QUALIFIED",
+    "C1": "ACTIVE"
+})
+
+#set($typeMap = {
+    "ISSUE": "IssuePetition",
+    "CANDIDATE": "CandidatePetition"
+})
+
+#foreach ($item in $context.result.items)
+    $util.quiet($item.put("status", $statusMap.get($item.status)))
+    $util.quiet($item.put("__typename", $typeMap.get($item.type)))
+#end
+
+{
+    "items": $util.toJson($context.result.items)
+#if ($context.result.nextToken)
+    ,"token": "${context.result.nextToken}"
+#end
+}

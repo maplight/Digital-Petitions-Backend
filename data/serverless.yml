@@ -32,10 +32,12 @@ resources:
             KeyType: HASH
 
         GlobalSecondaryIndexes:
-          - IndexName: byOwnerIndex
+          - IndexName: byOwnerIndexV2
             KeySchema:
               - AttributeName: owner
                 KeyType: HASH
+              - AttributeName: status
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:

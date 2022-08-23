@@ -11,10 +11,22 @@
         #set($resolvedType = "CandidatePetition")
     #end
 
+    #set($statusMap = {
+        "A1": "NEW",
+        "A2": "CANCELED",
+        "A3": "WITHDRAWN",
+        "A4": "REJECTED",
+        "B1": "NOT_QUALIFIED",
+        "B2": "QUALIFIED",
+        "C1": "ACTIVE"
+    })
+
     #if (!$context.result.updatedAt)
         $util.quiet($context.result.put("updatedAt", $context.result.createdAt))
     #end
 
     $util.quiet($context.result.put("__typename", $resolvedType))
+    $util.quiet($context.result.put("status", $statusMap[$context.result.status]))
+
     $util.toJson($context.result)
 #end
