@@ -1,5 +1,5 @@
 - dataSource: PetitionDataSource
   type: Mutation
-  field: submitIssuePetition
-  request: submitPetition.request.vtl
+  field: editCandidatePetition
+  request: petitioner/editPetition.request.vtl
   response: petition.response.vtl
