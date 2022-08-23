@@ -45,23 +45,23 @@
     #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
 
     #if ($isPublic)
-        $util.quiet($expressionValues.put(":lo", "B"))
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
     #else
-        $util.quiet($expressionValues.put(":lo", "A2"))
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_LOWER_BOUND}"))
     #end
 
-    $util.quiet($expressionValues.put(":hi", "C"))
+    $util.quiet($expressionValues.put(":hi", "${STATUS_INACTIVE_UPPER_BOUND}"))
 #else
     #set($expression = "${expression} AND #status = :status")
 
     #set($statusMap = {
-        "NEW": "A1",
-        "CANCELED": "A2",
-        "WITHDRAWN": "A3",
-        "REJECTED": "A4",
-        "ACTIVE": "C1",
-        "NOT_QUALIFIED": "B1",
-        "QUALIFIED": "B2"
+        "NEW": "${STATUS_NEW}",
+        "CANCELED": "${STATUS_CANCELED}",
+        "WITHDRAWN": "${STATUS_WITHDRAWN}",
+        "REJECTED": "${STATUS_REJECTED}",
+        "ACTIVE": "${STATUS_ACTIVE}",
+        "NOT_QUALIFIED": "${STATUS_NOT_QUALIFIED}",
+        "QUALIFIED": "${STATUS_QUALIFIED}"
     })
 
     $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
