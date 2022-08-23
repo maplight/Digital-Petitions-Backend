@@ -20,6 +20,9 @@ type Mutation {
     editIssuePetition(data: EditIssuePetitionInput!): IssuePetition
     @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
 
-    approvePetition(data: ApprovePetitionInput!): Petition
+    approvePetition(data: TargetPetitionInput!): Petition
+    @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
+
+    rejectPetition(data: TargetPetitionInput!): Petition
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
 }

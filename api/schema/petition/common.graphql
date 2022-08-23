@@ -79,7 +79,7 @@ input OwnedPetitionListInput {
     cursor: ID
 }
 
-input ApprovePetitionInput {
+input TargetPetitionInput {
     expectedVersion: Int!
     PK: ID!
 }
