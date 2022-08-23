@@ -19,7 +19,7 @@
 
 #if ($target == "getPetitionsByType")
     #set($expression = "#type = :type")
-    #set($expressionNames = { "#type": "type", "#status": "status" })
+    #set($expressionNames = { "#type": "type" })
     #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
 
     #set($indexName = "byTypeIndex")
@@ -30,7 +30,7 @@
     #end
 #elseif ($target == "getPetitionsByOwner")
     #set($expression = "#owner = :owner")
-    #set($expressionNames = { "#owner": "owner", "#status": "status" })
+    #set($expressionNames = { "#owner": "owner" })
     #set($expressionValues = { ":owner": $query.owner })
 
     #set($indexName = "byOwnerIndexV2")
@@ -47,6 +47,10 @@
 
 #if (!$isAuthorized)
     $util.unauthorized()
+#end
+
+#if ($status != "ANY" || $isPublic)
+    $util.quiet($expressionNames.put("#status", "status"))
 #end
 
 #if ($status == "INACTIVE")
@@ -75,6 +79,7 @@
     $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
 #elseif ($isPublic)
     #set($expression = "${expression} AND #status > :status")
+
     $util.quiet($expressionValues.put(":status", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
 #end
 
