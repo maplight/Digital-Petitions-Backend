@@ -72,7 +72,10 @@
         "QUALIFIED": "${STATUS_QUALIFIED}"
     })
 
-    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
+    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}")
+#elseif ($isPublic)
+    #set($expression = "${expression} AND #status > :status")
+    $util.quiet($expressionValues.put(":status", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
 #end
 
 {
