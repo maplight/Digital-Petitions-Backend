@@ -61,6 +61,8 @@ resources:
                   Resource:
                     # grant access to any field prefixed as "public"
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/*/fields/public*"]] }
+                    # grant access to common operations
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getPetitionsByType"]] }
                     # grant read access to petition types and common data
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/IssuePetition/*"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/CandidatePetition/*"]] }
