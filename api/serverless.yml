@@ -47,6 +47,20 @@ custom:
     substitutions:
       defaultPageSize: 10
 
+      # status values
+      STATUS_NEW: "A1"
+      STATUS_CANCELED: "A2"
+      STATUS_WITHDRAWN: "A3"
+      STATUS_REJECTED: "A4"
+      STATUS_NOT_QUALIFIED: "B1"
+      STATUS_QUALIFIED: "B2"
+      STATUS_ACTIVE: "C1"
+
+      # bounds for range queries
+      STATUS_INACTIVE_PUBLIC_LOWER_BOUND: "B"
+      STATUS_INACTIVE_UPPER_BOUND: "C"
+      STATUS_INACTIVE_LOWER_BOUND: "A2"
+
     mappingTemplates:
       - ${file(./templates/echo.yml)}
       - ${file(./templates/submitPetition.issue.yml)}
