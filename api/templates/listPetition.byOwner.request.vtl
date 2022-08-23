@@ -5,10 +5,10 @@
 #set($expressionValues = { ":owner": $query.owner })
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
-#set($limit = $util.defaultIfNull(${query.limit}, ${defaultPageSize}))
+#set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
 
-#if ($limit < ${defaultPageSize})
-    #set($limit = ${defaultPageSize})
+#if ($limit < ${DEFAULT_PAGE_SIZE})
+    #set($limit = ${DEFAULT_PAGE_SIZE})
 #end
 
 ## check for access control:

@@ -5,17 +5,17 @@
 #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
-#set($limit = $util.defaultIfNull(${query.limit}, ${defaultPageSize}))
+#set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
 
-#if ($limit < ${defaultPageSize})
-    #set($limit = ${defaultPageSize})
+#if ($limit < ${DEFAULT_PAGE_SIZE})
+    #set($limit = ${DEFAULT_PAGE_SIZE})
 #end
 
 #if ($status == "INACTIVE")
     #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
 
-    $util.quiet($expressionValues.put(":lo", "B"))
-    $util.quiet($expressionValues.put(":hi", "C"))
+    $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+    $util.quiet($expressionValues.put(":hi", "${STATUS_INACTIVE_UPPER_BOUND}"))
 #else
     #set($expression = "${expression} AND #status = :status")
 

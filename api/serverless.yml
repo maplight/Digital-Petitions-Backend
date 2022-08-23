@@ -45,7 +45,7 @@ custom:
       response: echo.response.vtl
 
     substitutions:
-      defaultPageSize: 10
+      DEFAULT_PAGE_SIZE: 10
 
       # status values
       STATUS_NEW: "A1"
