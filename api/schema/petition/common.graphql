@@ -78,3 +78,8 @@ input OwnedPetitionListInput {
     limit: Int
     cursor: ID
 }
+
+input ApprovePetitionInput {
+    expectedVersion: Int!
+    PK: ID!
+}

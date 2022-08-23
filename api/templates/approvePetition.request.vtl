@@ -1,0 +1,82 @@
+## build condition check
+
+#set($conditionExpression = "")
+
+#set($conditionSet = {
+    "version": $context.arguments.data.expectedVersion,
+    "status": "A1"
+})
+
+#set($conditionNames = {})
+#set($conditionValues = {})
+
+#foreach ($entry in $conditionSet.entrySet())
+    #if ($entry.key == "status")
+        #set($prop = "statusCheck")
+    #else
+        #set($prop = "${entry.key}")
+    #end
+
+    #set($conditionItem = "(#${prop} = :${prop})")
+
+    #if ($conditionExpression != "")
+        #set($conditionExpression = "${conditionExpression} AND ${conditionItem}")
+    #else
+        #set($conditionExpression = "${conditionItem}")
+    #end
+
+    $util.quiet($conditionNames.put("#${prop}", $entry.key))
+    $util.quiet($conditionValues.put(":${prop}", $entry.value))
+#end
+
+## build the actual update expression
+
+#set($expressionSet = { 
+    "updatedAt": $util.time.nowISO8601(),
+    "status": "C1"
+})
+
+#set($expressionValues = {})
+#set($expressionNames = {})
+
+#set($expression = "SET")
+
+#foreach ($entry in $expressionSet.entrySet())
+    #if ($entry.key == "status")
+        #set($prop = "statusUpdate")
+    #else
+        #set($prop = "${entry.key}")
+    #end
+
+    #set($expression = "${expression} #${prop} = :${prop}")
+
+    $util.quiet($expressionNames.put("#${prop}", "${entry.key}"))
+    $util.quiet($expressionValues.put(":${prop}", $entry.value))
+
+    #if ($foreach.hasNext)
+        #set($expression = "${expression},")
+    #end
+#end
+
+$util.quiet($expressionValues.put(":one", 1))
+$util.quiet($expressionNames.put("#version", "version"))
+
+#set($expression = "${expression} ADD #version :one")
+
+{
+    "version": "2018-05-29",
+    "operation": "UpdateItem",
+    "key": {
+        "PK": $util.dynamodb.toDynamoDBJson($context.arguments.data.PK)
+    },
+    "update": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    },
+    "condition": {
+        "expression": "$conditionExpression",
+        "expressionNames": $util.toJson($conditionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($conditionValues)
+    }
+}

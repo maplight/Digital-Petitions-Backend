@@ -55,6 +55,7 @@ custom:
       - ${file(./templates/editPetition.candidate.yml)}
       - ${file(./templates/listPetition.public.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
+      - ${file(./templates/approvePetition.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
