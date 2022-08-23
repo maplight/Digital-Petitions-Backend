@@ -55,7 +55,8 @@ enum PetitionListStatusCheck {
     QUALIFIED,
     NOT_QUALIFIED,
     ACTIVE,
-    INACTIVE
+    INACTIVE,
+    ANY
 }
 
 input PetitionsByTypeInput {

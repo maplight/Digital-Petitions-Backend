@@ -59,7 +59,7 @@
     #end
 
     $util.quiet($expressionValues.put(":hi", "${STATUS_INACTIVE_UPPER_BOUND}"))
-#else
+#elseif ($status != "ANY")
     #set($expression = "${expression} AND #status = :status")
 
     #set($statusMap = {
