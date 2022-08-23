@@ -1,7 +1,7 @@
 #set($query = $context.arguments.query)
 #set($target = $context.info.fieldName)
 
-#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED"])
+#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED", "INACTIVE", "ANY"])
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
@@ -25,7 +25,7 @@
     #set($indexName = "byTypeIndex")
 
     #if (!$isAuthorized)
-        #set($isAuthorized = ($publicAccess.contains($status) || $status == "INACTIVE"))
+        #set($isAuthorized = $publicAccess.contains($status))
         #set($isPublic = true)
     #end
 #elseif ($target == "getPetitionsByOwner")
@@ -39,7 +39,7 @@
         #set($isAuthorized = $context.identity.sub == $query.owner)
         #set($isPublic = !$isAuthorized)
 
-        #set($isAuthorized = ($isAuthorized || $publicAccess.contains($status) || $status == "INACTIVE"))
+        #set($isAuthorized = ($isAuthorized || $publicAccess.contains($status)))
     #end
 #else
     $util.error("UnsupportedQuery")
