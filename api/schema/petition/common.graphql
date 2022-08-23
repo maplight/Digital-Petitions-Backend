@@ -48,13 +48,6 @@ type PetitionConnection @aws_iam @aws_cognito_user_pools {
 }
 
 enum PetitionListStatusCheck {
-    ACTIVE,
-    INACTIVE,
-    QUALIFIED,
-    NOT_QUALIFIED
-}
-
-enum OwnedPetitionListStatusCheck {
     NEW,
     CANCELED,
     WITHDRAWN,
@@ -65,16 +58,18 @@ enum OwnedPetitionListStatusCheck {
     INACTIVE
 }
 
-input PublicPetitionListInput {
+input PetitionsByTypeInput {
     type: PetitionType
+
     status: PetitionListStatusCheck
     limit: Int
     cursor: ID
 }
 
-input OwnedPetitionListInput {
+input PetitionsByOwnerInput {
     owner: ID!
-    status: OwnedPetitionListStatusCheck
+
+    status: PetitionListStatusCheck
     limit: Int
     cursor: ID
 }
