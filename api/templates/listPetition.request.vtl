@@ -1,8 +1,7 @@
 #set($query = $context.arguments.query)
+#set($target = $context.info.fieldName)
 
-#set($expression = "#owner = :owner")
-#set($expressionNames = { "#owner": "owner", "#status": "status" })
-#set($expressionValues = { ":owner": $query.owner })
+#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED"])
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
@@ -11,31 +10,40 @@
     #set($limit = ${DEFAULT_PAGE_SIZE})
 #end
 
-## check for access control:
-## staff and admins can look at all items from every petitioner
-## petitioners can only look at their own items or the public items of other petitioners
-
-#set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED"])
-
-## owner has access to everything
-#set($isAuthorized = $context.identity.sub == $query.owner)
-#set($isPublic = !$isAuthorized)
-
-## public data is visible to everyone
-#set($isAuthorized = $isAuthorized || $publicAccess.contains($status))
-
-## finally, check for administrative access
-#if (!$isAuthorized)
-    #foreach ($group in $context.identity.claims.get("cognito:groups"))
-        #if ($group == "CityStaffGroup" || $group == "AdminGroup")
-            #set($isAuthorized = true)
-            #set($isPublic = false)
-        #end
+#foreach ($group in $context.identity.claims.get("cognito:groups"))
+    #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+        #set($isAuthorized = true)
+        #set($isPublic = false)
     #end
 #end
 
-## if we've come this far and isAuthorized is still false
-## then we must deny access
+#if ($target == "getPetitionsByType")
+    #set($expression = "#type = :type")
+    #set($expressionNames = { "#type": "type", "#status": "status" })
+    #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
+
+    #set($indexName = "byTypeIndex")
+
+    #if (!$isAuthorized)
+        #set($isAuthorized = ($publicAccess.contains($status) || $status == "INACTIVE"))
+        #set($isPublic = true)
+    #end
+#elseif ($target == "getPetitionsByOwner")
+    #set($expression = "#owner = :owner")
+    #set($expressionNames = { "#owner": "owner", "#status": "status" })
+    #set($expressionValues = { ":owner": $query.owner })
+
+    #set($indexName = "byOwnerIndexV2")
+
+    #if (!$isAuthorized)
+        #set($isAuthorized = $context.identity.sub == $query.owner)
+        #set($isPublic = !$isAuthorized)
+
+        #set($isAuthorized = ($isAuthorized || $publicAccess.contains($status) || $status == "INACTIVE"))
+    #end
+#else
+    $util.error("UnsupportedQuery")
+#end
 
 #if (!$isAuthorized)
     $util.unauthorized()
@@ -70,7 +78,7 @@
 {
     "version": "2018-05-29",
     "operation": "Query",
-    "index": "byOwnerIndexV2",
+    "index": "$indexName",
     "limit": $limit,
     "scanIndexForward": true,
     "query": {
