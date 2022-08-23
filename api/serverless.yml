@@ -69,7 +69,7 @@ custom:
       - ${file(./templates/petitioner/editPetition.candidate.yml)}
       - ${file(./templates/staff/approvePetition.yml)}
       - ${file(./templates/staff/rejectPetition.yml)}
-      - ${file(./templates/listPetition.public.yml)}
+      - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
 
     dataSources:
