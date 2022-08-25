@@ -17,13 +17,13 @@ custom:
   scriptable:
     hooks:
       after:deploy:deploy:
-        - (cd ./app || (mkdir app && cd ./app)) && (git clone --single-branch --branch develop https://github.com/maplight/Digital-Petitions.git . || git pull)
-        - (cd ./app && git checkout develop && git pull)
-        - (cd ./app && npm install && ${self:custom.myBuildCommand})
+        - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch develop https://github.com/maplight/Digital-Petitions.git . || git pull)
+        - (cd ./.app && git checkout develop && git pull)
+        - (cd ./.app && npm install && ${self:custom.myBuildCommand})
 
   s3Sync:
     - bucketName: ${self:custom.myBucketName}
-      localDir: ./app/dist/digital-petitions/
+      localDir: ./.app/dist/digital-petitions/
       deleteRemoved: true
       defaultContentType: text/html
 
