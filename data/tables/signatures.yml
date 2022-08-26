@@ -1,0 +1,60 @@
+Resources:
+  SignaturesTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ${self:provider.stage}-SignaturesTable
+
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: signer
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+        - AttributeName: target
+          AttributeType: S
+
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+
+      GlobalSecondaryIndexes:
+        - IndexName: bySignerIndex
+          KeySchema:
+            - AttributeName: signer
+              KeyType: HASH
+            - AttributeName: status
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+        - IndexName: byStatusIndex
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+            - AttributeName: target
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+        - IndexName: byTargetIndex
+          KeySchema:
+            - AttributeName: target
+              KeyType: HASH
+            - AttributeName: status
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5

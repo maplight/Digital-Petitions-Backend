@@ -11,6 +11,7 @@ provider:
 
 resources:
   - ${file(./tables/petitions.yml)}
+  - ${file(./tables/signatures.yml)}
 
   - Outputs:
       petitionTableName: { Value: { Ref: PetitionsTable } }
