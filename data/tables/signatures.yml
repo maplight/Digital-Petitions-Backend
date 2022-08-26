@@ -7,8 +7,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
-        - AttributeName: signer
-          AttributeType: S
         - AttributeName: status
           AttributeType: S
         - AttributeName: target
