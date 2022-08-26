@@ -18,3 +18,10 @@ services:
 
   backend-data:
     path: data
+
+  frontend:
+    path: frontend
+    params:
+      userPoolId: ${backend-auth.userPoolId}
+      userPoolClientId: ${backend-auth.userPoolClientId}
+      apiEndpoint: ${backend-api.apiEndpoint}

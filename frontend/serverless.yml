@@ -10,19 +10,27 @@ provider:
   stage: ${opt:stage, "dev"}
 
 custom:
-  myBucketId: ${self:provider.stage}-main-bucket
-  myBucketName: ${self:provider.stage}-frontend-dist-bucket
-  myBuildCommand: ng build --configuration development
+  app:
+    bucketId: ${self:provider.stage}-main-bucket
+    bucketName: ${self:provider.stage}-frontend-dist-bucket
+    buildCommand: npm run build
+
+    userPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+    userPoolClientId: ${param:userPoolClientId, output:backend-auth.UserPoolClientId}
+    userIdentityPoolId: ${param:userIdentityPoolId, output:backend-auth-public.UserIdentityPoolId}
+    apiEndpoint: ${param:apiEndpoint, output:backend-api.ApiEndpoint}
+    apiId: ${param:apiId, output:backend-api.ApiId}
 
   scriptable:
     hooks:
       after:deploy:deploy:
         - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch develop https://github.com/maplight/Digital-Petitions.git . || git pull)
         - (cd ./.app && git checkout develop && git pull)
-        - (cd ./.app && npm install && ${self:custom.myBuildCommand})
+        - ./scripts/generate-env.js
+        - (cd ./.app && npm install && ${self:custom.app.buildCommand})
 
   s3Sync:
-    - bucketName: ${self:custom.myBucketName}
+    - bucketName: ${self:custom.app.bucketName}
       localDir: ./.app/dist/digital-petitions/
       deleteRemoved: true
       defaultContentType: text/html
@@ -32,7 +40,7 @@ resources:
     FrontendDistBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.myBucketName}
+        BucketName: ${self:custom.app.bucketName}
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
           BlockPublicPolicy: true
@@ -42,7 +50,7 @@ resources:
     FrontendAccessControlBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket: ${self:custom.myBucketName}
+        Bucket: ${self:custom.app.bucketName}
         PolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -55,7 +63,7 @@ resources:
                   - - "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity"
                     - { Ref: FrontendAccessIdentity }
             Action: s3:GetObject
-            Resource: arn:aws:s3:::${self:custom.myBucketName}/*
+            Resource: arn:aws:s3:::${self:custom.app.bucketName}/*
 
     FrontendAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -83,12 +91,12 @@ resources:
             OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # S3-CORS
 
             Compress: true
-            TargetOriginId: ${self:custom.myBucketId}
+            TargetOriginId: ${self:custom.app.bucketId}
             ViewerProtocolPolicy: redirect-to-https
 
           Origins:
             - DomainName: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] }
-              Id: ${self:custom.myBucketId}
+              Id: ${self:custom.app.bucketId}
               S3OriginConfig:
                 OriginAccessIdentity: { Fn::Join: ["/", ["origin-access-identity", "cloudfront", { Ref: FrontendAccessIdentity }]] }
 
