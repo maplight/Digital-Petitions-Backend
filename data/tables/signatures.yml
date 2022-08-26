@@ -19,18 +19,6 @@ Resources:
           KeyType: HASH
 
       GlobalSecondaryIndexes:
-        - IndexName: bySignerIndex
-          KeySchema:
-            - AttributeName: signer
-              KeyType: HASH
-            - AttributeName: status
-              KeyType: RANGE
-          Projection:
-            ProjectionType: ALL
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
-
         - IndexName: byStatusIndex
           KeySchema:
             - AttributeName: status
