@@ -17,6 +17,8 @@ custom:
   myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
+  mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
+  mySingnatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
 
   esbuild:
     minify: true
@@ -47,7 +49,7 @@ custom:
     substitutions:
       DEFAULT_PAGE_SIZE: 10
 
-      # status values
+      # petition status values
       STATUS_NEW: "A1"
       STATUS_CANCELED: "A2"
       STATUS_WITHDRAWN: "A3"
@@ -56,10 +58,16 @@ custom:
       STATUS_QUALIFIED: "B2"
       STATUS_ACTIVE: "C1"
 
-      # bounds for range queries
+      # petition status bounds for range queries
       STATUS_INACTIVE_PUBLIC_LOWER_BOUND: "B"
       STATUS_INACTIVE_UPPER_BOUND: "C"
       STATUS_INACTIVE_LOWER_BOUND: "A2"
+
+      # signature status values
+      SIGNATURE_SUBMITTED: "A1"
+      SIGNATURE_VERIFIED: "A2"
+      SIGNATURE_APPROVED: "A3"
+      SIGNATURE_REJECTED: "A4"
 
     mappingTemplates:
       - ${file(./templates/echo.yml)}
