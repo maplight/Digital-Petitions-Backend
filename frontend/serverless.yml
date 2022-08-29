@@ -1,0 +1,108 @@
+app: e-signatures
+org: maplighttech
+service: frontend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+custom:
+  app:
+    bucketId: ${self:provider.stage}-main-bucket
+    bucketName: ${self:provider.stage}-frontend-dist-bucket
+    buildCommand: npm run build
+
+    userPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+    userPoolClientId: ${param:userPoolClientId, output:backend-auth.UserPoolClientId}
+    userIdentityPoolId: ${param:userIdentityPoolId, output:backend-auth-public.UserIdentityPoolId}
+    apiEndpoint: ${param:apiEndpoint, output:backend-api.ApiEndpoint}
+    apiId: ${param:apiId, output:backend-api.ApiId}
+
+  scriptable:
+    hooks:
+      after:deploy:deploy:
+        - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch develop https://github.com/maplight/Digital-Petitions.git . || git pull)
+        - (cd ./.app && git checkout develop && git pull)
+        - ./scripts/generate-env.js
+        - (cd ./.app && npm install && ${self:custom.app.buildCommand})
+
+  s3Sync:
+    - bucketName: ${self:custom.app.bucketName}
+      localDir: ./.app/dist/digital-petitions/
+      deleteRemoved: true
+      defaultContentType: text/html
+
+resources:
+  Resources:
+    FrontendDistBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.app.bucketName}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+    FrontendAccessControlBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: ${self:custom.app.bucketName}
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            Sid: AllowCloudFrontReadOnly
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - " "
+                  - - "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity"
+                    - { Ref: FrontendAccessIdentity }
+            Action: s3:GetObject
+            Resource: arn:aws:s3:::${self:custom.app.bucketName}/*
+
+    FrontendAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: "Client identity"
+
+    FrontendCloudfrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          DefaultRootObject: index.html
+
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+
+          DefaultCacheBehavior:
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6         # CachingOptimized
+            OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # S3-CORS
+
+            Compress: true
+            TargetOriginId: ${self:custom.app.bucketId}
+            ViewerProtocolPolicy: redirect-to-https
+
+          Origins:
+            - DomainName: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] }
+              Id: ${self:custom.app.bucketId}
+              S3OriginConfig:
+                OriginAccessIdentity: { Fn::Join: ["/", ["origin-access-identity", "cloudfront", { Ref: FrontendAccessIdentity }]] }
+
+outputs:
+  Domain: { Fn::GetAtt: [FrontendCloudfrontDistribution, DomainName] }
+
+plugins:
+  - serverless-scriptable-plugin
+  - serverless-s3-sync

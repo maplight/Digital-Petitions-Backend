@@ -8,5 +8,8 @@ jspm_packages
 # environment files
 .env*
 
+# frontend source and build files
+.app
+
 # build files
 .esbuild
