@@ -10,61 +10,17 @@ provider:
   stage: ${opt:stage, "dev"}
 
 resources:
-  Resources:
-    # Table for petitions
-    PetitionsTable:
-      Type: "AWS::DynamoDB::Table"
-      Properties:
-        TableName: ${self:provider.stage}-PetitionTable
+  - ${file(./tables/petitions.yml)}
+  - ${file(./tables/signatures.yml)}
 
-        AttributeDefinitions:
-          - AttributeName: PK
-            AttributeType: S
-          - AttributeName: owner
-            AttributeType: S
-          - AttributeName: status
-            AttributeType: S
-          - AttributeName: type
-            AttributeType: S
-
-        KeySchema:
-          - AttributeName: PK
-            KeyType: HASH
-
-        GlobalSecondaryIndexes:
-          - IndexName: byOwnerIndexV2
-            KeySchema:
-              - AttributeName: owner
-                KeyType: HASH
-              - AttributeName: status
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
-
-          - IndexName: byTypeIndex
-            KeySchema:
-              - AttributeName: type
-                KeyType: HASH
-              - AttributeName: status
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
-
-        # This is a placeholder value, may need reviewing
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-
-  Outputs:
-    petitionTableName: { Value: { Ref: PetitionsTable } }
-    petitionTableArn: { Value: { Fn::GetAtt: [PetitionsTable, Arn] } }
+  - Outputs:
+      petitionTableName: { Value: { Ref: PetitionsTable } }
+      petitionTableArn: { Value: { Fn::GetAtt: [PetitionsTable, Arn] } }
+      signatureTableName: { Value: { Ref: SignaturesTable } }
+      signatureTableArn: { Value: { Fn::GetAtt: [SignaturesTable, Arn] } }
 
 outputs:
   PetitionsTableName: { Ref: PetitionsTable }
   PetitionsTableArn: {  Fn::GetAtt: [PetitionsTable, Arn] }
+  SignaturesTableName: { Ref: SignaturesTable }
+  SignaturesTableArn: { Fn::GetAtt: [SignaturesTable, Arn] }
