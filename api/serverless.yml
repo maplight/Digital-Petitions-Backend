@@ -18,7 +18,7 @@ custom:
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
   mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
-  mySingnatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
+  mySignatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
 
   esbuild:
     minify: true
@@ -80,10 +80,12 @@ custom:
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}
+      - ${file(./templates/signatures.byPetition.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
       - ${file(./data/echo.yml)}
+      - ${file(./data/signatures.yml)}
 
     xrayEnabled: true
     # wafConfig:
