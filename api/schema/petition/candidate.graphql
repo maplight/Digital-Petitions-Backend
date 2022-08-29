@@ -12,6 +12,8 @@ type CandidatePetition implements Petition @aws_iam @aws_cognito_user_pools {
     name: String!
 
     signatureSummary: SignatureSummary
+    signatures(query: SignaturesOfPetitionInput): SignatureConnection!
+    @aws_cognito_user_pools
 
     address: AddressData!
 

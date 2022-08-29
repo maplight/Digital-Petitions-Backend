@@ -1,0 +1,57 @@
+type SignatureSummary @aws_iam @aws_cognito_user_pools {
+    required: Int!
+    approved: Int!
+
+    deadline: AWSDateTime
+
+    submitted: Int!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup"])
+}
+
+enum SignatureStatus {
+    SUBMITTED,
+    VERIFIED,
+    APPROVED,
+    REJECTED
+}
+
+enum SignatureStatusQuery {
+    SUBMITTED,
+    VERIFIED,
+    APPROVED,
+    REJECTED,
+    ANY
+}
+
+input SignaturesByPetitionInput {
+    petition: ID!
+
+    limit: Int
+    status: SignatureStatusQuery
+    cursor: ID
+}
+
+input SignaturesOfPetitionInput {
+    limit: Int
+    status: SignatureStatusQuery
+    cursor: ID
+}
+
+type SignatureConnection @aws_cognito_user_pools {
+    items: [Signature!]!
+    token: ID
+}
+
+type Signature @aws_cognito_user_pools {
+    signer: ID!
+
+    name: String!
+    status: SignatureStatus!
+
+    # might want to use AddressData here, but it seems like this is a
+    # simple text field on the designs 
+    address: String!
+
+    createdAt: AWSDateTime!
+    updatedAt: AWSDateTime!
+}
