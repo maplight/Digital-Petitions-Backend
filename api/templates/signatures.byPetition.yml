@@ -1,0 +1,17 @@
+- dataSource: SignatureDataSource
+  type: IssuePetition
+  field: signatures
+  request: signatures.byPetition.request.vtl
+  response: signatures.byPetition.response.vtl
+
+- dataSource: SignatureDataSource
+  type: CandidatePetition
+  field: signatures
+  request: signatures.byPetition.request.vtl
+  response: signatures.byPetition.response.vtl
+
+- dataSource: SignatureDataSource
+  type: Query
+  field: getSignaturesByPetition
+  request: signatures.byPetition.request.vtl
+  response: signatures.byPetition.response.vtl

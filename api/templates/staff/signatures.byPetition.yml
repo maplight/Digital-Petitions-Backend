@@ -1,5 +1,0 @@
-- dataSource: SignatureDataSource
-  type: Query
-  field: getSignaturesByPetition
-  request: signatures.byPetition.request.vtl
-  response: signatures.byPetition.response.vtl
