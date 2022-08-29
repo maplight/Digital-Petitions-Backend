@@ -1,0 +1,5 @@
+- dataSource: SignatureDataSource
+  type: Petition
+  field: signatures
+  request: signatures.byPetition.request.vtl
+  response: signatures.byPetition.response.vtl
