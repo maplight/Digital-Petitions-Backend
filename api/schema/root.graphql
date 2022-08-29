@@ -9,6 +9,9 @@ type Query {
 
     getPetitionsByOwner(query: PetitionsByOwnerInput): PetitionConnection!
     @aws_cognito_user_pools
+
+    getSignaturesByPetition(query: SignaturesByPetitionInput): SignatureConnection!
+    @aws_cognito_user_pools
 }
 
 type Mutation {
