@@ -35,7 +35,7 @@
 
 #if ($status != "ANY")
     #set($expression = "${expression} AND #status = :status")
-    $util.quiet($expressionNames.put("#status": "status"))
+    $util.quiet($expressionNames.put("#status", "status"))
 
     #set($statusMap = {
         "SUBMITTED": "${SIGNATURE_SUBMITTED}",
