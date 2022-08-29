@@ -1,0 +1,63 @@
+#set($query = $context.arguments.query)
+#set($target = $context.info.fieldName)
+
+#if ($target == "signatures")
+    #set($isAuthorized = $context.source.owner == $context.identity.sub)
+
+    #if (!$isAuthorized)
+        #foreach ($group in $context.identity.claims.get("cognito:groups"))
+            #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+                #set($isAuthorized = true)
+            #end
+        #end
+    #end
+
+    #set($key = $context.source.PK)
+#else
+    #set($isAuthorized = true)
+    #set($key = $query.petition)
+#end
+
+#if (!$isAuthorized)
+    $util.unauthorized()
+#end
+
+#set($status = $util.defaultIfNull(${query.status}, "ANY"))
+#set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
+
+#if ($limit < ${DEFAULT_PAGE_SIZE})
+    #set($limit = ${DEFAULT_PAGE_SIZE})
+#end
+
+#set($expression = "#target = :target")
+#set($expressionNames = { "#target": "target" })
+#set($expressionValues = { ":target": $key })
+
+#if ($status != "ANY")
+    #set($expression = "${expression} AND #status = :status")
+    $util.quiet($expressionNames.put("#status", "status"))
+
+    #set($statusMap = {
+        "SUBMITTED": "${SIGNATURE_SUBMITTED}",
+        "VERIFIED": "${SIGNATURE_VERIFIED}",
+        "APPROVED": "${SIGNATURE_APPROVED}",
+        "REJECTED": "${SIGNATURE_REJECTED}"
+    })
+
+    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "index": "byTargetIndex",
+    "scanIndexForward": true,
+    "query": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+#if ($query.cursor)
+    ,"nextToken": "${query.cursor}"
+#end
+}

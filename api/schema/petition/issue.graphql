@@ -13,6 +13,8 @@ type IssuePetition implements Petition @aws_iam @aws_cognito_user_pools {
     detail: String!
 
     signatureSummary: SignatureSummary
+    signatures(query: SignaturesOfPetitionInput): SignatureConnection!
+    @aws_cognito_user_pools
 }
 
 input IssuePetitionInput {

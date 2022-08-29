@@ -1,0 +1,17 @@
+#set($statusMap = {
+    "${SIGNATURE_SUBMITTED}": "SUBMITTED",
+    "${SIGNATURE_VERIFIED}": "VERIFIED",
+    "${SIGNATURE_APPROVED}": "APPROVED",
+    "${SIGNATURE_REJECTED}": "REJECTED"
+})
+
+#foreach ($item in $context.result.items)
+    $util.quiet($item.put("status", $statusMap.get($item.status)))
+#end
+
+{
+    "items": $util.toJson($context.result.items)
+#if ($context.result.nextToken)
+    ,"token": "${context.result.nextToken}"
+#end
+}
