@@ -71,6 +71,7 @@ custom:
       - ${file(./templates/staff/rejectPetition.yml)}
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
+      - ${file(./templates/petition.byId.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}

@@ -1,6 +1,9 @@
 type Query {
     publicEcho(ping: String!): String!
 
+    getPetition(PK: ID!): Petition
+    @aws_iam @aws_cognito_user_pools
+
     getPetitionsByType(query: PetitionsByTypeInput): PetitionConnection!
     @aws_iam @aws_cognito_user_pools
 

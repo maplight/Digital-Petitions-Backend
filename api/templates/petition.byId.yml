@@ -1,0 +1,5 @@
+- dataSource: PetitionDataSource
+  type: Query
+  field: getPetition
+  request: petition.request.vtl
+  response: petition.response.vtl
