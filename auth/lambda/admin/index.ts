@@ -1,20 +1,24 @@
 import type { Handler } from "aws-lambda";
+import type { AdminLambdaEvent } from "./types";
 
 import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
-import type { AdminLambdaEvent, CognitoCommand } from "./types";
-import { handleNewUser } from "./add-user.handler";
+
+import { handleCreateUser } from "./user-create";
+import { handleDeleteUser } from "./user-delete";
 
 const client = new CognitoIdentityProviderClient({});
 
 export const handler: Handler<AdminLambdaEvent> = async (event): Promise<any> => {
-    let command: CognitoCommand;
-
     switch (event.payload.type) {
         case "new-user":
-            await handleNewUser(event.payload, client);
+            await handleCreateUser(event.payload, client);
+            break;
+
+        case "delete-user":
+            await handleDeleteUser(event.payload, client);
             break;
 
         default:
-            command = null;
+            console.log("Unsupported action requested");
     }
 };
