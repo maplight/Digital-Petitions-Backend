@@ -1,0 +1,34 @@
+Resources:
+  # Default admin user that is to be created on site deployment.
+  # Should be granted the highest access level and allow creating other
+  # admin users after login, since admin/staff users should only be
+  # able to be created through invitation
+  RootUser:
+    Type: "AWS::Cognito::UserPoolUser"
+    Properties:
+      DesiredDeliveryMediums:
+        - "EMAIL"
+      UserAttributes:
+        - Name: "email"
+          Value: ${param:rootEmail}
+        - Name: "given_name"
+          Value: "Admin"
+        - Name: "family_name"
+          Value: "MapLight"
+        - Name: "address"
+          Value: "{}"
+        - Name: "custom:access_group"
+          Value: "admin"
+        - Name: "email_verified"
+          Value: "true"
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+
+  # Attach the root user to the admin group by default.
+  # We can likely rely on the post-sign up lambda for this once
+  # that's implemented, but let's do it explicitly for now
+  RootUserGroupMembership:
+    Type: "AWS::Cognito::UserPoolUserToGroupAttachment"
+    Properties:
+      GroupName: { Ref: AdminUserGroup }
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+      Username: { Ref: RootUser }

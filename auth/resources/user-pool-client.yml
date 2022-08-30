@@ -1,0 +1,22 @@
+Resources:
+  # The client identity used by the webapp
+  # to interact with Cognito
+  UserPoolWebClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: ${self:provider.stage}-UserPoolClient
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+      PreventUserExistenceErrors: ENABLED
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - "COGNITO"
+      ExplicitAuthFlows:
+        - "ALLOW_ADMIN_USER_PASSWORD_AUTH"
+        - "ALLOW_USER_SRP_AUTH"
+        - "ALLOW_USER_PASSWORD_AUTH"
+        - "ALLOW_REFRESH_TOKEN_AUTH"
+      WriteAttributes:
+        - "address"
+        - "given_name"
+        - "family_name"
+        - "email"

@@ -1,0 +1,29 @@
+Resources:
+  # User groups.
+  # These define the access level a user has when interacting with the API
+  # From least to most priviledged group/role:
+  # Petitioner -> City Staff -> Admin
+
+  PetitionerUserGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    Properties:
+      GroupName: PetitionerGroup
+      Description: "Users that can issue petitions to the city"
+      Precedence: 2
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+
+  CityStaffUserGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    Properties:
+      GroupName: CityStaffGroup
+      Description: "Users that can review and approve or reject petitions"
+      Precedence: 1
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+
+  AdminUserGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    Properties:
+      GroupName: AdminGroup
+      Description: "Admin users. Have a superset of City Staff access rights"
+      Precedence: 0
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
