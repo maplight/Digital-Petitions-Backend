@@ -25,6 +25,9 @@ functions:
           pool: AppUserPool
           trigger: PostConfirmation
 
+  adminActions:
+    handler: lambda/admin/index.handler
+
 plugins:
   - serverless-esbuild
 
