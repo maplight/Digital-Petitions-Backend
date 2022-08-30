@@ -43,5 +43,6 @@ Resources:
                   - cognito-idp:AdminEnableUser
                   - cognito-idp:AdminDisableUser
                   - cognito-idp:ListUsers
+                  - cognito-idp:ListGroups
                 Resource:
                   - { Fn::GetAtt: [CognitoUserPoolAppUserPool, Arn] }
