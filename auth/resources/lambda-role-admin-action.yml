@@ -1,0 +1,47 @@
+Resources:
+  # The role to be assumed by the lambda function that is to
+  # provide admin access and actions to the user pool
+  AdminActionsLambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: ${self:provider.stage}-AdminActionsLambdaRole
+
+      # allow lambdas to assume this role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+      # permissions
+      Policies:
+        - PolicyName: ${self:provider.stage}-AdminActionsLambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              # common access to logging features
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - { Fn::Join: [":", ["arn:aws:logs", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "log-group:/aws/lambda/*:*:*"]] }
+              
+              # access to Cognito resources
+              - Effect: Allow
+                Action:
+                  - cognito-idp:AdminCreateUser
+                  - cognito-idp:AdminAddUserToGroup
+                  - cognito-idp:AdminListGroupsForUser
+                  - cognito-idp:AdminRemoveUserFromGroup
+                  - cognito-idp:AdminDeleteUser
+                  - cognito-idp:AdminSetUserPassword
+                  - cognito-idp:AdminEnableUser
+                  - cognito-idp:AdminDisableUser
+                  - cognito-idp:ListUsers
+                Resource:
+                  - { Fn::GetAtt: [CognitoUserPoolAppUserPool, Arn] }
