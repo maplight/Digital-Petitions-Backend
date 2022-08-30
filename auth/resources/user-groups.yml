@@ -9,7 +9,7 @@ Resources:
     Properties:
       GroupName: PetitionerGroup
       Description: "Users that can issue petitions to the city"
-      Precedence: 2
+      Precedence: 3
       UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
   CityStaffUserGroup:
@@ -17,6 +17,14 @@ Resources:
     Properties:
       GroupName: CityStaffGroup
       Description: "Users that can review and approve or reject petitions"
+      Precedence: 2
+      UserPoolId: { Ref: CognitoUserPoolAppUserPool }
+
+  GuestStaffUserGroup:
+    Type: "AWS::Cognito::UserPoolGroup"
+    Properties:
+      GroupName: GuestStaffGroup
+      Description: "Same read access as Staff, but no write access"
       Precedence: 1
       UserPoolId: { Ref: CognitoUserPoolAppUserPool }
 
