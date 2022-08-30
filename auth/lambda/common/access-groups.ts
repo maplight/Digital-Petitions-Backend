@@ -1,6 +1,7 @@
 export enum AccessGroupKeys {
     Petitioner = "petitioner",
     CityStaff = "city_staff",
+    CityStaffGuest = "staff_guest",
     Admin = "admin"
 }
 
