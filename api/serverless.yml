@@ -71,6 +71,7 @@ custom:
       SIGNATURE_REJECTED: "A4"
 
       # user lambda request arguments mapping
+      USER_PETITIONER: "petitioner"
       USER_GUEST: "city_staff_guest"
       USER_STAFF: "city_staff"
       USER_ADMIN: "admin"
@@ -87,6 +88,7 @@ custom:
       - ${file(./templates/staff/rejectPetition.yml)}
       - ${file(./templates/staff/createUser.yml)}
       - ${file(./templates/staff/deleteUser.yml)}
+      - ${file(./templates/staff/selectUser.yml)}
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}

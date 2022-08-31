@@ -10,7 +10,7 @@
     "type": "create-user",
     "firstName": $data.firstName,
     "lastName": $data.lastName,
-    "permissions": $permissionMapping.get($data.access),
+    "permissions": $permissionMapping.get($data.permissions),
     "email": $data.email,
     "userPoolId": "${COGNITO_USER_POOL}"
 })

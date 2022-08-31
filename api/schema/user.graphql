@@ -1,20 +1,49 @@
 enum AccessLevel {
-    STAFF,
-    GUEST,
+    NONE        # special case for users that haven't confirmed their email
+    STAFF
+    GUEST
+    ADMIN
+    PETITIONER
+}
+
+enum StaffAccessLevel {
+    STAFF
+    GUEST
     ADMIN
 }
 
-type StaffUser @aws_cognito_user_pools {
+enum AccessLevelQuery {
+    STAFF
+    GUEST
+    ADMIN
+    PETITIONER
+}
+
+type User @aws_cognito_user_pools {
     username: ID!
     email: String!
- 
+
     firstName: String
     lastName: String
- 
-    access: AccessLevel!
+
+    permissions: AccessLevel!
 }
 
 input StaffUserInput {
     email: String!
-    access: AccessLevel!
+    permissions: StaffAccessLevel!
+}
+
+input SearchUsersInput {
+    searchName: String
+    searchEmail: String
+    searchGroup: AccessLevelQuery
+
+    limit: Int
+    cursor: ID
+}
+
+type UserConnection @aws_cognito_user_pools {
+    items: [User!]!
+    token: ID
 }

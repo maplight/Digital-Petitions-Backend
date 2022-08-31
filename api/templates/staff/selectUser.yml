@@ -1,0 +1,5 @@
+- dataSource: UserDataSource
+  type: Query
+  field: getUsers
+  request: staff/selectUser.request.vtl
+  response: staff/selectUser.response.vtl

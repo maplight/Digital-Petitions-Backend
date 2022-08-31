@@ -4,22 +4,21 @@ type SignatureSummary @aws_iam @aws_cognito_user_pools {
 
     deadline: AWSDateTime
 
-    submitted: Int!
-    @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup"])
+    submitted: Int! @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup"])
 }
 
 enum SignatureStatus {
-    SUBMITTED,
-    VERIFIED,
-    APPROVED,
+    SUBMITTED
+    VERIFIED
+    APPROVED
     REJECTED
 }
 
 enum SignatureStatusQuery {
-    SUBMITTED,
-    VERIFIED,
-    APPROVED,
-    REJECTED,
+    SUBMITTED
+    VERIFIED
+    APPROVED
+    REJECTED
     ANY
 }
 
@@ -49,7 +48,7 @@ type Signature @aws_cognito_user_pools {
     status: SignatureStatus!
 
     # might want to use AddressData here, but it seems like this is a
-    # simple text field on the designs 
+    # simple text field on the designs
     address: String!
 
     createdAt: AWSDateTime!

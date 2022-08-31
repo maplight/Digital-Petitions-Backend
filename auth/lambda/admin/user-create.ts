@@ -4,12 +4,13 @@ import {
     CognitoIdentityProviderClient
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ACCESS_GROUP_ATTR, getGroups } from "../common";
-import type { NewUserEvent } from "./types";
-import { emailToUserName } from "./util";
+import type { NewUserEvent, Option, User } from "./types";
+import { emailToUserName, sanitizeIdentifier } from "./util";
 
-const allNonLetters = /[^a-zA-Z]/g;
-
-export async function handleCreateUser(event: NewUserEvent, client: CognitoIdentityProviderClient) {
+export async function handleCreateUser(
+    event: NewUserEvent,
+    client: CognitoIdentityProviderClient
+): Promise<Option<User>> {
     const username = emailToUserName(event.email);
 
     const attributes = [
@@ -18,13 +19,13 @@ export async function handleCreateUser(event: NewUserEvent, client: CognitoIdent
         { Name: "email", Value: event.email }
     ];
 
-    const firstName = event.firstName?.trim()?.replace(allNonLetters, "");
+    const firstName = sanitizeIdentifier(event.firstName);
 
     if (firstName) {
         attributes.push({ Name: "given_name", Value: firstName });
     }
 
-    const lastName = event.lastName?.trim()?.replace(allNonLetters, "");
+    const lastName = sanitizeIdentifier(event.lastName);
 
     if (lastName) {
         attributes.push({ Name: "family_name", Value: lastName });

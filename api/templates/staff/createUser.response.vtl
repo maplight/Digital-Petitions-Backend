@@ -12,7 +12,7 @@
 #set($result = {
     "firstName": $util.defaultIfNull(${data.firstName}, "Not set"),
     "lastName": $util.defaultIfNull(${data.lastName}, "Not set"),
-    "access": $permissionMapping.get($data.permissions),
+    "permissions": $permissionMapping.get($data.permissions),
     "username": "${data.username}",
     "email": "${data.email}"
 })
