@@ -9,7 +9,8 @@ export type EventCommon = HasEmail & HasUserPoolId;
 export type StaffAccessType = Exclude<AccessGroupKeys, AccessGroupKeys.Petitioner>;
 export enum Actions {
     Create = "create-user",
-    Delete = "delete-user"
+    Delete = "delete-user",
+    Select = "select-user"
 }
 
 export type NewUserInput = {
@@ -26,4 +27,13 @@ export type DeleteUserEvent = HasUserPoolId & {
     type: Actions.Delete;
 } & HasUserTarget;
 
-export type AdminLambdaEvent = NewUserEvent | DeleteUserEvent;
+export type SelectUserEvent = HasUserPoolId & {
+    type: Actions.Select;
+    searchName?: string;
+    searchEmail?: string;
+    searchType?: StaffAccessType[];
+    token?: string;
+    limit?: number;
+};
+
+export type AdminLambdaEvent = NewUserEvent | DeleteUserEvent | SelectUserEvent;
