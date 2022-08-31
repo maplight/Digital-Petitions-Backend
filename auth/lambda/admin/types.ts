@@ -43,7 +43,7 @@ export type SelectUserEvent = HasUserPoolId & {
     searchName?: string;
     searchEmail?: string;
     searchType?: StaffAccessType;
-    token?: string;
+    cursor?: string;
     limit?: number;
 };
 

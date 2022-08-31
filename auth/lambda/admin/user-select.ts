@@ -28,7 +28,7 @@ export async function handleSelectUser(
     const clientSide = !!(event.searchName || event.searchType);
     const results: User[] = [];
 
-    let lastToken: string | undefined;
+    let lastToken: string | undefined = event.cursor;
     const pageLimit = event.limit ?? 10;
 
     let filter: string | undefined;
