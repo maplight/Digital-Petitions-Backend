@@ -95,6 +95,7 @@ custom:
       - ${file(./data/petitions.yml)}
       - ${file(./data/echo.yml)}
       - ${file(./data/signatures.yml)}
+      - ${file(./data/users.yml)}
 
     xrayEnabled: true
     # wafConfig:
