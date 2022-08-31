@@ -86,6 +86,7 @@ custom:
       - ${file(./templates/staff/approvePetition.yml)}
       - ${file(./templates/staff/rejectPetition.yml)}
       - ${file(./templates/staff/createUser.yml)}
+      - ${file(./templates/staff/deleteUser.yml)}
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}
