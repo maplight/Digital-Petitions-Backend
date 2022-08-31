@@ -11,10 +11,12 @@ import { emailToUserName } from "./util";
 export async function handleCreateUser(
     event: NewUserEvent,
     client: CognitoIdentityProviderClient
-): Promise<UserType> {
+) {
+    const username = emailToUserName(event.email);
+
     const createCommand = new AdminCreateUserCommand({
         UserPoolId: event.userPoolId,
-        Username: emailToUserName(event.email),
+        Username: username,
         DesiredDeliveryMediums: ["EMAIL"],
 
         UserAttributes: [
@@ -40,5 +42,11 @@ export async function handleCreateUser(
 
     await client.send(addToGroupCommand);
 
-    return results.User;
+    return {
+        firstName: event.firstName,
+        lastName: event.lastName,
+        permissions: event.permissions,
+        email: event.email,
+        username
+    };
 }
