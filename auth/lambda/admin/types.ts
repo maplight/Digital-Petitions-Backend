@@ -26,4 +26,4 @@ export type DeleteUserEvent = HasUserPoolId & {
     type: Actions.Delete;
 } & HasUserTarget;
 
-export type AdminLambdaEvent = { payload: NewUserEvent | DeleteUserEvent };
+export type AdminLambdaEvent = NewUserEvent | DeleteUserEvent;
