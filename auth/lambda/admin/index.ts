@@ -11,12 +11,10 @@ const client = new CognitoIdentityProviderClient({});
 export const handler: Handler<AdminLambdaEvent> = async (event): Promise<any> => {
     switch (event.payload.type) {
         case Actions.Create:
-            await handleCreateUser(event.payload, client);
-            break;
+            return await handleCreateUser(event.payload, client);
 
         case Actions.Delete:
-            await handleDeleteUser(event.payload, client);
-            break;
+            return await handleDeleteUser(event.payload, client);
 
         default:
             console.log("Unsupported action requested");
