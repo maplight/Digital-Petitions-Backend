@@ -1,8 +1,7 @@
 import {
     AdminAddUserToGroupCommand,
     AdminCreateUserCommand,
-    CognitoIdentityProviderClient,
-    UserType
+    CognitoIdentityProviderClient
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ACCESS_GROUP_ATTR, getGroups } from "../common";
 import type { NewUserEvent } from "./types";
