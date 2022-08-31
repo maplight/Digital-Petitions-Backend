@@ -54,7 +54,7 @@ export async function handleSelectUser(
 
             lastToken = items.PaginationToken;
 
-            const users = items.Users?.map((user) => attributeListToUser(user.Attributes)) ?? [];
+            const users = items.Users?.map((user) => attributeListToUser(user.Username!, user.Attributes)) ?? [];
             const match = clientSide
                 ? users.filter((user) => applyEventFilter(user, event))
                 : users;

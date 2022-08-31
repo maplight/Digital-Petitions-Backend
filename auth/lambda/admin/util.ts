@@ -23,7 +23,7 @@ export const standardToAppNameMapping: { [K: string]: keyof User } = {
     "custom:access_group": "permissions"
 };
 
-export function attributeListToUser(attributes: AttributeType[] | undefined): User {
+export function attributeListToUser(username: string, attributes: AttributeType[] | undefined): User {
     return (
         (attributes ?? [])
             .map(({ Name, Value }) => [standardToAppNameMapping[Name ?? ""], Value])
@@ -36,5 +36,5 @@ export function attributeListToUser(attributes: AttributeType[] | undefined): Us
         }
 
         return dict;
-    }, {} as User);
+    }, { username } as User);
 }
