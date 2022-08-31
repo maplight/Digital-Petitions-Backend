@@ -1,7 +1,8 @@
 import {
     AdminAddUserToGroupCommand,
     AdminCreateUserCommand,
-    CognitoIdentityProviderClient
+    CognitoIdentityProviderClient,
+    UserType
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ACCESS_GROUP_ATTR, getGroups } from "../common";
 import type { NewUserEvent } from "./types";
@@ -10,7 +11,7 @@ import { emailToUserName } from "./util";
 export async function handleCreateUser(
     event: NewUserEvent,
     client: CognitoIdentityProviderClient
-): Promise<void> {
+): Promise<UserType> {
     const createCommand = new AdminCreateUserCommand({
         UserPoolId: event.userPoolId,
         Username: emailToUserName(event.email),
@@ -38,4 +39,6 @@ export async function handleCreateUser(
     });
 
     await client.send(addToGroupCommand);
+
+    return results.User;
 }
