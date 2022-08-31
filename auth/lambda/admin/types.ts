@@ -42,7 +42,7 @@ export type SelectUserEvent = HasUserPoolId & {
     type: Actions.Select;
     searchName?: string;
     searchEmail?: string;
-    searchType?: StaffAccessType;
+    searchGroup?: StaffAccessType;
     cursor?: string;
     limit?: number;
 };

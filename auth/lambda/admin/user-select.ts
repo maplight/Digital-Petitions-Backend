@@ -16,7 +16,7 @@ function checkTypes(user: User, type?: AccessGroupKeys): boolean {
 }
 
 function applyEventFilter(user: User, event: SelectUserEvent): boolean {
-    return checkNames(user, event.searchName) && checkTypes(user, event.searchType);
+    return checkNames(user, event.searchName) && checkTypes(user, event.searchGroup);
 }
 
 export async function handleSelectUser(
@@ -25,7 +25,7 @@ export async function handleSelectUser(
 ): Promise<Option<Connection<User>>> {
     event.searchName = sanitizeIdentifier(event.searchName);
 
-    const clientSide = !!(event.searchName || event.searchType);
+    const clientSide = !!(event.searchName || event.searchGroup);
     const results: User[] = [];
 
     let lastToken: string | undefined = event.cursor;
