@@ -17,18 +17,15 @@ export const handler: PostConfirmationTriggerHandler = async (event): Promise<an
     let targetGroup = groups[event.request.userAttributes[ACCESS_GROUP_ATTR] as AccessGroupKeys];
 
     if (typeof targetGroup !== "string") {
-        await client.send(
-            new AdminUpdateUserAttributesCommand({
-                Username: event.userName,
-                UserPoolId: event.userPoolId,
-                UserAttributes: [
-                    {
-                        Name: ACCESS_GROUP_ATTR,
-                        Value: AccessGroupKeys.Petitioner
-                    }
-                ]
-            })
-        );
+        const accessRole = { Name: ACCESS_GROUP_ATTR, Value: AccessGroupKeys.Petitioner };
+
+        const command = new AdminUpdateUserAttributesCommand({
+            Username: event.userName,
+            UserPoolId: event.userPoolId,
+            UserAttributes: [accessRole]
+        });
+
+        await client.send(command);
 
         targetGroup = groups[AccessGroupKeys.Petitioner];
     }

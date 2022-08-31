@@ -2,8 +2,8 @@ import {
     CognitoIdentityProviderClient,
     ListGroupsCommand
 } from "@aws-sdk/client-cognito-identity-provider";
-import { AccessGroupKeys, GroupNameLookup } from "./access-groups";
 
+import { AccessGroupKeys, GroupNameLookup } from "./access-groups";
 export * from "./access-groups";
 
 export const getGroups = async (
