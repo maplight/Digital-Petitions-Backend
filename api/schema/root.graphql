@@ -12,6 +12,9 @@ type Query {
 
     getSignaturesByPetition(query: SignaturesByPetitionInput): SignatureConnection!
     @aws_cognito_user_pools
+
+    getStaffUsers(query: SearchUsersInput): UserConnection!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
 }
 
 type Mutation {
