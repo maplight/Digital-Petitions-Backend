@@ -1,0 +1,20 @@
+enum AccessLevel {
+    STAFF,
+    GUEST,
+    ADMIN
+}
+
+type StaffUser @aws_cognito_user_pools {
+    username: ID!
+    email: String!
+ 
+    firstName: String
+    lastName: String
+ 
+    access: AccessLevel!
+}
+
+input StaffUserInput {
+    email: String!
+    access: AccessLevel!
+}
