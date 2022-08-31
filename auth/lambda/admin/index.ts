@@ -1,5 +1,5 @@
 import type { Handler } from "aws-lambda";
-import type { AdminLambdaEvent } from "./types";
+import { Actions, AdminLambdaEvent } from "./types";
 
 import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
 
@@ -10,11 +10,11 @@ const client = new CognitoIdentityProviderClient({});
 
 export const handler: Handler<AdminLambdaEvent> = async (event): Promise<any> => {
     switch (event.payload.type) {
-        case "new-user":
+        case Actions.Create:
             await handleCreateUser(event.payload, client);
             break;
 
-        case "delete-user":
+        case Actions.Delete:
             await handleDeleteUser(event.payload, client);
             break;
 

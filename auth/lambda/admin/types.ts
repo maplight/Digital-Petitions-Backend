@@ -7,6 +7,10 @@ export type HasUserTarget = { username: string };
 export type EventCommon = HasEmail & HasUserPoolId;
 
 export type StaffAccessType = Exclude<AccessGroupKeys, AccessGroupKeys.Petitioner>;
+export enum Actions {
+    Create = "create-user",
+    Delete = "delete-user"
+}
 
 export type NewUserInput = {
     firstName?: string;
@@ -15,11 +19,11 @@ export type NewUserInput = {
 };
 
 export type NewUserEvent = EventCommon & {
-    type: "new-user";
+    type: Actions.Create;
 } & NewUserInput;
 
 export type DeleteUserEvent = HasUserPoolId & {
-    type: "delete-user";
+    type: Actions.Delete;
 } & HasUserTarget;
 
 export type AdminLambdaEvent = { payload: NewUserEvent | DeleteUserEvent };
