@@ -1,7 +1,8 @@
 import {
     AdminAddUserToGroupCommand,
     AdminCreateUserCommand,
-    CognitoIdentityProviderClient
+    CognitoIdentityProviderClient,
+    UserType
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ACCESS_GROUP_ATTR, getGroups } from "../common";
 import type { NewUserEvent } from "./types";
@@ -37,25 +38,28 @@ export async function handleCreateUser(event: NewUserEvent, client: CognitoIdent
         UserAttributes: attributes
     });
 
-    const results = await client.send(createCommand);
+    let user: UserType | undefined;
 
-    if (!results.User) throw new Error("UserCreateFailed");
+    try {
+        user = (await client.send(createCommand)).User;
+        const groups = await getGroups(event.userPoolId, client);
 
-    const groups = await getGroups(event.userPoolId, client);
+        const addToGroupCommand = new AdminAddUserToGroupCommand({
+            UserPoolId: event.userPoolId,
+            Username: username,
+            GroupName: groups[event.permissions]
+        });
 
-    const addToGroupCommand = new AdminAddUserToGroupCommand({
-        UserPoolId: event.userPoolId,
-        Username: results.User.Username,
-        GroupName: groups[event.permissions]
-    });
+        await client.send(addToGroupCommand);
 
-    await client.send(addToGroupCommand);
-
-    return {
-        firstName: event.firstName,
-        lastName: event.lastName,
-        permissions: event.permissions,
-        email: event.email,
-        username
-    };
+        return {
+            firstName: event.firstName,
+            lastName: event.lastName,
+            permissions: event.permissions,
+            email: event.email,
+            username
+        };
+    } catch (err) {
+        return { error: (err as Error)?.name ?? "UnknownError" };
+    }
 }
