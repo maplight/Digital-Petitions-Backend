@@ -1,4 +1,5 @@
 enum AccessLevel {
+    NONE        # special case for users that haven't confirmed their email
     STAFF
     GUEST
     ADMIN
@@ -9,6 +10,13 @@ enum StaffAccessLevel {
     STAFF
     GUEST
     ADMIN
+}
+
+enum AccessLevelQuery {
+    STAFF
+    GUEST
+    ADMIN
+    PETITIONER
 }
 
 type User @aws_cognito_user_pools {
@@ -29,7 +37,7 @@ input StaffUserInput {
 input SearchUsersInput {
     searchName: String
     searchEmail: String
-    searchGroup: AccessLevel
+    searchGroup: AccessLevelQuery
 
     limit: Int
     cursor: ID

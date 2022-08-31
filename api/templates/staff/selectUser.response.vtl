@@ -13,8 +13,11 @@
 #foreach ($user in $data.items)
     #if ($user.permissions)
         #set($mapped = $permissionMapping.get($user.permissions))
-        $util.quiet($user.put("permissions", $mapped))
+    #else
+        #set($mapped = "NONE")
     #end
+
+    $util.quiet($user.put("permissions", $mapped))
 #end
 
 $util.toJson($data)
