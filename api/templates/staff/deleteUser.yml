@@ -1,0 +1,5 @@
+- dataSource: UserDataSource
+  type: Mutation
+  field: deleteStaffUser
+  request: staff/deleteUser.request.vtl
+  response: staff/deleteUser.response.vtl

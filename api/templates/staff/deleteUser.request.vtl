@@ -1,0 +1,13 @@
+#set($username = $context.arguments.username)
+
+#set($payload = { 
+    "type": "delete-user",
+    "username": "${username}",
+    "userPoolId": "${COGNITO_USER_POOL}"
+})
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}
