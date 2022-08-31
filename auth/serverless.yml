@@ -44,6 +44,7 @@ resources:
       userPoolId: { Value: { Ref: CognitoUserPoolAppUserPool } }
       userPoolClientId: { Value: { Ref: UserPoolWebClient } }
       userPoolProviderName: { Value: { Fn::GetAtt: [CognitoUserPoolAppUserPool, ProviderName] } }
+      adminLambdaArn: { Value: { Fn::GetAtt: [AdminActionsLambdaFunction, Arn] } }
 
 outputs:
   UserPoolId: { Ref: CognitoUserPoolAppUserPool }
@@ -53,3 +54,5 @@ outputs:
   PetitionerGroup: { Ref: PetitionerUserGroup }
   CityStaffGroup: { Ref: CityStaffUserGroup }
   AdminGroup: { Ref: AdminUserGroup }
+
+  AdminLambdaArn: { Fn::GetAtt: [AdminActionsLambdaFunction, Arn] }
