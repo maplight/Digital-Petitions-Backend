@@ -7,21 +7,34 @@ import { ACCESS_GROUP_ATTR, getGroups } from "../common";
 import type { NewUserEvent } from "./types";
 import { emailToUserName } from "./util";
 
+const allNonLetters = /[^a-zA-Z]/g;
+
 export async function handleCreateUser(event: NewUserEvent, client: CognitoIdentityProviderClient) {
     const username = emailToUserName(event.email);
+
+    const attributes = [
+        { Name: ACCESS_GROUP_ATTR, Value: event.permissions },
+        { Name: "email_verified", Value: "True" },
+        { Name: "email", Value: event.email }
+    ];
+
+    const firstName = event.firstName?.trim()?.replace(allNonLetters, "");
+
+    if (firstName) {
+        attributes.push({ Name: "given_name", Value: firstName });
+    }
+
+    const lastName = event.lastName?.trim()?.replace(allNonLetters, "");
+
+    if (lastName) {
+        attributes.push({ Name: "family_name", Value: lastName });
+    }
 
     const createCommand = new AdminCreateUserCommand({
         UserPoolId: event.userPoolId,
         Username: username,
         DesiredDeliveryMediums: ["EMAIL"],
-
-        UserAttributes: [
-            { Name: "given_name", Value: event.firstName },
-            { Name: "family_name", Value: event.lastName },
-            { Name: ACCESS_GROUP_ATTR, Value: event.permissions },
-            { Name: "email_verified", Value: "True" },
-            { Name: "email", Value: event.email }
-        ]
+        UserAttributes: attributes
     });
 
     const results = await client.send(createCommand);
