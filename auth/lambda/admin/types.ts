@@ -19,6 +19,17 @@ export type NewUserInput = {
     permissions: StaffAccessType;
 };
 
+export type Option<T> = { error: "None"; data: T } | { error: string };
+export type Connection<T> = { token?: string; items: T[] };
+
+export type User = {
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    username: string;
+    permissions: AccessGroupKeys;
+};
+
 export type NewUserEvent = EventCommon & {
     type: Actions.Create;
 } & NewUserInput;
@@ -31,7 +42,7 @@ export type SelectUserEvent = HasUserPoolId & {
     type: Actions.Select;
     searchName?: string;
     searchEmail?: string;
-    searchType?: StaffAccessType[];
+    searchType?: StaffAccessType;
     token?: string;
     limit?: number;
 };

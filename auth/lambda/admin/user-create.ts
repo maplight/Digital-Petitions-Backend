@@ -4,10 +4,13 @@ import {
     CognitoIdentityProviderClient
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ACCESS_GROUP_ATTR, getGroups } from "../common";
-import type { NewUserEvent } from "./types";
+import type { NewUserEvent, Option, User } from "./types";
 import { emailToUserName, sanitizeIdentifier } from "./util";
 
-export async function handleCreateUser(event: NewUserEvent, client: CognitoIdentityProviderClient) {
+export async function handleCreateUser(
+    event: NewUserEvent,
+    client: CognitoIdentityProviderClient
+): Promise<Option<User>> {
     const username = emailToUserName(event.email);
 
     const attributes = [
