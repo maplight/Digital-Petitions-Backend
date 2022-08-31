@@ -1,5 +1,20 @@
-#if($context.result.error != "None")
+#if ($context.result.error != "None")
     $util.error($context.result.error)
-#else
-    $util.toJson($context.result.data)
 #end
+
+#set($data = $context.result.data)
+#set($permissionMapping = {
+    "${USER_GUEST}": "GUEST",
+    "${USER_STAFF}": "STAFF",
+    "${USER_ADMIN}": "ADMIN"
+})
+
+#set($result = {
+    "firstName": $util.defaultIfNull(${data.firstName}, "Not set"),
+    "lastName": $util.defaultIfNull(${data.lastName}, "Not set"),
+    "access": $permissionMapping.get($data.permissions),
+    "username": "${data.username}",
+    "email": "${data.email}"
+})
+
+$util.toJson($result)
