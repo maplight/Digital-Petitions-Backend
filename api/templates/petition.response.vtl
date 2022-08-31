@@ -1,10 +1,11 @@
 #set($isAuthorized = false)
+#set($staffGroups = ["CityStaffGroup", "AdminGroup", "GuestStaffGroup"])
 
 #if ($context.error.type == "DynamoDB:ConditionalCheckFailedException")
 	$util.error("InvalidItemCheck")
 #elseif ($context.result.status.indexOf("A") == 0 && $context.identity.sub != $context.result.owner)
     #foreach ($group in $context.identity.claims.get("cognito:groups"))
-        #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+        #if ($staffGroups.contains($group))
             #set($isAuthorized = true)
         #end
     #end

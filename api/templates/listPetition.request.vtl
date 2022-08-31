@@ -2,6 +2,7 @@
 #set($target = $context.info.fieldName)
 
 #set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED", "INACTIVE", "ANY"])
+#set($staffGroups = ["CityStaffGroup", "AdminGroup", "GuestStaffGroup"])
 
 #set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
@@ -11,7 +12,7 @@
 #end
 
 #foreach ($group in $context.identity.claims.get("cognito:groups"))
-    #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+    #if ($staffGroups.contains($group))
         #set($isAuthorized = true)
         #set($isPublic = false)
     #end

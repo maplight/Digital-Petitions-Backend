@@ -32,4 +32,10 @@ type Mutation {
 
     rejectPetition(data: TargetPetitionInput!): Petition
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
+
+    createStaffUser(data: StaffUserInput!): StaffUser
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
+
+    deleteStaffUser(username: ID!): Boolean!
+    @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
 }

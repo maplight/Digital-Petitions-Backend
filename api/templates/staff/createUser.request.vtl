@@ -1,0 +1,22 @@
+#set($data = $context.arguments.data)
+
+#set($permissionMapping = {
+    "GUEST": "${USER_GUEST}",
+    "STAFF": "${USER_STAFF}",
+    "ADMIN": "${USER_ADMIN}"
+})
+
+#set($payload = { 
+    "type": "create-user",
+    "firstName": $data.firstName,
+    "lastName": $data.lastName,
+    "permissions": $permissionMapping.get($data.access),
+    "email": $data.email,
+    "userPoolId": "${COGNITO_USER_POOL}"
+})
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}

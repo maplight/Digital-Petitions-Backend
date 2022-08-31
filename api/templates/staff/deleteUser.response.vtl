@@ -1,0 +1,5 @@
+#if ($context.result.error != "None")
+    $util.error($context.result.error)
+#end
+
+$util.toJson(true)

@@ -8,6 +8,7 @@ services:
       userPoolId: ${backend-auth.userPoolId}
       petitionTableArn: ${backend-data.petitionTableArn}
       petitionTableName: ${backend-data.petitionTableName}
+      adminLambdaArn: ${backend-auth.adminLambdaArn}
 
   backend-auth-public:
     path: auth-public
