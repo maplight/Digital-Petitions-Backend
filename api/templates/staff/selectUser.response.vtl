@@ -1,0 +1,20 @@
+#if ($context.result.error != "None")
+    $util.error($context.result.error)
+#end
+
+#set($data = $context.result.data)
+#set($permissionMapping = {
+    "${USER_PETITIONER}": "PETITIONER",
+    "${USER_GUEST}": "GUEST",
+    "${USER_STAFF}": "STAFF",
+    "${USER_ADMIN}": "ADMIN"
+})
+
+#foreach ($user in $data.items)
+    #if ($user.permissions)
+        #set($mapped = $permissionMapping.get($user.permissions))
+        $util.quiet($user.put("permissions", $mapped))
+    #end
+#end
+
+$util.toJson($data)

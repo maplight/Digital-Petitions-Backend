@@ -1,0 +1,29 @@
+#set($query = $context.arguments.query)
+
+#set($payload = {
+    "type": "select-user",
+    "userPoolId": "${COGNITO_USER_POOL}"
+})
+
+#set($permissionMapping = {
+    "PETITIONER": "${USER_PETITIONER}",
+    "GUEST": "${USER_GUEST}",
+    "STAFF": "${USER_STAFF}",
+    "ADMIN": "${USER_ADMIN}"
+})
+
+#foreach ($entry in $query.entrySet())
+    #if ($entry.key == "searchGroup")
+        #set($mapped = $permissionMapping.get($entry.value))
+    #else
+        #set($mapped = $entry.value)
+    #end
+
+    $util.quiet($payload.put($entry.key, $entry.value))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}
