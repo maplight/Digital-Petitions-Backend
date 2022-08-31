@@ -49,13 +49,9 @@ export async function handleSelectUser(
                 input.Limit = pageLimit;
             }
 
-            const command = new ListUsersCommand({
-                UserPoolId: event.userPoolId,
-                Filter: filter,
-                PaginationToken: lastToken
-            });
-
+            const command = new ListUsersCommand(input);
             const items = await client.send(command);
+
             lastToken = items.PaginationToken;
 
             const users = items.Users?.map((user) => attributeListToUser(user.Attributes)) ?? [];
