@@ -19,6 +19,7 @@ custom:
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
   mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
   mySignatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
+  myAdminLambdaArn: ${param:adminLambdaArn, output:backend-api.AdminLambdaArn}
 
   esbuild:
     minify: true
@@ -68,6 +69,13 @@ custom:
       SIGNATURE_VERIFIED: "A2"
       SIGNATURE_APPROVED: "A3"
       SIGNATURE_REJECTED: "A4"
+
+      # user lambda request arguments mapping
+      USER_GUEST: "city_staff_guest"
+      USER_STAFF: "city_staff"
+      USER_ADMIN: "admin"
+
+      COGNITO_USER_POOL: ${self:custom.myUserPoolId}
 
     mappingTemplates:
       - ${file(./templates/echo.yml)}
