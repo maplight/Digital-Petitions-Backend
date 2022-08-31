@@ -52,11 +52,14 @@ export async function handleCreateUser(event: NewUserEvent, client: CognitoIdent
         await client.send(addToGroupCommand);
 
         return {
-            firstName: event.firstName,
-            lastName: event.lastName,
-            permissions: event.permissions,
-            email: event.email,
-            username
+            error: "None",
+            data: {
+                firstName: event.firstName,
+                lastName: event.lastName,
+                permissions: event.permissions,
+                email: event.email,
+                username
+            }
         };
     } catch (err) {
         return { error: (err as Error)?.name ?? "UnknownError" };
