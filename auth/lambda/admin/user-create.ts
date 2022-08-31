@@ -38,10 +38,9 @@ export async function handleCreateUser(event: NewUserEvent, client: CognitoIdent
         UserAttributes: attributes
     });
 
-    let user: UserType | undefined;
-
     try {
-        user = (await client.send(createCommand)).User;
+        await client.send(createCommand);
+
         const groups = await getGroups(event.userPoolId, client);
 
         const addToGroupCommand = new AdminAddUserToGroupCommand({
