@@ -2,33 +2,40 @@ enum AccessLevel {
     STAFF
     GUEST
     ADMIN
+    PETITIONER
 }
 
-type StaffUser @aws_cognito_user_pools {
+enum StaffAccessLevel {
+    STAFF
+    GUEST
+    ADMIN
+}
+
+type User @aws_cognito_user_pools {
     username: ID!
     email: String!
 
     firstName: String
     lastName: String
 
-    access: AccessLevel!
+    permissions: AccessLevel!
 }
 
 input StaffUserInput {
     email: String!
-    access: AccessLevel!
+    permissions: StaffAccessLevel!
 }
 
 input SearchUsersInput {
-    matchName: String
-    matchEmail: String
-    group: AccessLevel
+    searchName: String
+    searchEmail: String
+    searchGroup: AccessLevel
 
     limit: Int
     cursor: ID
 }
 
 type UserConnection @aws_cognito_user_pools {
-    items: [StaffUser!]!
+    items: [User!]!
     token: ID
 }
