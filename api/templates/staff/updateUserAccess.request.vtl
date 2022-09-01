@@ -17,6 +17,7 @@
 
 #set($payload = {
     "type": "update-user-access",
+    "username": $data.username,
     "permissions": $permissionMapping.get($data.permissions),
     "userPoolId": "${COGNITO_USER_POOL}"
 })
