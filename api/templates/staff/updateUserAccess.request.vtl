@@ -2,9 +2,12 @@
 
 ## this template should map an operation that doesn't
 ## allow the creation of petitioner users, only managing
-## admin access
+## admin access.
 
-#if ($data.permissions == "PETITIONER")
+## also, a user shouldn't be able to update their own
+## access level
+
+#if ($data.permissions == "PETITIONER" || $data.username == $context.identity.username)
     $util.error("InvalidParameter")
 #end
 
