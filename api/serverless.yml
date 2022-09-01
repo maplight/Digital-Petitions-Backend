@@ -75,6 +75,7 @@ custom:
       USER_GUEST: "city_staff_guest"
       USER_STAFF: "city_staff"
       USER_ADMIN: "admin"
+      USER_NONE: "none"
 
       COGNITO_USER_POOL: ${self:custom.myUserPoolId}
 
