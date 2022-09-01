@@ -56,7 +56,7 @@ export async function handleUpdateUserAccess(
         } else {
             const lookup = await getGroups(event.userPoolId, client);
             const target = lookup[event.permissions];
-            const attrib = [{ Name: ACCESS_GROUP_ATTR, Value: target }];
+            const attrib = [{ Name: ACCESS_GROUP_ATTR, Value: event.permissions }];
 
             const updateAttributesCommand = new AdminUpdateUserAttributesCommand({
                 ...common,
