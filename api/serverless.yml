@@ -90,6 +90,7 @@ custom:
       - ${file(./templates/staff/createUser.yml)}
       - ${file(./templates/staff/deleteUser.yml)}
       - ${file(./templates/staff/selectUser.yml)}
+      - ${file(./templates/staff/updateUserAccess.yml)}
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}
