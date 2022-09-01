@@ -39,6 +39,7 @@ Resources:
                   - cognito-idp:AdminListGroupsForUser
                   - cognito-idp:AdminRemoveUserFromGroup
                   - cognito-idp:AdminDeleteUser
+                  - cognito-idp:AdminGetUser
                   - cognito-idp:AdminSetUserPassword
                   - cognito-idp:AdminEnableUser
                   - cognito-idp:AdminDisableUser
