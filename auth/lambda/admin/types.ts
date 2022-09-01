@@ -11,7 +11,7 @@ export enum Actions {
     Create = "create-user",
     Delete = "delete-user",
     Select = "select-user",
-    SetAccess = "set-user-access"
+    UpdateAccess = "update-user-access"
 }
 
 export type NewUserInput = {
@@ -39,8 +39,8 @@ export type DeleteUserEvent = HasUserPoolId & {
     type: Actions.Delete;
 } & HasUserTarget;
 
-export type SetUserAccessEvent = HasUserPoolId & {
-    type: Actions.SetAccess;
+export type UpdateUserAccessEvent = HasUserPoolId & {
+    type: Actions.UpdateAccess;
     permissions: AccessGroupKeys | "none";
 } & HasUserTarget;
 
@@ -53,4 +53,8 @@ export type SelectUserEvent = HasUserPoolId & {
     limit?: number;
 };
 
-export type AdminLambdaEvent = NewUserEvent | DeleteUserEvent | SelectUserEvent;
+export type AdminLambdaEvent =
+    | NewUserEvent
+    | DeleteUserEvent
+    | SelectUserEvent
+    | UpdateUserAccessEvent;
