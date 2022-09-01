@@ -1,6 +1,7 @@
 import {
     AdminAddUserToGroupCommand,
     AdminDisableUserCommand,
+    AdminEnableUserCommand,
     AdminGetUserCommand,
     AdminListGroupsForUserCommand,
     AdminRemoveUserFromGroupCommand,
@@ -68,6 +69,11 @@ export async function handleUpdateUserAccess(
                 GroupName: target
             });
             await client.send(addToGroupCommand);
+
+            if (!user.Enabled) {
+                const enableUserCommand = new AdminEnableUserCommand(common);
+                await client.send(enableUserCommand);
+            }
         }
 
         return { error: "None", data: { ...parsedUser, permissions: event.permissions as any } };
