@@ -10,7 +10,8 @@ export type StaffAccessType = Exclude<AccessGroupKeys, AccessGroupKeys.Petitione
 export enum Actions {
     Create = "create-user",
     Delete = "delete-user",
-    Select = "select-user"
+    Select = "select-user",
+    SetAccess = "set-user-access"
 }
 
 export type NewUserInput = {
@@ -36,6 +37,11 @@ export type NewUserEvent = EventCommon & {
 
 export type DeleteUserEvent = HasUserPoolId & {
     type: Actions.Delete;
+} & HasUserTarget;
+
+export type SetUserAccessEvent = HasUserPoolId & {
+    type: Actions.SetAccess;
+    permissions: AccessGroupKeys | "none";
 } & HasUserTarget;
 
 export type SelectUserEvent = HasUserPoolId & {
