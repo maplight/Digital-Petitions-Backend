@@ -95,12 +95,14 @@ custom:
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}
       - ${file(./templates/signatures.byPetition.yml)}
+      - ${file(./templates/signatures.petitionSummary.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
       - ${file(./data/echo.yml)}
       - ${file(./data/signatures.yml)}
       - ${file(./data/users.yml)}
+      - ${file(./data/none.yml)}
 
     xrayEnabled: true
     # wafConfig:

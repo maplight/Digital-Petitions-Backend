@@ -39,6 +39,8 @@
 
 #set($expressionSet = { 
     "updatedAt": $util.time.nowISO8601(),
+    "requiredSignatures": $context.arguments.data.requiredSignatures,
+    "deadline": $context.arguments.data.deadline,
     "status": "${targetStatus}"
 })
 
