@@ -13,6 +13,8 @@ custom:
   app:
     bucketId: ${param:assetsBucketId, output:frontend-assets.AssetsBucketId}
     bucketName: ${param:assetsBucketName, output:frontend-assets.AssetsBucketName}
+    bucketDomain: ${param:assetsBucketDomain, output:frontend-assets.AssetsBucketDomain}
+
     buildCommand: npm run build
     repositoryUrl: ${param:repositoryUrl, "https://github.com/maplight/Digital-Petitions.git"}
     targetBranch: ${param:targetBranch, "develop"}
@@ -97,7 +99,7 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
 
           Origins:
-            - DomainName: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] }
+            - DomainName: ${self:custom.app.bucketDomain}
               Id: ${self:custom.app.bucketId}
               S3OriginConfig:
                 OriginAccessIdentity: { Fn::Join: ["/", ["origin-access-identity", "cloudfront", { Ref: FrontendAccessIdentity }]] }
