@@ -1,0 +1,35 @@
+app: e-signatures
+org: maplighttech
+service: frontend-assets
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+custom:
+  app:
+    bucketId: ${self:provider.stage}-main-bucket
+    bucketName: ${self:provider.stage}-frontend-dist-bucket
+
+resources:
+  Resources:
+    FrontendDistBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.app.bucketName}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+  Outputs:
+    AssetsBucketName: { Value: "${self:custom.app.bucketName}" }
+    AssetsBucketId: { Value: "${self:custom.app.bucketId}" }
+
+outputs:
+  assetsBucketName: ${self:custom.app.bucketName}
+  assetsBucketId: ${self:custom.app.bucketId}
