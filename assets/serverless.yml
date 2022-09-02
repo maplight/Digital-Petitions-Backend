@@ -27,9 +27,9 @@ resources:
           RestrictPublicBuckets: true
 
   Outputs:
-    AssetsBucketName: { Value: "${self:custom.app.bucketName}" }
-    AssetsBucketId: { Value: "${self:custom.app.bucketId}" }
+    assetsBucketName: { Value: "${self:custom.app.bucketName}" }
+    assetsBucketId: { Value: "${self:custom.app.bucketId}" }
 
 outputs:
-  assetsBucketName: ${self:custom.app.bucketName}
-  assetsBucketId: ${self:custom.app.bucketId}
+  AssetsBucketName: ${self:custom.app.bucketName}
+  AssetsBucketId: ${self:custom.app.bucketId}
