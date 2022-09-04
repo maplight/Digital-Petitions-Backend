@@ -9,15 +9,29 @@ provider:
   runtime: nodejs14.x
   stage: ${opt:stage, "dev"}
 
+functions:
+  manageAssets:
+    handler: lambda/dynamic-assets/index.handler
+    role: AssetManagementLambdaRole
+
 custom:
   app:
     bucketId: ${self:provider.stage}-main-bucket
     bucketName: ${self:provider.stage}-frontend-dist-bucket
 
+  esbuild:
+    minify: true
+    watch:
+      pattern: ["lambda/**/*.ts"]
+      ignore: ["./serverles/**/*", ".build"]
+
+plugins:
+  - serverless-esbuild
+
 resources:
   Resources:
     FrontendDistBucket:
-      Type: AWS::S3::Bucket
+      Type: "AWS::S3::Bucket"
       Properties:
         BucketName: ${self:custom.app.bucketName}
         PublicAccessBlockConfiguration:
@@ -25,6 +39,42 @@ resources:
           BlockPublicPolicy: true
           IgnorePublicAcls: true
           RestrictPublicBuckets: true
+
+    AssetManagementLambdaRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.stage}-AssetManagementLambdaRole
+
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+
+        Policies:
+          - PolicyName: ${self:provider.stage}-AssetManagementLambdaPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource:
+                    - { Fn::Join: [":", ["arn:aws:logs", { Ref: "AWS::Region" }, { Ref: "AWS::AccountId" }, "log-group:/aws/lambda/*:*:*"]] }
+
+                - Effect: Allow
+                  Action:
+                    - s3:ListBucket
+                    - s3:GetObject
+                    - s3:PutObject
+                  Resource:
+                    - { Fn::GetAtt: [FrontendDistBucket, Arn] }
+                    - { Fn::Join: ["/", [{ Fn::GetAtt: [FrontendDistBucket, Arn] }, "*"]] }
 
   Outputs:
     assetsBucketName: { Value: "${self:custom.app.bucketName}" }
