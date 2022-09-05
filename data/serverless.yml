@@ -12,15 +12,24 @@ provider:
 resources:
   - ${file(./tables/petitions.yml)}
   - ${file(./tables/signatures.yml)}
+  - ${file(./tables/site-config.yml)}
 
   - Outputs:
       petitionTableName: { Value: { Ref: PetitionsTable } }
       petitionTableArn: { Value: { Fn::GetAtt: [PetitionsTable, Arn] } }
+
       signatureTableName: { Value: { Ref: SignaturesTable } }
       signatureTableArn: { Value: { Fn::GetAtt: [SignaturesTable, Arn] } }
+
+      siteConfigTableName: { Value: { Ref: SiteConfigurationTable } }
+      siteConfigTableArn: { Value: { Fn::GetAtt: [SiteConfigurationTable, Arn] } }
 
 outputs:
   PetitionsTableName: { Ref: PetitionsTable }
   PetitionsTableArn: {  Fn::GetAtt: [PetitionsTable, Arn] }
+
   SignaturesTableName: { Ref: SignaturesTable }
   SignaturesTableArn: { Fn::GetAtt: [SignaturesTable, Arn] }
+
+  SiteConfigTableName: { Ref: SiteConfigurationTable }
+  SiteConfigTableArn: { Fn::GetAtt: [SiteConfigurationTable, Arn] }
