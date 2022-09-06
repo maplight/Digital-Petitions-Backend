@@ -15,11 +15,19 @@ provider:
 
 custom:
   myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+  myAssetsBucketName: ${param:assetsBucketName, output:frontend-assets.AssetsBucketName}
+
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
+
   mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
   mySignatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
+
+  mySiteConfigTableName: ${param:siteConfigTableName, output:backend-data.SiteConfigTableName}
+  mySiteConfigTableArn: ${param:siteConfigTableArn, output:backend-data.SiteConfigTableArn}
+
   myAdminLambdaArn: ${param:adminLambdaArn, output:backend-auth.AdminLambdaArn}
+  myAssetsLambdaArn: ${param:assetsLambdaArn, output:frontend-assets.AssetsLambdaArn}
 
   esbuild:
     minify: true
@@ -77,7 +85,10 @@ custom:
       USER_ADMIN: "admin"
       USER_NONE: "none"
 
+      # values to be replaced in lambda invocations
+      # that require them
       COGNITO_USER_POOL: ${self:custom.myUserPoolId}
+      ASSETS_BUCKET_NAME: ${self:custom.myAssetsBucketName}
 
     mappingTemplates:
       - ${file(./templates/echo.yml)}
@@ -96,6 +107,11 @@ custom:
       - ${file(./templates/petition.byId.yml)}
       - ${file(./templates/signatures.byPetition.yml)}
       - ${file(./templates/signatures.petitionSummary.yml)}
+      - ${file(./templates/admin/siteConfiguration.yml)}
+      - ${file(./templates/admin/siteConfiguration.update.yml)}
+      - ${file(./templates/admin/siteResource.listByType.yml)}
+      - ${file(./templates/admin/siteResource.versionByType.yml)}
+      - ${file(./templates/admin/siteResource.uploadUrlByType.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
@@ -103,6 +119,7 @@ custom:
       - ${file(./data/signatures.yml)}
       - ${file(./data/users.yml)}
       - ${file(./data/none.yml)}
+      - ${file(./data/assets.yml)}
 
     xrayEnabled: true
     # wafConfig:

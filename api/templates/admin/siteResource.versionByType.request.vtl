@@ -1,0 +1,19 @@
+#set($query = $context.arguments.query)
+
+#set($assetTypeMapping = {
+    "LOGO": "site-logo"
+})
+
+#set($targetType = $assetTypeMapping.get($query.type))
+
+#set($payload = {
+    "type": "get-current-version",
+    "target": $targetType,
+    "bucketId": "${ASSETS_BUCKET_NAME}"
+})
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}

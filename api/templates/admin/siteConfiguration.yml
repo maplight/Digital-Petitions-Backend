@@ -1,0 +1,5 @@
+- dataSource: AssetsConfigDataSource
+  type: Query
+  field: siteConfiguration
+  request: admin/siteConfiguration.request.vtl
+  response: admin/siteConfiguration.response.vtl

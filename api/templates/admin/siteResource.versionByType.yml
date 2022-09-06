@@ -1,0 +1,5 @@
+- dataSource: AssetsDataSource
+  type: Query
+  field: getResourceVersion
+  request: admin/siteResource.versionByType.request.vtl
+  response: admin/siteResource.versionByType.response.vtl

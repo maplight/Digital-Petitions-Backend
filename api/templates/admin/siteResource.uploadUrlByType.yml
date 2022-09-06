@@ -1,0 +1,5 @@
+- dataSource: AssetsDataSource
+  type: Query
+  field: getResourceUploadURL
+  request: admin/siteResource.uploadUrlByType.request.vtl
+  response: admin/siteResource.uploadUrlByType.response.vtl

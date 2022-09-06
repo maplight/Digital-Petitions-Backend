@@ -1,0 +1,46 @@
+enum AssetType {
+    LOGO
+}
+
+input ListResourcesInput {
+    type: AssetType!
+
+    limit: Int
+    cursor: ID
+}
+
+type ResourceConnection @aws_iam @aws_cognito_user_pools {
+    items: [String!]!
+    token: ID
+}
+
+input GetResourceVersionInput {
+    type: AssetType!
+}
+
+input GetResourceUploadURLInput {
+    type: AssetType!
+}
+
+input SiteConfigurationInput {
+    highlightColor: ID
+    buttonColor: ID
+    logoImage: ID
+    headerColor: ID
+    expectedVersion: Int!
+}
+
+type SiteConfiguration @aws_iam @aws_cognito_user_pools {
+    highlightColor: ID
+    buttonColor: ID
+    logoImage: ID
+    headerColor: ID
+    version: Int!
+}
+
+type SiteConfigurationSubscription @aws_iam @aws_cognito_user_pools {
+    highlightColor: ID
+    buttonColor: ID
+    logoImage: ID
+    headerColor: ID
+}

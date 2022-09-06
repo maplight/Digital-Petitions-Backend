@@ -1,0 +1,5 @@
+- dataSource: AssetsConfigDataSource
+  type: Mutation
+  field: updateSiteConfiguration
+  request: admin/siteConfiguration.update.request.vtl
+  response: admin/siteConfiguration.response.vtl

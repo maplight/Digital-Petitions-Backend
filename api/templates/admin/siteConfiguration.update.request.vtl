@@ -1,0 +1,85 @@
+#set($expressionNames = {})
+#set($expressionValues = {})
+#set($expression = "SET")
+#set($colorRegExp = "#[a-fA-F0-9]{6}")
+
+#set($data = $context.arguments.data)
+#set($validRequest = false)
+
+#if ($data.expectedVersion == 1)
+    #set($operation = "PutItem")
+    #set($values = { "version": 2 })
+#end
+
+#foreach ($entry in $data.entrySet())
+    #if ($entry.key != "expectedVersion")
+        #if ($entry.key.endsWith("Color") && !$util.matches($colorRegExp, $entry.value))
+            $util.error("InvalidColorValue")
+        #end
+
+        #if ($operation == "PutItem")
+            $util.quiet($values.put($entry.key, $entry.value))
+        #else
+            #if ($expression == "SET")
+                #set($expression = "${expression} #${entry.key} = :${entry.key}")
+            #else
+                #set($expression = "${expression}, #${entry.key} = :${entry.key}")
+            #end
+
+            $util.quiet($expressionNames.put("#${entry.key}", $entry.key))
+            $util.quiet($expressionValues.put(":${entry.key}", $entry.value))
+        #end
+
+        #set($validRequest = true)
+    #elseif ($operation != "PutItem")
+        #set($conditionExpression = "#version = :version")
+        #set($conditionNames = { "#version": "version" })
+        #set($conditionValues = { ":version": $entry.value })
+    #end
+#end
+
+#if ($operation != "PutItem")
+    #if ($expression == "SET")
+        #if ($data.expectedVersion != 1)
+            $util.error("BadRequest")
+        #end
+
+        #set($operation = "GetItem")
+    #else
+        #set($operation = "UpdateItem")
+
+        $util.quiet($expressionValues.put(":one", 1))
+        $util.quiet($expressionNames.put("#version", "version"))
+
+        #set($expression = "${expression} ADD #version :one")
+    #end
+#elseif ($validRequest == false)
+    #set($operation = "GetItem")
+    $util.error("BadRequest")
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "${operation}",
+    "key": {
+        "PK": $util.dynamodb.toDynamoDBJson("SITE:CONFIG"),
+        "SK": $util.dynamodb.toDynamoDBJson("MAIN")
+    }
+#if ($operation == "PutItem")
+    ,"attributeValues": $util.dynamodb.toMapValuesJson($values),
+    "condition": {
+        "expression": "attribute_not_exists(PK)"
+    }
+#elseif ($operation == "UpdateItem")
+    ,"update": {
+        "expression": "${expression}",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    },
+    "condition": {
+        "expression": "${conditionExpression}",
+        "expressionNames": $util.toJson($conditionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($conditionValues)
+    }
+#end
+}

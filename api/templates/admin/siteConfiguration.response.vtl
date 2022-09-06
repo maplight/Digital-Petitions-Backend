@@ -1,0 +1,15 @@
+#if ($context.error.type == "DynamoDB:ConditionalCheckFailedException")
+    $util.error("InvalidItemCheck")
+#end
+
+#set($defaultColor = "#6284FD")
+
+#set($data = {
+    "highlightColor": $util.defaultIfNull($context.result.highlightColor, $defaultColor),
+    "buttonColor": $util.defaultIfNull($context.result.buttonColor, $defaultColor),
+    "logoImage": $context.result.logoImage,
+    "headerColor": $util.defaultIfNull($context.result.headerColor, $defaultColor),
+    "version": $util.defaultIfNull($context.result.version, 1)
+})
+
+$util.toJson($data)

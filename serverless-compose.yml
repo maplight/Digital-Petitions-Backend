@@ -8,7 +8,13 @@ services:
       userPoolId: ${backend-auth.userPoolId}
       petitionTableArn: ${backend-data.petitionTableArn}
       petitionTableName: ${backend-data.petitionTableName}
+      signatureTableArn: ${backend-data.signatureTableArn}
+      signatureTableName: ${backend-data.signatureTableName}
+      siteConfigTableArn: ${backend-data.siteConfigTableArn}
+      siteConfigTableName: ${backend-data.siteConfigTableName}
       adminLambdaArn: ${backend-auth.adminLambdaArn}
+      assetsLambdaArn: ${frontend-assets.assetsLambdaArn}
+      assetsBucketName: ${frontend-assets.assetsBucketName}
 
   backend-auth-public:
     path: auth-public

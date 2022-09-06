@@ -1,0 +1,5 @@
+- dataSource: AssetsDataSource
+  type: Query
+  field: getSiteResources
+  request: admin/siteResource.listByType.request.vtl
+  response: admin/siteResource.listByType.response.vtl
