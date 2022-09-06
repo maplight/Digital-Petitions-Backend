@@ -1,4 +1,23 @@
 - type: AWS_LAMBDA
   name: AssetsDataSource
+  description: "Datasource for adding and listing configurable site resources"
   config:
     lambdaFunctionArn: ${self:custom.myAssetsLambdaArn}
+
+- type: AMAZON_DYNAMODB
+  name: AssetsConfigDataSource
+  description: "Datasource for storing site configuration, data should reference items added by using AssetsDataSource"
+  config:
+    tableName: ${self:custom.myPetitionTableName}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:DeleteItem
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource:
+          - ${self:custom.myPetitionTableArn}
+          - { Fn::Join: ["/", ["${self:custom.myPetitionTableArn}", "*"]] }

@@ -1,17 +1,17 @@
-type: AMAZON_DYNAMODB
-name: SignatureDataSource
-description: "Datasource giving access to signature data, backed by a DynamoDB table"
-config:
-  tableName: ${self:custom.mySignatureTableName}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:DeleteItem
-        - dynamodb:Scan
-        - dynamodb:Query
-        - dynamodb:UpdateItem
-      Resource:
-        - ${self:custom.mySignatureTableArn}
-        - { Fn::Join: ["/", ["${self:custom.mySignatureTableArn}", "*"]] }
+- type: AMAZON_DYNAMODB
+  name: SignatureDataSource
+  description: "Datasource giving access to signature data, backed by a DynamoDB table"
+  config:
+    tableName: ${self:custom.mySignatureTableName}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:DeleteItem
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource:
+          - ${self:custom.mySignatureTableArn}
+          - { Fn::Join: ["/", ["${self:custom.mySignatureTableArn}", "*"]] }
