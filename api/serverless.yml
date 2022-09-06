@@ -15,10 +15,16 @@ provider:
 
 custom:
   myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
+
   mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
   mySignatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
+
+  mySiteConfigTableName: ${param:siteConfigTableName, output:backend-data.SiteConfigTableName}
+  mySiteConfigTableArn: ${param:siteConfigTableArn, output:backend-data.SiteConfigTableArn}
+
   myAdminLambdaArn: ${param:adminLambdaArn, output:backend-auth.AdminLambdaArn}
   myAssetsLambdaArn: ${param:assetsLambdaArn, output:frontend-assets.AssetsLambdaArn}
 
