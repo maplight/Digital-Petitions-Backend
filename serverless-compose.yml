@@ -9,6 +9,7 @@ services:
       petitionTableArn: ${backend-data.petitionTableArn}
       petitionTableName: ${backend-data.petitionTableName}
       adminLambdaArn: ${backend-auth.adminLambdaArn}
+      assetsLambdaArn: ${frontend-assets.assetsLambdaArn}
 
   backend-auth-public:
     path: auth-public

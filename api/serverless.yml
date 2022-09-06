@@ -20,6 +20,7 @@ custom:
   mySignatureTableName: ${param:signatureTableName, output:backend-data.SignaturesTableName}
   mySignatureTableArn: ${param:signatureTableArn, output:backend-data.SignaturesTableArn}
   myAdminLambdaArn: ${param:adminLambdaArn, output:backend-auth.AdminLambdaArn}
+  myAssetsLambdaArn: ${param:assetsLambdaArn, output:frontend-assets.AssetsLambdaArn}
 
   esbuild:
     minify: true
