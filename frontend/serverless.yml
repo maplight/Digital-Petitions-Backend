@@ -31,10 +31,10 @@ custom:
   scriptable:
     hooks:
       after:deploy:deploy:
-        - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch ${self:custom.app.targetBranch} ${self:custom.app.repositoryUrl} . || git pull)
-        - (cd ./.app && git checkout ${self:custom.app.targetBranch} && git pull)
+        - (cd .app || (mkdir .app && cd .app)) && (git clone --single-branch --branch ${self:custom.app.targetBranch} ${self:custom.app.repositoryUrl} . || git pull)
+        - (cd .app && git checkout ${self:custom.app.targetBranch} && git pull)
         - ./scripts/generate-env.js
-        - (cd ./.app && npm install && ${self:custom.app.buildCommand})
+        - (cd .app && npm install && ${self:custom.app.buildCommand})
 
   s3Sync:
     - bucketName: ${self:custom.app.distBucketName}
