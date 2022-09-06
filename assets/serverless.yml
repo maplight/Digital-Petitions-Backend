@@ -80,8 +80,10 @@ resources:
     assetsBucketName: { Value: "${self:custom.app.bucketName}" }
     assetsBucketId: { Value: "${self:custom.app.bucketId}" }
     assetsBucketDomain: { Value: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] } }
+    assetsLambdaArn: { Value: { Fn::GetAtt: [ManageAssetsLambdaFunction, Arn] } }
 
 outputs:
   AssetsBucketName: ${self:custom.app.bucketName}
   AssetsBucketId: ${self:custom.app.bucketId}
   AssetsBucketDomain: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] }
+  AssetsLambdaArn: { Fn::GetAtt: [ManageAssetsLambdaFunction, Arn] }
