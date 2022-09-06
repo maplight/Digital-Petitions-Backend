@@ -2,10 +2,10 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getNewResourceTargetFile, ONE_HOUR } from "./util";
 
-import type { AssetsEvent } from "./types";
+import type { SingleItemEvent } from "./types";
 
 export async function handleGetUploadUrl(
-    event: AssetsEvent,
+    event: SingleItemEvent,
     client: S3Client
 ): Promise<string | null> {
     try {

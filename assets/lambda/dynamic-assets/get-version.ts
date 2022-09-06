@@ -4,11 +4,11 @@ import {
     ListObjectsV2CommandInput,
     _Object
 } from "@aws-sdk/client-s3";
-import type { AssetsEvent } from "./types";
+import type { SingleItemEvent } from "./types";
 import { extractDate, getResourcePrefix } from "./util";
 
 export async function handleGetCurrentVersion(
-    event: AssetsEvent,
+    event: SingleItemEvent,
     client: S3Client
 ): Promise<string | null> {
     try {
