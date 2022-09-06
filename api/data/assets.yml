@@ -8,7 +8,7 @@
   name: AssetsConfigDataSource
   description: "Datasource for storing site configuration, data should reference items added by using AssetsDataSource"
   config:
-    tableName: ${self:custom.myPetitionTableName}
+    tableName: ${self:custom.mySiteConfigTableName}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -19,5 +19,5 @@
           - dynamodb:Query
           - dynamodb:UpdateItem
         Resource:
-          - ${self:custom.myPetitionTableArn}
-          - { Fn::Join: ["/", ["${self:custom.myPetitionTableArn}", "*"]] }
+          - ${self:custom.mySiteConfigTableArn}
+          - { Fn::Join: ["/", ["${self:custom.mySiteConfigTableArn}", "*"]] }
