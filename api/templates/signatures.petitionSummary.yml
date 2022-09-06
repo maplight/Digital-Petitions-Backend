@@ -1,0 +1,11 @@
+- dataSource: NoneDataSource
+  type: IssuePetition
+  field: signatureSummary
+  request: signatures.petitionSummary.request.vtl
+  response: signatures.petitionSummary.response.vtl
+
+- dataSource: NoneDataSource
+  type: CandidatePetition
+  field: signatureSummary
+  request: signatures.petitionSummary.request.vtl
+  response: signatures.petitionSummary.response.vtl

@@ -1,0 +1,32 @@
+#set($data = $context.arguments.data)
+
+## this template should map an operation that doesn't
+## allow the creation of petitioner users, only managing
+## admin access.
+
+## also, a user shouldn't be able to update their own
+## access level
+
+#if ($data.permissions == "PETITIONER" || $data.username == $context.identity.username)
+    $util.error("InvalidParameter")
+#end
+
+#set($permissionMapping = {
+    "GUEST": "${USER_GUEST}",
+    "STAFF": "${USER_STAFF}",
+    "ADMIN": "${USER_ADMIN}",
+    "NONE": "${USER_NONE}"
+})
+
+#set($payload = {
+    "type": "update-user-access",
+    "username": $data.username,
+    "permissions": $permissionMapping.get($data.permissions),
+    "userPoolId": "${COGNITO_USER_POOL}"
+})
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}

@@ -1,0 +1,5 @@
+- dataSource: UserDataSource
+  type: Mutation
+  field: updateUserAccess
+  request: staff/updateUserAccess.request.vtl
+  response: staff/createUser.response.vtl

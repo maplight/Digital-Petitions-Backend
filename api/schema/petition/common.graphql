@@ -70,3 +70,11 @@ input TargetPetitionInput {
     expectedVersion: Int!
     PK: ID!
 }
+
+input ApprovePetitionInput {
+    expectedVersion: Int!
+    PK: ID!
+
+    deadline: AWSDateTime!
+    requiredSignatures: Int!
+}

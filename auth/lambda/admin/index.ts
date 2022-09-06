@@ -6,6 +6,7 @@ import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-
 import { handleCreateUser } from "./user-create";
 import { handleDeleteUser } from "./user-delete";
 import { handleSelectUser } from "./user-select";
+import { handleUpdateUserAccess } from "./user-update-access";
 
 const client = new CognitoIdentityProviderClient({});
 
@@ -19,6 +20,9 @@ export const handler: Handler<AdminLambdaEvent> = async (event): Promise<any> =>
 
         case Actions.Select:
             return await handleSelectUser(event, client);
+
+        case Actions.UpdateAccess:
+            return await handleUpdateUserAccess(event, client);
 
         default:
             console.log("Unsupported action requested");

@@ -43,6 +43,11 @@ input SearchUsersInput {
     cursor: ID
 }
 
+input UpdateUserAccessInput {
+    username: ID!
+    permissions: AccessLevel!
+}
+
 type UserConnection @aws_cognito_user_pools {
     items: [User!]!
     token: ID
