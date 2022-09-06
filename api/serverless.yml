@@ -109,6 +109,7 @@ custom:
       - ${file(./templates/signatures.petitionSummary.yml)}
       - ${file(./templates/admin/siteConfiguration.yml)}
       - ${file(./templates/admin/siteResource.listByType.yml)}
+      - ${file(./templates/admin/siteResource.versionByType.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}
