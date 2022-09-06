@@ -37,10 +37,3 @@ type SiteConfiguration @aws_iam @aws_cognito_user_pools {
     headerColor: ID
     version: Int!
 }
-
-type SiteConfigurationSubscription @aws_iam @aws_cognito_user_pools {
-    highlightColor: ID
-    buttonColor: ID
-    logoImage: ID
-    headerColor: ID
-}

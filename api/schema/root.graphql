@@ -62,7 +62,7 @@ type Mutation {
 }
 
 type Subscription {
-    updatedSiteConfiguration: SiteConfigurationSubscription
+    updatedSiteConfiguration: SiteConfiguration
     @aws_subscribe(mutations: ["updateSiteConfiguration"])
     @aws_iam @aws_cognito_user_pools
 }
