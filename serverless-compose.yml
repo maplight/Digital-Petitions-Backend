@@ -20,9 +20,15 @@ services:
   backend-data:
     path: data
 
+  frontend-assets:
+    path: assets
+
   frontend:
     path: frontend
     params:
+      assetsBucketName: ${frontend-assets.assetsBucketName}
+      assetsBucketId: ${frontend-assets.assetsBucketId}
+      assetsBucketDomain: ${frontend-assets.assetsBucketDomain}
       userPoolId: ${backend-auth.userPoolId}
       userPoolClientId: ${backend-auth.userPoolClientId}
       apiEndpoint: ${backend-api.apiEndpoint}

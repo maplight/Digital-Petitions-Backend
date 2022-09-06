@@ -11,9 +11,16 @@ provider:
 
 custom:
   app:
-    bucketId: ${self:provider.stage}-main-bucket
-    bucketName: ${self:provider.stage}-frontend-dist-bucket
+    bucketId: ${param:assetsBucketId, output:frontend-assets.AssetsBucketId}
+    bucketName: ${param:assetsBucketName, output:frontend-assets.AssetsBucketName}
+    bucketDomain: ${param:assetsBucketDomain, output:frontend-assets.AssetsBucketDomain}
+
+    distBucketId: ${self:provider.stage}-static-main-bucket
+    distBucketName: ${self:provider.stage}-frontend-static-dist-bucket
+
     buildCommand: npm run build
+    repositoryUrl: ${param:repositoryUrl, "https://github.com/maplight/Digital-Petitions.git"}
+    targetBranch: ${param:targetBranch, "develop"}
 
     userPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
     userPoolClientId: ${param:userPoolClientId, output:backend-auth.UserPoolClientId}
@@ -24,23 +31,22 @@ custom:
   scriptable:
     hooks:
       after:deploy:deploy:
-        - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch develop https://github.com/maplight/Digital-Petitions.git . || git pull)
-        - (cd ./.app && git checkout develop && git pull)
+        - (cd ./.app || (mkdir .app && cd ./.app)) && (git clone --single-branch --branch ${self:custom.app.targetBranch} ${self:custom.app.repositoryUrl} . || git pull)
+        - (cd ./.app && git checkout ${self:custom.app.targetBranch} && git pull)
         - ./scripts/generate-env.js
         - (cd ./.app && npm install && ${self:custom.app.buildCommand})
 
   s3Sync:
-    - bucketName: ${self:custom.app.bucketName}
+    - bucketName: ${self:custom.app.distBucketName}
       localDir: ./.app/dist/digital-petitions/
       deleteRemoved: true
-      defaultContentType: text/html
 
 resources:
   Resources:
     FrontendDistBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.app.bucketName}
+        BucketName: ${self:custom.app.distBucketName}
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
           BlockPublicPolicy: true
@@ -64,6 +70,24 @@ resources:
                     - { Ref: FrontendAccessIdentity }
             Action: s3:GetObject
             Resource: arn:aws:s3:::${self:custom.app.bucketName}/*
+
+    FrontendAccessControlDistBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: ${self:custom.app.distBucketName}
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            Sid: AllowCloudFrontReadOnly
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - " "
+                  - - "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity"
+                    - { Ref: FrontendAccessIdentity }
+            Action: s3:GetObject
+            Resource: arn:aws:s3:::${self:custom.app.distBucketName}/*
 
     FrontendAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
@@ -91,11 +115,26 @@ resources:
             OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # S3-CORS
 
             Compress: true
-            TargetOriginId: ${self:custom.app.bucketId}
+            TargetOriginId: ${self:custom.app.distBucketId}
             ViewerProtocolPolicy: redirect-to-https
 
+          CacheBehaviors:
+            - TargetOriginId: ${self:custom.app.bucketId}
+              ViewerProtocolPolicy: redirect-to-https
+              PathPattern: /_assets
+              CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6         # CachingOptimized
+              OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # S3-CORS
+
+              Compress: true
+
           Origins:
+            # app files
             - DomainName: { Fn::GetAtt: [FrontendDistBucket, RegionalDomainName] }
+              Id: ${self:custom.app.distBucketId}
+              S3OriginConfig:
+                OriginAccessIdentity: { Fn::Join: ["/", ["origin-access-identity", "cloudfront", { Ref: FrontendAccessIdentity }]] }
+
+            - DomainName: ${self:custom.app.bucketDomain}
               Id: ${self:custom.app.bucketId}
               S3OriginConfig:
                 OriginAccessIdentity: { Fn::Join: ["/", ["origin-access-identity", "cloudfront", { Ref: FrontendAccessIdentity }]] }
