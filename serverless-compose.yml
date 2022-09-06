@@ -14,6 +14,7 @@ services:
       siteConfigTableName: ${backend-data.siteConfigTableName}
       adminLambdaArn: ${backend-auth.adminLambdaArn}
       assetsLambdaArn: ${frontend-assets.assetsLambdaArn}
+      assetsBucketName: ${frontend-assets.assetsBucketName}
 
   backend-auth-public:
     path: auth-public

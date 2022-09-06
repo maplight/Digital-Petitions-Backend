@@ -15,6 +15,7 @@ provider:
 
 custom:
   myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+  myAssetsBucketName: ${param:assetsBucketName, output:frontend-assets.AssetsBucketName}
 
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
   myPetitionTableArn: ${param:petitionTableArn, output:backend-data.PetitionsTableArn}
@@ -85,6 +86,7 @@ custom:
       USER_NONE: "none"
 
       COGNITO_USER_POOL: ${self:custom.myUserPoolId}
+      ASSETS_BUCKET_NAME: ${self:custom.myAssetsBucketName}
 
     mappingTemplates:
       - ${file(./templates/echo.yml)}
@@ -110,6 +112,7 @@ custom:
       - ${file(./data/signatures.yml)}
       - ${file(./data/users.yml)}
       - ${file(./data/none.yml)}
+      - ${file(./data/assets.yml)}
 
     xrayEnabled: true
     # wafConfig:
