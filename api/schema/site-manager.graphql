@@ -27,9 +27,18 @@ input SiteConfigurationInput {
     buttonColor: ID
     logoImage: ID
     headerColor: ID
+    expectedVersion: Int!
 }
 
 type SiteConfiguration @aws_iam @aws_cognito_user_pools {
+    highlightColor: ID
+    buttonColor: ID
+    logoImage: ID
+    headerColor: ID
+    version: Int!
+}
+
+type SiteConfigurationSubscription @aws_iam @aws_cognito_user_pools {
     highlightColor: ID
     buttonColor: ID
     logoImage: ID

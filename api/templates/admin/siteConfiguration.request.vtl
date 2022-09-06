@@ -2,6 +2,7 @@
     "version": "2018-05-29",
     "operation": "GetItem",
     "key": {
-        "PK": $util.dynamodb.toDynamoDBJson("SITE:CONFIG")
+        "PK": $util.dynamodb.toDynamoDBJson("SITE:CONFIG"),
+        "SK": $util.dynamodb.toDynamoDBJson("MAIN")
     }
 }
