@@ -105,6 +105,7 @@ custom:
       - ${file(./templates/petition.byId.yml)}
       - ${file(./templates/signatures.byPetition.yml)}
       - ${file(./templates/signatures.petitionSummary.yml)}
+      - ${file(./templates/admin/siteConfiguration.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}

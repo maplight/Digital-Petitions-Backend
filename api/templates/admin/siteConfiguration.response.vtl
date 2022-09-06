@@ -1,0 +1,10 @@
+#set($defaultColor = "#6284FD")
+
+#set($data = {
+    "highlightColor": $util.defaultIfNull($context.result.highlightColor, $defaultColor),
+    "buttonColor": $util.defaultIfNull($context.result.buttonColor, $defaultColor),
+    "logoImage": $context.result.logoImage,
+    "headerColor": $util.defaultIfNull($context.result.headerColor, $defaultColor)
+})
+
+$util.toJson($data)
