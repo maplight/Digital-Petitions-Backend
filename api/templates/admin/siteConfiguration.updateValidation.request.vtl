@@ -1,0 +1,22 @@
+#set($targets = [$context.prev.result.logoImage])
+#set($needValidation = [])
+
+#foreach ($target in $targets)
+	#if ($target && "${target}" != "")
+		$util.quiet($needValidation.add($target))
+	#end
+#end
+
+#if ($needValidation.empty())
+    #return($context.prev.result)
+#else
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": {
+        "type": "check-is-valid",
+        "bucketId": "development-frontend-dist-bucket",
+        "targets": $util.toJson($needValidation)
+    }
+}
+#end

@@ -1,0 +1,12 @@
+#set($check = $context.result)
+
+#if ($check.failed)
+    $util.error(
+        "Some of the specified resources are not valid", 
+        "InvalidResource",
+        {},
+        $check.inError
+    )
+#else
+    $util.toJson($context.prev.result)
+#end

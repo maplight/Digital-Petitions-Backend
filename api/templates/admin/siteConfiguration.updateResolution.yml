@@ -1,0 +1,4 @@
+- dataSource: AssetsConfigDataSource
+  name: updateSiteConfiguration
+  request: admin/siteConfiguration.updateResolution.request.vtl
+  response: admin/siteConfiguration.response.vtl

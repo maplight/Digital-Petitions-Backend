@@ -1,5 +1,9 @@
 - dataSource: AssetsConfigDataSource
   type: Mutation
   field: updateSiteConfiguration
+  kind: PIPELINE
+  functions:
+    - validateResources
+    - updateSiteConfiguration
   request: admin/siteConfiguration.update.request.vtl
-  response: admin/siteConfiguration.response.vtl
+  response: admin/siteConfiguration.update.response.vtl
