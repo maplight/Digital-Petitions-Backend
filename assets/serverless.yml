@@ -70,6 +70,7 @@ resources:
                 - Effect: Allow
                   Action:
                     - s3:ListBucket
+                    - s3:HeadObject
                     - s3:GetObject
                     - s3:PutObject
                   Resource:
