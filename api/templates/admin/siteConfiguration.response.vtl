@@ -1,5 +1,8 @@
 #if ($context.error.type == "DynamoDB:ConditionalCheckFailedException")
-    $util.error("InvalidItemCheck")
+    $util.error(
+        "A version check has failed. Check that you are using the most up to date version for the source value",
+        "VersionCheckFailed"
+    )
 #end
 
 #set($defaultColor = "#6284FD")

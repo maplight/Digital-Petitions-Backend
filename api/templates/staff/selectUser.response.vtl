@@ -1,5 +1,5 @@
 #if ($context.result.error != "None")
-    $util.error($context.result.error)
+    $util.error("Could not list the requested users", $context.result.error)
 #end
 
 #set($data = $context.result.data)

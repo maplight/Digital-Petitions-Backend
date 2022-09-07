@@ -43,7 +43,10 @@
         #set($isAuthorized = ($isAuthorized || $publicAccess.contains($status)))
     #end
 #else
-    $util.error("UnsupportedQuery")
+    $util.error(
+        "Cannot service this request", 
+        "UnsupportedQuery"
+    )
 #end
 
 #if (!$isAuthorized)

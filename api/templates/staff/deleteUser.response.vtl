@@ -1,5 +1,5 @@
 #if ($context.result.error != "None")
-    $util.error($context.result.error)
+    $util.error("Could not delete the requested user", $context.result.error)
 #end
 
 $util.toJson(true)
