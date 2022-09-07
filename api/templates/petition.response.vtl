@@ -2,7 +2,10 @@
 #set($staffGroups = ["CityStaffGroup", "AdminGroup", "GuestStaffGroup"])
 
 #if ($context.error.type == "DynamoDB:ConditionalCheckFailedException")
-	$util.error("InvalidItemCheck")
+	$util.error(
+        "A validation check has failed. Check that you are using the most up to date version of the source value", 
+        "ConditionCheckFailed"
+    )
 #elseif ($context.result.status.indexOf("A") == 0 && $context.identity.sub != $context.result.owner)
     #foreach ($group in $context.identity.claims.get("cognito:groups"))
         #if ($staffGroups.contains($group))

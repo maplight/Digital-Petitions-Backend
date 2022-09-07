@@ -8,7 +8,10 @@
 ## access level
 
 #if ($data.permissions == "PETITIONER" || $data.username == $context.identity.username)
-    $util.error("InvalidParameter")
+    $util.error(
+        "The parameters you have specified are not valid for this request", 
+        "BadRequest"
+    )
 #end
 
 #set($permissionMapping = {

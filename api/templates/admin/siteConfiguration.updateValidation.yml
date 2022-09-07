@@ -1,0 +1,4 @@
+- dataSource: AssetsDataSource
+  name: validateResources
+  request: admin/siteConfiguration.updateValidation.request.vtl
+  response: admin/siteConfiguration.updateValidation.response.vtl
