@@ -1,7 +1,7 @@
 #set($expressionNames = {})
 #set($expressionValues = {})
 #set($expression = "SET")
-#set($colorRegExp = "#[a-fA-F0-9]{6}")
+#set($colorRegExp = "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")
 
 #set($data = $context.prev.result)
 #set($validRequest = false)
@@ -15,7 +15,7 @@
     #if ($entry.key != "expectedVersion")
         #if ($entry.key.endsWith("Color") && !$util.matches($colorRegExp, $entry.value))
             $util.error(
-                "One of the provided values is not a valid web color specification"
+                "One of the provided values is not a valid web color specification",
                 "InvalidColorValue",
                 {},
                 { "${entry.key}": "${entry.value}" }
