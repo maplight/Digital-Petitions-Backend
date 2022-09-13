@@ -44,6 +44,18 @@
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
 
+          - IndexName: byStatusIndex
+            KeySchema:
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: type
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+
         # This is a placeholder value, may need reviewing
         ProvisionedThroughput:
           ReadCapacityUnits: 5
