@@ -1,0 +1,31 @@
+app: e-signatures
+org: maplighttech
+service: backend-signature-validation
+
+frameworkVersion: '3'
+
+custom:
+  esbuild:
+    minify: true
+    watch:
+      pattern: ["lambda/**/*.ts"]
+      ignore: ["./serverles/**/*", ".build"]
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+functions:
+  signatureValidation:
+    handler: lambda/index.handler
+
+plugins:
+  - serverless-esbuild
+
+resources:
+  Outputs:
+    signatureValidationLambdaArn: { Value: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] } }
+
+outputs:
+  signatureValidationLambdaArn: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] }
