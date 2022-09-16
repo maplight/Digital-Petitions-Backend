@@ -72,7 +72,7 @@
 #set($operation = "Query")
 #set($hasFilter = false)
 
-#if ($type == "ANY" && $status == "ANY")
+#if ($type == "ANY" && $owner == "ANY" && $status == "ANY")
     #set($operation = "Scan")
     #if ($isPublic)
         #set($expression = "#status > :status")
