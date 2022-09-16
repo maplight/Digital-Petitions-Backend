@@ -8,6 +8,7 @@ import { NO_MATCH } from "./util";
  *
  * System adopters are expected to provide an implementation for the `findRecordMatch`
  * function in order for this handler to work correctly.
+ * 
  * By default, all the data contained on the source event should be
  * echoed back as part of the response. Additionally, the return value from
  * `findRecordMatch` will be merged in to create the response. In case an exception
