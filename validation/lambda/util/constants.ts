@@ -35,3 +35,13 @@ export const METHOD_FAILURE: VerificationResult = {
     ...BASE_ERROR,
     error: "An error occurred while attempting to validate your signature. Please try again later"
 };
+
+/**
+ * This is 1000 when using base 36 (lower bound for 4 digit numbers)
+ */
+export const BASE_36X4_LO = 46656;
+
+/**
+ * This is ZZZZ when using base 36 (upper bound for 4 digit numbers)
+ */
+export const BASE_36X4_HI = 1679615;
