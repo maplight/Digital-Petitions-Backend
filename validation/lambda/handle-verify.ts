@@ -1,5 +1,5 @@
 import { processVerificationMethod, notifyOfVerification } from "./integration";
-import { VerificationEvent, VerificationResponse, VerificationResult } from "./types";
+import type { VerificationEvent, VerificationResponse, VerificationResult } from "./types";
 import { forwardCode, generateCode, METHOD_FAILURE } from "./util";
 
 export async function handleVerification(event: VerificationEvent): Promise<VerificationResponse> {
@@ -11,7 +11,7 @@ export async function handleVerification(event: VerificationEvent): Promise<Veri
         if (result.error === null) {
             if (result.confirmationRequired) {
                 if (!result.code || result.code.length === 0) {
-                    result.code = await generateCode(event);
+                    result.code = await generateCode();
                 }
 
                 await notifyOfVerification(event, result);

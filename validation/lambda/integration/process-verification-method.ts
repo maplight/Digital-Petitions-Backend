@@ -1,4 +1,4 @@
-import { VerificationEvent, VerificationResult } from "../types";
+import type { VerificationEvent, VerificationResult } from "../types";
 import { METHOD_NOT_AVAILABLE } from "../util";
 
 /**
