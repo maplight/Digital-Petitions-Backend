@@ -3,7 +3,7 @@
 
 #set($availableMethods = [])
 
-#foreach($entry in $methodSource.entrSet())
+#foreach($entry in $methodSource.entrySet())
     #if ($entry.value == true)
         $util.quiet($availableMethods.add($entry.key))
     #end
