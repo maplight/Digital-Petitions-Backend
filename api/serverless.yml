@@ -114,6 +114,7 @@ custom:
       - ${file(./templates/admin/siteResource.listByType.yml)}
       - ${file(./templates/admin/siteResource.versionByType.yml)}
       - ${file(./templates/admin/siteResource.uploadUrlByType.yml)}
+      - ${file(./templates/endorse/matchVoter.yml)}
 
     functionConfigurations:
       - ${file(./templates/admin/siteConfiguration.updateValidation.yml)}
