@@ -26,6 +26,11 @@ services:
       userPoolClientId: ${backend-auth.userPoolClientId}
       userPoolProviderName: ${backend-auth.userPoolProviderName}
 
+  backend-signature-validation:
+    path: validation
+    params: 
+      identity: ${backend-mail.mailingIdentity}
+
   backend-data:
     path: data
 

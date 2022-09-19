@@ -19,6 +19,8 @@ provider:
 functions:
   signatureValidation:
     handler: lambda/index.handler
+    environment:
+      EMAIL_IDENTITY: ${param:identity, output:backend-mail.MailingIdentity}
 
 plugins:
   - serverless-esbuild
@@ -37,6 +39,7 @@ resources:
             - Effect: Allow
               Action:
                 - ses:SendEmail
+                - ses:SendTemplatedEmail
               Resource:
                 - "*"
 

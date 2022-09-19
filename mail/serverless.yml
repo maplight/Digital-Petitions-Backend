@@ -45,7 +45,7 @@ resources:
           TemplateName: VerificationCodeTemplate
 
   Outputs:
-    mailingIdentityArn: { Value: { Ref: MailingIdentity } }
+    mailingIdentity: { Value: { Ref: MailingIdentity } }
 
 outputs:
-  MailingIdentityArn: { Ref: MailingIdentity }
+  MailingIdentity: { Ref: MailingIdentity }
