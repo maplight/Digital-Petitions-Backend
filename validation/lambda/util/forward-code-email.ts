@@ -9,21 +9,14 @@ export async function forwardCodeByEmail(
 ): Promise<void> {
     try {
         const command = new SendEmailCommand({
-            FromEmailAddress: "david.rodriguez@ntsprint.com",
+            FromEmailAddress: process.env.EMAIL_IDENTITY,
             Destination: {
                 ToAddresses: [result.sendTo]
             },
             Content: {
-                Simple: {
-                    Subject: { Data: "Your signature verification code" },
-                    Body: {
-                        Text: {
-                            Data:
-                                `This is your verification code for your signature in support of ${event.title}.\n` +
-                                `Code: ${result.code}\n` +
-                                "Thanks for using the app!"
-                        }
-                    }
+                Template: {
+                    TemplateName: "VerificationCodeTemplate",
+                    TemplateData: JSON.stringify({ PETITION: event.title, CODE: result.code })
                 }
             }
         });
