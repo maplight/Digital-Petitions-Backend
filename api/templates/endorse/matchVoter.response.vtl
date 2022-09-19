@@ -1,0 +1,14 @@
+#set($source = $context.result)
+#set($methodSource = $source.methods)
+
+#set($availableMethods = [])
+
+#foreach($entry in $methodSource.entrSet())
+    #if ($entry.value == true)
+        $util.quiet($availableMethods.add($entry.key))
+    #end
+#end
+
+$util.quiet($source.put("methods", $availableMethods))
+
+$util.toJson($source)
