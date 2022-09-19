@@ -1,0 +1,51 @@
+app: e-signatures
+org: maplighttech
+service: backend-mail
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+
+resources:
+  Resources:
+
+    # Identity to be used to send and receive mail
+    # Currently the same as the default root user's
+    MailingIdentity:
+      Type: AWS::SES::EmailIdentity
+      Properties:
+        EmailIdentity: ${param:rootEmail}
+
+    # A sample, hard-coded email identity
+    # for testing purposes while the main email
+    # identity remains in the SES sandbox
+    MockJohnSmith:
+      Type: AWS::SES::EmailIdentity
+      Properties:
+        EmailIdentity: "john.smith42@yopmail.com"
+
+    VerificationCodeMessageTemplate:
+      Type: AWS::SES::Template
+      Properties:
+        Template:
+          HtmlPart: |
+            <p>This is your verification code for your signature supporting <b>{{PETITION}}</b></p>
+            <p>Code: <b>{{CODE}}</b></p>
+            <br>
+            <p>Thanks for using the app!</p>
+          TextPart: |
+            This is your verification code for your signature supporting {{PETITION}}
+            Code: {{CODE}}
+
+            Thanks for using the app!
+          SubjectPart: Signature verification code
+          TemplateName: VerificationCodeTemplate
+
+  Outputs:
+    mailingIdentityArn: { Value: { Ref: MailingIdentity } }
+
+outputs:
+  MailingIdentityArn: { Ref: MailingIdentity }
