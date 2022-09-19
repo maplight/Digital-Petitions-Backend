@@ -24,6 +24,22 @@ plugins:
   - serverless-esbuild
 
 resources:
+  Resources:
+    SESAccessPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: ${self:provider.stage}-SESAccessPolicy
+        Roles:
+          - { Ref: IamRoleLambdaExecution }
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - ses:SendEmail
+              Resource:
+                - "*"
+
   Outputs:
     signatureValidationLambdaArn: { Value: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] } }
 
