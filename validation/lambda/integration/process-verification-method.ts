@@ -1,5 +1,5 @@
-import type { VerificationEvent, VerificationResult } from "../types";
-import { METHOD_NOT_AVAILABLE } from "../util";
+import { VerificationEvent, VerificationMethod, VerificationResult } from "../types";
+import { JOHN_SMITH, METHOD_FAILURE, METHOD_NOT_AVAILABLE } from "../util";
 
 /**
  * Integration point for system adopters.
@@ -15,21 +15,21 @@ import { METHOD_NOT_AVAILABLE } from "../util";
  * lookup the requested information. The event also contains the requested verification method
  * and optional information that it might use (such is the case for `StateId`) as an array of
  * strings.
- * 
+ *
  * This function is expected to return an object matching the interface defined by `VerificationResult`,
  * subject to the following:
- * 
+ *
  * - The `error` field should be set to some non-null string if the validation failed for whatever
  * reason, in which case the rest of fields in the result will be disregarded and the contents of
  * the field will be forwarded to the API (and ultimately to the client app). If the verification
  * succeeded (or can continue but requires additional confirmation), `error` should be set to `null`.
- * 
+ *
  * - The `confirmationRequired` field may be set to `false` if the provided data was deemed sufficient to
  * validate the signature using the requested method. This will indicate the E-Signatures app that
  * no further action is required on the user's side. Otherwise, setting this value to `true` will trigger
  * additional logic for delivering a confirmation code to the user, who will be able to then use it to
  * complete their signature verification.
- * 
+ *
  * - The `sendTo` field should be set to an appropriate value based on the requested verification method.
  * Please check the field's documentation for further details on the expected values for each verification method.
  *
@@ -41,6 +41,35 @@ import { METHOD_NOT_AVAILABLE } from "../util";
  * @param event the event that triggered this handler
  * @returns a `VerificationResult`
  */
-export async function processVerificationMethod(event: VerificationEvent): Promise<VerificationResult> {
-    return METHOD_NOT_AVAILABLE;
+export async function processVerificationMethod(
+    event: VerificationEvent
+): Promise<VerificationResult> {
+    /* Dummy implementation for testing purposes */
+
+    if (event.token !== JOHN_SMITH.token || !JOHN_SMITH.match.methods[event.method]) {
+        return METHOD_NOT_AVAILABLE;
+    }
+
+    switch (event.method) {
+        case VerificationMethod.Email:
+            return {
+                code: "",
+                confirmationRequired: true,
+                error: null,
+                sendTo: JOHN_SMITH.info.email
+            };
+
+        case VerificationMethod.StateId:
+            return event.methodPayload?.join("|") ===
+                [JOHN_SMITH.info.id, JOHN_SMITH.info.date].join("|")
+                ? {
+                      error: null,
+                      code: "",
+                      confirmationRequired: false,
+                      sendTo: ""
+                  }
+                : { ...METHOD_FAILURE, error: "Provided data does not match voter record" };
+    }
+
+    return METHOD_FAILURE;
 }

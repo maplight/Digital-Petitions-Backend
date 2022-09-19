@@ -201,9 +201,29 @@ export type VerificationMethodRequest = {
 };
 
 /**
+ * Petition details to be used when
+ * generating verification emails and such.
+ */
+export type PetitionInfo = {
+    /**
+     * The unique id for the petition that was targeted
+     * by the signature being verified.
+     */
+    id: string;
+
+    /**
+     * The title or full name (when the target is a candidate petition)
+     * of the petition.
+     * 
+     * Used for filling in details in the verification email.
+     */
+    title: string;
+}
+
+/**
  * Request/event contents for signature validation.
  */
-export type VerificationEvent = VoterInfo &
+export type VerificationEvent = VoterInfo & PetitionInfo &
     VerificationMethodRequest & {
         /**
          * The type of this event.

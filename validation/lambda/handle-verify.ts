@@ -15,7 +15,7 @@ export async function handleVerification(event: VerificationEvent): Promise<Veri
                 }
 
                 await notifyOfVerification(event, result);
-                await forwardCode(event.method, result);
+                await forwardCode(event, result);
             }
         }
     } catch (err) {

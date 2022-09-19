@@ -1,13 +1,20 @@
-import { VerificationMethod, type VerificationResult } from "../types";
+import { VerificationEvent, VerificationMethod, type VerificationResult } from "../types";
+import { forwardCodeByEmail } from "./forward-code-email";
 
-const mapping: { [K in VerificationMethod]?: (sendTo: string, code: string) => Promise<void> } = {
-    [VerificationMethod.Email]: async (a, b) => console.log("email", a, b),
-    [VerificationMethod.Text]: async (a, b) => console.log("text message", a, b)
+const mapping: {
+    [K in VerificationMethod]?: (
+        request: VerificationEvent,
+        result: VerificationResult
+    ) => Promise<void>;
+} = {
+    [VerificationMethod.Email]: forwardCodeByEmail,
+    [VerificationMethod.Text]: async (a, b) =>
+        console.log("Text Message (Not yet implemented)", a, b)
 };
 
 export async function forwardCode(
-    method: VerificationMethod,
+    event: VerificationEvent,
     result: VerificationResult
 ): Promise<void> {
-    return await mapping[method]?.(result.sendTo, result.code);
+    return await mapping[event.method]?.(event, result);
 }
