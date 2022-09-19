@@ -47,4 +47,4 @@ resources:
     signatureValidationLambdaArn: { Value: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] } }
 
 outputs:
-  signatureValidationLambdaArn: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] }
+  SignatureValidationLambdaArn: { Fn::GetAtt: [SignatureValidationLambdaFunction, Arn] }
