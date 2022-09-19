@@ -124,6 +124,7 @@ custom:
       - ${file(./data/petitions.yml)}
       - ${file(./data/echo.yml)}
       - ${file(./data/signatures.yml)}
+      - ${file(./data/signatures-verification.yml)}
       - ${file(./data/users.yml)}
       - ${file(./data/none.yml)}
       - ${file(./data/assets.yml)}
