@@ -1,0 +1,4 @@
+- dataSource: SignatureDataSource
+  name: checkForDuplication
+  request: endorse/verifySignature.checkForDuplication.request.vtl
+  response: endorse/verifySignature.checkForDuplication.response.vtl

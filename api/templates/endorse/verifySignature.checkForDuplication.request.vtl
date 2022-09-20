@@ -1,0 +1,33 @@
+#set($expressionSource = {
+    "signer": $context.prev.result.token,
+    "target": $context.prev.result.id
+})
+
+#set($expressionNames = {})
+#set($expressionValues = {})
+#set($expression = "")
+
+#foreach ($entry in $expressionSource.entrySet())
+    #set($expressionItem = "#${entry.key} = :${entry.key}")
+
+    #if ($expression == "")
+        #set($expression = $expressionItem)
+    #else
+        #set($expression = "${expression} AND ${expressionItem}")
+    #end
+
+    $util.quiet($expressionNames.put("#${entry.key}", $entry.key))
+    $util.quiet($expressionValues.put(":${entry.key}", $entry.value))
+#end
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "index": "bySignerAndTargetIndex",
+    "scanIndexForward": true,
+    "query": {
+        "expression": "${expression}",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+}
