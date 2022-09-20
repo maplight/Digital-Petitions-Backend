@@ -1,0 +1,11 @@
+- dataSource: NoneDataSource
+  type: Mutation
+  field: submitSignature
+  kind: PIPELINE
+  functions:
+    - validatePetition
+    - checkForDuplication
+    - processVerification
+    - storeSignature
+  request: endorse/verifySignature.request.vtl
+  response: endorse/verifySignature.response.vtl
