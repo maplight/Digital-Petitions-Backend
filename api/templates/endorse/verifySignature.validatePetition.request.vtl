@@ -1,0 +1,9 @@
+#set($PK = $context.prev.result.id)
+
+{
+    "version": "2018-05-29",
+    "operation": "GetItem",
+    "key": {
+        "PK": $util.toDynamoDBJson($PK)
+    }
+}

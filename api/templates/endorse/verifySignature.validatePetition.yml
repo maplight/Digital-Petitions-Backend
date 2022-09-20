@@ -1,0 +1,4 @@
+- dataSource: PetitionDataSource
+  name: validatePetition
+  request: endorse/verifySignature.validatePetition.request.vtl
+  response: endorse/verifySignature.validatePetition.response.vtl
