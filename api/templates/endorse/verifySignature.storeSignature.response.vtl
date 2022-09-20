@@ -1,0 +1,8 @@
+#if ($context.result.cancellationReasons)
+    $util.error(
+        "We could not save your signature. Check the info you provided and that the petition is still open.",
+        "SignatureSaveFailed"
+    )
+#else
+    $util.toJson($context.prev.result)
+#end
