@@ -126,3 +126,8 @@ type SignatureVerification @aws_iam {
     error: String
     confirmationRequired: Boolean!
 }
+
+type CodeSubmissionResult @aws_iam {
+    error: Boolean!
+    message: String!
+}

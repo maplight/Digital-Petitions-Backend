@@ -36,7 +36,7 @@ type Mutation {
     submitSignature(data: SignatureVerificationInput!): SignatureVerification!
     @aws_iam
 
-    submitVerificationCode(code: String!): CodeSubmissionResult!
+    submitVerificationCode(code: ID!): CodeSubmissionResult!
     @aws_iam
 
     submitIssuePetition(data: IssuePetitionInput!): IssuePetition!
