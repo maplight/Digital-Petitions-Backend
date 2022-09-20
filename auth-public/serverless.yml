@@ -66,6 +66,8 @@ resources:
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getPetition"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/siteConfiguration"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getVoterRecordMatch"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Mutation/fields/submitSignature"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Mutation/fields/submitVerificationCode"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Subscription/fields/updatedSiteConfiguration"]] }
                     # grant read access to petition types and common data
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/IssuePetition/*"]] }
@@ -74,6 +76,7 @@ resources:
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/AddressData/*"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/VoterRecordMatch/*"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/SignatureVerification/*"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/CodeSubmissionResult/*"]] }
 
     AuthenticatedAccessRole:
       Type: "AWS::IAM::Role"
