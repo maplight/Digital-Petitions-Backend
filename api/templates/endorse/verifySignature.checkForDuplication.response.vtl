@@ -1,4 +1,4 @@
-#if (!$context.result.items || $context.result.items.empty())
+#if (!$context.result.items || $context.result.items.isEmpty())
     $util.toJson($context.prev.result)
 #else
     $util.error(
