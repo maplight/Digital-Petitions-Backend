@@ -1,0 +1,4 @@
+- dataSource: SignatureDataSource
+  name: lookupSignatureId
+  request: endorse/submitCode.lookupSignatureId.request.vtl
+  response: endorse/submitCode.lookupSignatureId.response.vtl

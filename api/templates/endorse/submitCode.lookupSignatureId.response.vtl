@@ -1,0 +1,8 @@
+#if (!$context.result.items || $context.result.items.isEmpty())
+    $util.error(
+        "We couldn't find a match for the code you provided",
+        "CodeNotFound"
+    )
+#else
+    $util.toJson($context.result.items.get(0))
+#end

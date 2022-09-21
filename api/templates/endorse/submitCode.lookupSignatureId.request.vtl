@@ -1,0 +1,17 @@
+#set($code = $context.prev.result)
+
+#set($expression = "#code = :code")
+#set($expressionNames = { "#code": "code" })
+#set($expressionValues = { ":code": $code })
+
+{
+    "version": "2018-05-29",
+    "operation": "Query",
+    "scanIndexForward": true,
+    "index": "byCodeIndex",
+    "query": {
+        "expression": "${expression}",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+}
