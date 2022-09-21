@@ -16,6 +16,9 @@ services:
       assetsLambdaArn: ${frontend-assets.assetsLambdaArn}
       assetsBucketName: ${frontend-assets.assetsBucketName}
 
+  backend-mail:
+    path: mail
+
   backend-auth-public:
     path: auth-public
     params:
