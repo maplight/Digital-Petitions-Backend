@@ -1,5 +1,6 @@
-import type { VoterMatchEvent, VoterRecordMatch } from "../types";
-import { JOHN_SMITH, NO_MATCH } from "../util";
+import type { VerificationMethod, VoterMatchEvent, VoterRecordMatch } from "../types";
+import { NO_AVAILABLE_METHODS, NO_MATCH } from "../util";
+import voters from "../mock/voters.json";
 
 /**
  * Integration point for system adopters.
@@ -25,5 +26,34 @@ import { JOHN_SMITH, NO_MATCH } from "../util";
  * @returns a `VoterRecordMatch` identifying the voter and available signature verification methods
  */
 export async function findRecordMatch(event: VoterMatchEvent): Promise<VoterRecordMatch> {
-    return event.fullName.toLowerCase().trim() !== "john smith" ? NO_MATCH : JOHN_SMITH.match;
+    /**
+     * Example lookup procedure using static data.
+     *
+     * Notice that this is a very naive approach, the specifics of how to perform the
+     * matching depend on the available data on the system being integrated, though we
+     * do not impose any limitations on it beyond the constraints of lambda execution times.
+     */
+
+    const match = voters.find(
+        (_) => event.fullName.trim().toLowerCase() === _.fullName.toLowerCase()
+    );
+
+    if (!match) return NO_MATCH;
+
+    /**
+     * Notice how in this sample, match records do not explicitly have
+     * the verification method availability as part of the original source
+     * data, but it is rather based on what the information stored for a particular
+     * record is. In this case, not all records have a valid email address attached to
+     * them and thus, while all can be verified by using the STATE_ID method,
+     * only some of them can have the code forwarded using email.
+     */
+
+    const methods: Record<VerificationMethod, boolean> = {
+        ...NO_AVAILABLE_METHODS,
+        EMAIL: typeof match.email === "string",
+        STATE_ID: true
+    };
+
+    return { token: match.token, methods };
 }

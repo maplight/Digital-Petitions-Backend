@@ -1,5 +1,6 @@
 import { VerificationEvent, VerificationMethod, VerificationResult } from "../types";
-import { JOHN_SMITH, METHOD_FAILURE, METHOD_NOT_AVAILABLE } from "../util";
+import { METHOD_FAILURE, METHOD_NOT_AVAILABLE } from "../util";
+import voters from "../mock/voters.json";
 
 /**
  * Integration point for system adopters.
@@ -44,11 +45,21 @@ import { JOHN_SMITH, METHOD_FAILURE, METHOD_NOT_AVAILABLE } from "../util";
 export async function processVerificationMethod(
     event: VerificationEvent
 ): Promise<VerificationResult> {
-    /* Dummy implementation for testing purposes */
+    /**
+     * Test and reference implementation.
+     *
+     * Notice how the token that was generated (or forwarded if persistent) during
+     * the voter record match step can be used here as lookup.
+     */
 
-    if (event.token !== JOHN_SMITH.token || !JOHN_SMITH.match.methods[event.method]) {
-        return METHOD_NOT_AVAILABLE;
-    }
+    const match = voters.find((_) => _.token === event.token);
+
+    const valid =
+        match &&
+        (event.method === VerificationMethod.StateId ||
+            (event.method === VerificationMethod.Email && typeof match?.email === "string"));
+
+    if (!valid) return METHOD_NOT_AVAILABLE;
 
     switch (event.method) {
         case VerificationMethod.Email:
@@ -56,12 +67,11 @@ export async function processVerificationMethod(
                 code: "",
                 confirmationRequired: true,
                 error: null,
-                sendTo: JOHN_SMITH.info.email
+                sendTo: match.email!
             };
 
         case VerificationMethod.StateId:
-            return event.methodPayload?.join("|") ===
-                [JOHN_SMITH.info.id, JOHN_SMITH.info.date].join("|")
+            return event.methodPayload?.join("|") === [match.personalId, match.birthDate].join("|")
                 ? {
                       error: null,
                       code: "",
