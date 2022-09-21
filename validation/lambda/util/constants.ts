@@ -18,31 +18,6 @@ export const NO_MATCH: VoterRecordMatch = {
     methods: NO_AVAILABLE_METHODS
 };
 
-export const JOHN_SMITH_TOKEN: string = "jsmith";
-
-export const JOHN_SMITH_INFO = {
-    email: "john.smith42@yopmail.com",
-    id: "jsmith64-abc",
-    date: "1970-01-01"
-};
-
-/**
- * Dummy match for testing purposes.
- */
-export const JOHN_SMITH_MATCH: VoterRecordMatch = {
-    token: JOHN_SMITH_TOKEN,
-    methods: { ...NO_AVAILABLE_METHODS, EMAIL: true, STATE_ID: true }
-};
-
-/**
- * Dummy test data
- */
-export const JOHN_SMITH = {
-    match: JOHN_SMITH_MATCH,
-    info: JOHN_SMITH_INFO,
-    token: JOHN_SMITH_TOKEN
-};
-
 const BASE_ERROR: Omit<VerificationResult, "error"> = {
     confirmationRequired: false,
     sendTo: "",
