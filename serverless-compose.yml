@@ -15,6 +15,7 @@ services:
       adminLambdaArn: ${backend-auth.adminLambdaArn}
       assetsLambdaArn: ${frontend-assets.assetsLambdaArn}
       assetsBucketName: ${frontend-assets.assetsBucketName}
+      signatureVerificationLambdaArn: ${backend-signature-validation.signatureValidationLambdaArn}
 
   backend-mail:
     path: mail

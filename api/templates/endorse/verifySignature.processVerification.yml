@@ -1,0 +1,4 @@
+- dataSource: SignatureVerificationDataSource
+  name: processVerification
+  request: endorse/verifySignature.processVerification.request.vtl
+  response: endorse/verifySignature.processVerification.response.vtl

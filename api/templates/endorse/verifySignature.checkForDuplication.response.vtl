@@ -1,0 +1,8 @@
+#if (!$context.result.items || $context.result.items.isEmpty())
+    $util.toJson($context.prev.result)
+#else
+    $util.error(
+        "You have already submitted a signature for this petition",
+        "SignatureExists"
+    )
+#end

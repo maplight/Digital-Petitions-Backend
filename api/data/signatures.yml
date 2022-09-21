@@ -15,3 +15,9 @@
         Resource:
           - ${self:custom.mySignatureTableArn}
           - { Fn::Join: ["/", ["${self:custom.mySignatureTableArn}", "*"]] }
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource:
+          - ${self:custom.myPetitionTableArn}
+          - { Fn::Join: ["/", ["${self:custom.myPetitionTableArn}", "*"]] }

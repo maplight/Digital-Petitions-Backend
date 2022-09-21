@@ -1,6 +1,9 @@
 type Query {
     publicEcho(ping: String!): String!
 
+    getVoterRecordMatch(query: VoterRecordMatchInput!): VoterRecordMatch!
+    @aws_iam
+
     getPetition(PK: ID!): Petition
     @aws_iam @aws_cognito_user_pools
 
@@ -30,6 +33,9 @@ type Query {
 }
 
 type Mutation {
+    submitSignature(data: SignatureVerificationInput!): SignatureVerification!
+    @aws_iam
+
     submitIssuePetition(data: IssuePetitionInput!): IssuePetition!
     @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
 

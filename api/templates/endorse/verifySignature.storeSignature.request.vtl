@@ -1,0 +1,70 @@
+#if ($context.prev.result.error)
+    $util.toJson($context.prev.result)
+#else
+    #set($data = $context.prev.result)
+    #set($now = $util.time.nowISO8601())
+    #set($signatureId = $util.autoId())
+    #set($petitionId = $data.id)
+
+    ## setup attributes for the signature record
+
+    #set($attributes = {
+        "name": $data.fullName,
+        "address": $data.address,
+        "signer": $data.token,
+        "target": $data.id,
+        "createdAt": $now,
+        "updatedAt": $now
+    })
+
+    #if ($data.confirmationRequired)
+        #set($status = "${SIGNATURE_SUBMITTED}")
+        $util.quiet($attributes.put("code", $data.code))
+    #else
+        #set($status = "${SIGNATURE_VERIFIED}")
+    #end
+
+    $util.quiet($attributes.put("status", $status))
+
+    ## setup values to update the signature summary on the petition
+
+    #set($updateExpression = "ADD #submittedSignatures :one")
+    #set($updateExpressionNames = { "#submittedSignatures": "submittedSignatures" })
+    #set($updateExpressionValues = { ":one": 1 })
+
+    ## setup condition to update the signature summary on the petition
+
+    #set($conditionExpression = "#status = :status")
+    #set($conditionExpressionNames = { "#status": "status" })
+    #set($conditionExpressionValues = { ":status": "${STATUS_ACTIVE}" })
+
+    ## DynamoDB transactional write template
+
+{
+    "version": "2018-05-29",
+    "operation": "TransactWriteItems",
+    "transactItems": [
+        {
+            "table": "${SIGNATURE_TABLE}",
+            "operation": "PutItem",
+            "key": { "PK": $util.dynamodb.toDynamoDBJson($signatureId) },
+            "attributeValues": $util.dynamodb.toMapValuesJson($attributes)
+        },
+        {
+            "table": "${PETITION_TABLE}",
+            "operation": "UpdateItem",
+            "key": { "PK": $util.dynamodb.toDynamoDBJson($petitionId) },
+            "update": {
+                "expression": "$updateExpression",
+                "expressionNames": $util.toJson($updateExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($updateExpressionValues)
+            },
+            "condition": {
+                "expression": "$conditionExpression",
+                "expressionNames": $util.toJson($conditionExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($conditionExpressionValues)
+            }
+        }
+    ]
+}
+#end

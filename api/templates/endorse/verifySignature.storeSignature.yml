@@ -1,0 +1,4 @@
+- dataSource: SignatureDataSource
+  name: storeSignature
+  request: endorse/verifySignature.storeSignature.request.vtl
+  response: endorse/verifySignature.storeSignature.response.vtl

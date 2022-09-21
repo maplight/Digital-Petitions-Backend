@@ -54,3 +54,75 @@ type Signature @aws_cognito_user_pools {
     createdAt: AWSDateTime!
     updatedAt: AWSDateTime!
 }
+
+enum VerificationMethod {
+    STATE_ID
+    EMAIL
+    TEXT
+    CALL
+    POSTAL
+}
+
+input VoterRecordMatchInput {
+    fullName: String!
+    address: String!
+    city: String!
+    state: String!
+    zipCode: String!
+}
+
+type VoterRecordMatch @aws_iam {
+    fullName: String!
+    address: String!
+    city: String!
+    state: String!
+    zipCode: String!
+
+    token: String
+    methods: [String!]!
+}
+
+input SignatureVerificationInput {
+    fullName: String!
+    address: String!
+    city: String!
+    state: String!
+    zipCode: String!
+
+    # received from voter record match
+    token: String!
+
+    # selected method and optional args
+    method: VerificationMethod!
+    methodPayload: [String]!
+
+    # petition data, either of them must be provided
+    # title may refer to full candidate name when
+    # dealing with candidate petitions
+    id: ID
+    title: String
+}
+
+type SignatureVerification @aws_iam {
+    # by design, signature validation
+    # responses echo the request as part of
+    # them
+
+    fullName: String!
+    address: String!
+    city: String!
+    state: String!
+    zipCode: String!
+
+    token: String!
+
+    method: VerificationMethod!
+    methodPayload: [String]!
+
+    id: ID
+    title: String
+
+    # actual verification result
+    error: String
+    confirmationRequired: Boolean!
+}

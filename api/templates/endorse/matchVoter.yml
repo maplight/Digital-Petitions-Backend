@@ -1,0 +1,5 @@
+- dataSource: SignatureVerificationDataSource
+  type: Query
+  field: getVoterRecordMatch
+  request: endorse/matchVoter.request.vtl
+  response: endorse/matchVoter.response.vtl

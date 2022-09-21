@@ -11,6 +11,10 @@ Resources:
           AttributeType: S
         - AttributeName: target
           AttributeType: S
+        - AttributeName: signer
+          AttributeType: S
+        - AttributeName: code
+          AttributeType: S
 
       KeySchema:
         - AttributeName: PK
@@ -23,6 +27,28 @@ Resources:
               KeyType: HASH
             - AttributeName: status
               KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+        - IndexName: bySignerAndTargetIndex
+          KeySchema:
+            - AttributeName: signer
+              KeyType: HASH
+            - AttributeName: target
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+        - IndexName: byCodeIndex
+          KeySchema:
+            - AttributeName: code
+              KeyType: HASH
           Projection:
             ProjectionType: ALL
           ProvisionedThroughput:
