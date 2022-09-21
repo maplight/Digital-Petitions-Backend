@@ -1,0 +1,9 @@
+- dataSource: NoneDataSource
+  type: Mutation
+  field: submitVerificationCode
+  kind: PIPELINE
+  functions:
+    - lookupSignatureId
+    - updateSignature
+  request: endorse/submitCode.request.vtl
+  response: endorse/submitCode.response.vtl
