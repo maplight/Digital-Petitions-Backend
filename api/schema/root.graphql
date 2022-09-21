@@ -36,6 +36,9 @@ type Mutation {
     submitSignature(data: SignatureVerificationInput!): SignatureVerification!
     @aws_iam
 
+    submitVerificationCode(code: ID!): CodeSubmissionResult!
+    @aws_iam
+
     submitIssuePetition(data: IssuePetitionInput!): IssuePetition!
     @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
 

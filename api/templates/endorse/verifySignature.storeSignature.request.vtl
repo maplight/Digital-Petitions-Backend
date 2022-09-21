@@ -32,6 +32,11 @@
     #set($updateExpressionNames = { "#submittedSignatures": "submittedSignatures" })
     #set($updateExpressionValues = { ":one": 1 })
 
+    #if ($status == "${SIGNATURE_VERIFIED}")
+        #set($updateExpression = "${updateExpression}, #verifiedSignatures :one")
+        $util.quiet($updateExpressionNames.put("#verifiedSignatures", "verifiedSignatures"))
+    #end
+
     ## setup condition to update the signature summary on the petition
 
     #set($conditionExpression = "#status = :status")

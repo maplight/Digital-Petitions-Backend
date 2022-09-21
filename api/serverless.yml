@@ -120,6 +120,7 @@ custom:
       - ${file(./templates/admin/siteResource.uploadUrlByType.yml)}
       - ${file(./templates/endorse/matchVoter.yml)}
       - ${file(./templates/endorse/verifySignature.yml)}
+      - ${file(./templates/endorse/submitCode.yml)}
 
     functionConfigurations:
       - ${file(./templates/admin/siteConfiguration.updateValidation.yml)}
@@ -128,6 +129,8 @@ custom:
       - ${file(./templates/endorse/verifySignature.processVerification.yml)}
       - ${file(./templates/endorse/verifySignature.storeSignature.yml)}
       - ${file(./templates/endorse/verifySignature.validatePetition.yml)}
+      - ${file(./templates/endorse/submitCode.lookupSignatureId.yml)}
+      - ${file(./templates/endorse/submitCode.updateSignature.yml)}
 
     dataSources:
       - ${file(./data/petitions.yml)}

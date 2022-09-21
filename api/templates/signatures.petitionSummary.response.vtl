@@ -3,6 +3,8 @@
 #set($info = {
     "required": $util.defaultIfNull($data.requiredSignatures, 0),
     "approved": $util.defaultIfNull($data.approvedSignatures, 0),
+    "rejected": $util.defaultIfNull($data.rejectedSignatures, 0),
+    "verified": $util.defaultIfNull($data.verifiedSignatures, 0),
     "deadline": $data.deadline,
     "submitted": $util.defaultIfNull($data.submittedSignatures, 0)
 })
