@@ -63,6 +63,7 @@ resources:
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/*/fields/public*"]] }
                     # grant access to common operations
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getPetitionsByType"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getPetition"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/siteConfiguration"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Subscription/fields/updatedSiteConfiguration"]] }
                     # grant read access to petition types and common data
