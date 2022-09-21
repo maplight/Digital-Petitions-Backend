@@ -4,7 +4,10 @@
 #set($publicAccess = ["ACTIVE", "QUALIFIED", "NOT_QUALIFIED", "INACTIVE", "ANY"])
 #set($staffGroups = ["CityStaffGroup", "AdminGroup", "GuestStaffGroup"])
 
-#set($status = $util.defaultIfNull(${query.status}, "ACTIVE"))
+#set($status = $util.defaultIfNull(${query.status}, "ANY"))
+#set($type = $util.defaultIfNull(${query.type}, "ANY"))
+#set($owner = $util.defaultIfNull(${query.owner}, "ANY"))
+
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
 
 #if ($limit < ${DEFAULT_PAGE_SIZE})
@@ -21,8 +24,7 @@
 #if ($target == "getPetitionsByType")
     #set($expression = "#type = :type")
     #set($expressionNames = { "#type": "type" })
-    #set($expressionValues = { ":type": $util.defaultIfNull(${query.type}, "ISSUE") })
-
+    #set($expressionValues = { ":type": "${type}" })
     #set($indexName = "byTypeIndex")
 
     #if (!$isAuthorized)
@@ -57,7 +59,29 @@
     $util.quiet($expressionNames.put("#status", "status"))
 #end
 
-#if ($status == "INACTIVE")
+#set($statusMap = {
+    "NEW": "${STATUS_NEW}",
+    "CANCELED": "${STATUS_CANCELED}",
+    "WITHDRAWN": "${STATUS_WITHDRAWN}",
+    "REJECTED": "${STATUS_REJECTED}",
+    "ACTIVE": "${STATUS_ACTIVE}",
+    "NOT_QUALIFIED": "${STATUS_NOT_QUALIFIED}",
+    "QUALIFIED": "${STATUS_QUALIFIED}"
+})
+
+#set($operation = "Query")
+#set($hasFilter = false)
+
+#if ($type == "ANY" && $owner == "ANY" && $status == "ANY")
+    #set($operation = "Scan")
+    #if ($isPublic)
+        #set($expression = "#status > :status")
+        #set($expressionNames = { "#status": "status" })
+        #set($expressionValues = { ":status": "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}" })
+
+        #set($hasFilter = true)
+    #end
+#elseif (($type != "ANY" || $owner != "ANY") && $status == "INACTIVE")
     #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
 
     #if ($isPublic)
@@ -67,37 +91,58 @@
     #end
 
     $util.quiet($expressionValues.put(":hi", "${STATUS_INACTIVE_UPPER_BOUND}"))
-#elseif ($status != "ANY")
+#elseif (($type != "ANY" || $owner != "ANY") && $status != "ANY")
     #set($expression = "${expression} AND #status = :status")
-
-    #set($statusMap = {
-        "NEW": "${STATUS_NEW}",
-        "CANCELED": "${STATUS_CANCELED}",
-        "WITHDRAWN": "${STATUS_WITHDRAWN}",
-        "REJECTED": "${STATUS_REJECTED}",
-        "ACTIVE": "${STATUS_ACTIVE}",
-        "NOT_QUALIFIED": "${STATUS_NOT_QUALIFIED}",
-        "QUALIFIED": "${STATUS_QUALIFIED}"
-    })
-
     $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
-#elseif ($isPublic)
-    #set($expression = "${expression} AND #status > :status")
+#elseif ($type == "ANY" && $owner == "ANY" && $status != "ANY" && $status != "INACTIVE")
+    #set($expression = "#status = :status")
+    #set($expressionNames = { "#status": "status" })
+    #set($expressionValues = { ":status": "${statusMap[$status]}" })
+    #set($indexName = "byStatusIndex")
+#elseif (($type != "ANY" || $owner != "ANY") && $status == "ANY")
+    #if ($isPublic)
+        #set($expression = "${expression} AND #status > :status")
+        $util.quiet($expressionValues.put(":status", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+    #end
+#elseif ($type == "ANY" && $owner == "ANY" && $status == "INACTIVE")
+    #set($operation = "Scan")
+    #set($expression = "#status BETWEEN :lo AND :hi")
+    #set($expressionNames = { "#status": "status" })
+    #set($expressionValues = {":hi": "${STATUS_INACTIVE_UPPER_BOUND}"})
+    
+    #if ($isPublic)
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+    #else
+        $util.quiet($expressionValues.put(":lo", "${STATUS_INACTIVE_LOWER_BOUND}"))
+    #end
 
-    $util.quiet($expressionValues.put(":status", "${STATUS_INACTIVE_PUBLIC_LOWER_BOUND}"))
+    #set($hasFilter = true)
+#else
+    $util.error(
+        "This query configuration is not supported",
+        "InvalidQuery"
+    )
 #end
 
 {
     "version": "2018-05-29",
-    "operation": "Query",
-    "index": "$indexName",
-    "limit": $limit,
+    "operation": "$operation",
+    "limit": $limit
+#if ($operation == "Query")
+    ,"index": "$indexName",
     "scanIndexForward": true,
     "query": {
         "expression": "$expression",
         "expressionNames": $util.toJson($expressionNames),
         "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
     }
+#elseif ($hasFilter)
+    ,"filter": {
+        "expression": "$expression",
+        "expressionNames": $util.toJson($expressionNames),
+        "expressionValues": $util.dynamodb.toMapValuesJson($expressionValues)
+    }
+#end
 #if ($query.cursor)
     ,"nextToken": "${query.cursor}"
 #end
