@@ -1,0 +1,4 @@
+- dataSource: SignatureDataSource
+  name: updateSignature
+  request: endorse/submitCode.updateSignature.request.vtl
+  response: endorse/submitCode.updateSignature.response.vtl
