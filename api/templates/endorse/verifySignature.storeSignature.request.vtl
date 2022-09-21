@@ -1,5 +1,5 @@
 #if ($context.prev.result.error)
-    $util.toJson($context.prev.result)
+    #return($context.prev.result)
 #else
     #set($data = $context.prev.result)
     #set($now = $util.time.nowISO8601())
