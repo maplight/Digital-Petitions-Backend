@@ -8,6 +8,10 @@
 #set($type = $util.defaultIfNull(${query.type}, "ANY"))
 #set($owner = $util.defaultIfNull(${query.owner}, "ANY"))
 
+#if ($owner == "")
+    #set($owner = "ANY")
+#end
+
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
 
 #if ($limit < ${DEFAULT_PAGE_SIZE})
