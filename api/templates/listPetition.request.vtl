@@ -6,10 +6,11 @@
 
 #set($status = $util.defaultIfNull(${query.status}, "ANY"))
 #set($type = $util.defaultIfNull(${query.type}, "ANY"))
-#set($owner = $util.defaultIfNull(${query.owner}, "ANY"))
 
-#if ($owner == "")
-    #set($owner = "ANY")
+#if ($util.isNullOrBlank("${query.owner}"))
+	#set($owner = "ANY")
+#else
+	#set($owner = $query.owner)
 #end
 
 #set($limit = $util.defaultIfNull(${query.limit}, ${DEFAULT_PAGE_SIZE}))
@@ -36,6 +37,13 @@
         #set($isPublic = true)
     #end
 #elseif ($target == "getPetitionsByOwner")
+    #if ($owner == "ANY")
+        $util.error(
+            "Providing a valid user Id is mandatory when querying by owner",
+            "BadRequest"
+        )
+    #end
+
     #set($expression = "#owner = :owner")
     #set($expressionNames = { "#owner": "owner" })
     #set($expressionValues = { ":owner": $query.owner })
