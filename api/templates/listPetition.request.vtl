@@ -32,6 +32,13 @@
         #set($isPublic = true)
     #end
 #elseif ($target == "getPetitionsByOwner")
+    #if ($util.isNullOrBlank($owner))
+        $util.error(
+            "Providing a valid user Id is mandatory when querying by owner",
+            "BadRequest"
+        )
+    #end
+
     #set($expression = "#owner = :owner")
     #set($expressionNames = { "#owner": "owner" })
     #set($expressionValues = { ":owner": $query.owner })
