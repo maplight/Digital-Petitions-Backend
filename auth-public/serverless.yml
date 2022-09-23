@@ -68,6 +68,7 @@ resources:
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Query/fields/getVoterRecordMatch"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Mutation/fields/submitSignature"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Mutation/fields/submitVerificationCode"]] }
+                    - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Mutation/fields/requestUserVerificationCodeResend"]] }
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/Subscription/fields/updatedSiteConfiguration"]] }
                     # grant read access to petition types and common data
                     - { Fn::Join: ["/", ["${self:custom.myApiId}", "types/IssuePetition/*"]] }
