@@ -46,5 +46,6 @@ Resources:
                   - cognito-idp:AdminDisableUser
                   - cognito-idp:ListUsers
                   - cognito-idp:ListGroups
+                  - cognito-idp:ResendConfirmationCode
                 Resource:
                   - { Fn::GetAtt: [CognitoUserPoolAppUserPool, Arn] }
