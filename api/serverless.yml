@@ -15,6 +15,7 @@ provider:
 
 custom:
   myUserPoolId: ${param:userPoolId, output:backend-auth.UserPoolId}
+  myUserPoolClientId: ${param:userPoolClientId, output:backend-auth.UserPoolClientId}
   myAssetsBucketName: ${param:assetsBucketName, output:frontend-assets.AssetsBucketName}
 
   myPetitionTableName: ${param:petitionTableName, output:backend-data.PetitionsTableName}
@@ -94,6 +95,7 @@ custom:
       # values to be replaced in lambda invocations
       # that require them
       COGNITO_USER_POOL: ${self:custom.myUserPoolId}
+      COGNITO_CLIENT_ID: ${self:custom.myUserPoolClientId}
       ASSETS_BUCKET_NAME: ${self:custom.myAssetsBucketName}
 
     mappingTemplates:
@@ -121,6 +123,7 @@ custom:
       - ${file(./templates/endorse/matchVoter.yml)}
       - ${file(./templates/endorse/verifySignature.yml)}
       - ${file(./templates/endorse/submitCode.yml)}
+      - ${file(./templates/account.resendCode.yml)}
 
     functionConfigurations:
       - ${file(./templates/admin/siteConfiguration.updateValidation.yml)}

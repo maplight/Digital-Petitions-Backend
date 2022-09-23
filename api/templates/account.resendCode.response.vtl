@@ -1,0 +1,5 @@
+#if ($context.result.error != "None")
+    $util.error("We could not service this request", $context.result.error)
+#end
+
+$util.toJson(true)
