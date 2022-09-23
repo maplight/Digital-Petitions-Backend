@@ -6,7 +6,7 @@
 
     #if (!$isAuthorized)
         #foreach ($group in $context.identity.claims.get("cognito:groups"))
-            #if ($group == "CityStaffGroup" || $group == "AdminGroup")
+            #if ($group == "CityStaffGroup" || $group == "AdminGroup" || $group == "GuestStaffGroup")
                 #set($isAuthorized = true)
             #end
         #end
