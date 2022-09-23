@@ -3,6 +3,7 @@ import type { AccessGroupKeys } from "../common";
 export type HasEmail = { email: string };
 export type HasUserPoolId = { userPoolId: string };
 export type HasUserTarget = { username: string };
+export type HasClientId = { clientId: string };
 
 export type EventCommon = HasEmail & HasUserPoolId;
 
@@ -11,7 +12,8 @@ export enum Actions {
     Create = "create-user",
     Delete = "delete-user",
     Select = "select-user",
-    UpdateAccess = "update-user-access"
+    UpdateAccess = "update-user-access",
+    ResendCode = "resend-code"
 }
 
 export type NewUserInput = {
@@ -53,8 +55,13 @@ export type SelectUserEvent = HasUserPoolId & {
     limit?: number;
 };
 
+export type ResendVerificationCodeEvent = HasUserPoolId & HasClientId & HasEmail & {
+    type: Actions.ResendCode
+}
+
 export type AdminLambdaEvent =
     | NewUserEvent
     | DeleteUserEvent
     | SelectUserEvent
-    | UpdateUserAccessEvent;
+    | UpdateUserAccessEvent
+    | ResendVerificationCodeEvent;
