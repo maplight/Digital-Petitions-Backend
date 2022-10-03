@@ -1,0 +1,17 @@
+- dataSource: NoneDataSource
+  type: Mutation
+  field: approveSignature
+  kind: PIPELINE
+    - fetchSignature
+    - updateSignature
+  request: staff/approveOrRejectSignature.request.vtl
+  response: staff/approveOrRejectSignature.response.vtl
+
+- dataSource: NoneDataSource
+  type: Mutation
+  field: rejectSignature
+  kind: PIPELINE
+    - fetchSignature
+    - updateSignature
+  request: staff/approveOrRejectSignature.request.vtl
+  response: staff/approveOrRejectSignature.response.vtl

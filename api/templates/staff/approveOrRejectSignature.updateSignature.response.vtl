@@ -1,0 +1,17 @@
+#if ($context.result.cancellationReasons)
+    $util.error(
+        "The signature update failed. Please check the data you provided.",
+        "SignatureSaveFailed"
+    )
+#else
+    #if ($context.info.fieldName == "approveSignature")
+        #set($statusInc = 1)
+    #else
+        #set($statusInc = 2)
+    #end
+
+    #set($signature = $context.prev.result)
+    $util.quiet($signature.put("status", $signature.status + $statusInc))
+
+    $util.toJson($context.prev.result)
+#end

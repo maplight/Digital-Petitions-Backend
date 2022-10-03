@@ -1,0 +1,4 @@
+- dataSource: SignatureDataSource
+  name: updateSignature
+  request: staff/approveOrRejectSignature.updateSignature.request.vtl
+  response: staff/approveOrRejectSignature.updateSignature.response.vtl
