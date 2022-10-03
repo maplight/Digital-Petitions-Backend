@@ -1,12 +1,15 @@
 #set($statusMap = {
-    "${SIGNATURE_SUBMITTED}": "SUBMITTED",
-    "${SIGNATURE_VERIFIED}": "VERIFIED",
-    "${SIGNATURE_APPROVED}": "APPROVED",
-    "${SIGNATURE_REJECTED}": "REJECTED"
+    ${SIGNATURE_SUBMITTED}: "SUBMITTED",
+    ${SIGNATURE_VERIFIED}: "VERIFIED",
+    ${SIGNATURE_APPROVED_VERIFICATION_PENDING}: "APPROVED",
+    ${SIGNATURE_APPROVED}: "APPROVED",
+    ${SIGNATURE_REJECTED_VERIFICATION_PENDING}: "REJECTED",
+    ${SIGNATURE_REJECTED}: "REJECTED"
 })
 
 #foreach ($item in $context.result.items)
     $util.quiet($item.put("status", $statusMap.get($item.status)))
+    $util.quiet($item.put("isVerified", $item.status > ${SIGNATURE_VERIFIED_LOWER_BOUND}))
 #end
 
 {

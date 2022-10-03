@@ -74,6 +74,7 @@ type Signature @aws_cognito_user_pools {
     updatedAt: AWSDateTime!
 
     verifiedAt: AWSDateTime
+    isVerified: Boolean!
     method: VerificationMethod!
 }
 

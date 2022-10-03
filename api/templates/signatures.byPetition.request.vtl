@@ -33,18 +33,63 @@
 #set($expressionNames = { "#target": "target" })
 #set($expressionValues = { ":target": $key })
 
+#set($exactStatusMatchMappings = {
+    "APPROVED_AND_VERIFIED": ${SIGNATURE_APPROVED},
+    "APPROVED_VERIFICATION_PENDING": ${SIGNATURE_APPROVED_VERIFICATION_PENDING},
+    "REJECTED_AND_VERIFIED": ${SIGNATURE_REJECTED},
+    "REJECTED_VERIFICATION_PENDING": ${SIGNATURE_REJECTED_VERIFICATION_PENDING},
+    "SUBMITTED": ${SIGNATURE_SUBMITTED}
+})
+
+#set($indexName = "byTargetIndex")
+
+#set($rangeQueries = ["VERIFIED", "VERIFICATION_PENDING", "APPROVED", "REJECTED"])
+
 #if ($status != "ANY")
-    #set($expression = "${expression} AND #status = :status")
-    $util.quiet($expressionNames.put("#status", "status"))
 
-    #set($statusMap = {
-        "SUBMITTED": "${SIGNATURE_SUBMITTED}",
-        "VERIFIED": "${SIGNATURE_VERIFIED}",
-        "APPROVED": "${SIGNATURE_APPROVED}",
-        "REJECTED": "${SIGNATURE_REJECTED}"
-    })
+    ## handle queries that can be answered by an exact match
+    ## i.e. status == "APPROVED_VERIFICATION_PENDING"
 
-    $util.quiet($expressionValues.put(":status", "${statusMap[$status]}"))
+    #if (!$rangeQueries.contains($status))
+        #set($expression = "${expression} AND #status = :status")
+        $util.quiet($expressionNames.put("#status", "status"))
+        $util.quiet($expressionValues.put(":status", $exactStatusMatchMappings.get($status)))
+
+    ## these can be answered by determining if
+    ## the status is at one side or the other of the verification boundary
+
+    #elseif ($status == "VERIFIED" || $status == "VERIFICATION_PENDING")
+        #if ($status == "VERIFIED")
+            #set($op = ">")
+        #else
+            #set($op = "<")
+        #end
+
+        #set($expression = "${expression} AND #status ${op} :statusBoundary")
+
+        $util.quiet($expressionNames.put("#status", "status"))
+        $util.quiet($expressionValues.put(":statusBoundary", ${SIGNATURE_VERIFIED_LOWER_BOUND}))
+
+    ## these require using an alternate index
+    ## as we are looking at approval regardless of verification status
+
+    #else
+        #set($expression = "${expression} AND #status BETWEEN :lo AND :hi")
+        #set($indexName = "byTargetAltIndex")
+
+        $util.quiet($expressionNames.put("#status", "statusAlt"))
+
+        #if ($status == "APPROVED")
+            #set($lo = ${SIGNATURE_APPROVED_R_LO})
+            #set($hi = ${SIGNATURE_REJECTED_R_LO})
+        #else
+            #set($lo = ${SIGNATURE_REJECTED_R_LO})
+            #set($hi = ${SIGNATURE_REJECTED_R_HI})
+        #end
+
+        $util.quiet($expressionValues.put(":lo", $lo))
+        $util.quiet($expressionValues.put(":hi", $hi))
+    #end
 #end
 
 {
