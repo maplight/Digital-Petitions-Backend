@@ -2,12 +2,19 @@
 
 ## setup signature update
 
-#set($updateSignatureExpression = "SET #status = :status REMOVE #code")
-#set($updateSignatureExpressionValues = { ":status": "${SIGNATURE_VERIFIED}" })
+#set($updateSignatureExpression = "ADD #status :statusDelta, #statusAlt :statusAltDelta REMOVE #code")
+#set($updateSignatureExpressionValues = { ":statusDelta": ${SIGNATURE_VERIFIED_DELTA}, ":statusDeltaAlt": ${SIGNATURE_VERIFIED_R} })
 #set($updateSignatureExpressionNames = {
     "#status": "status",
+    "#statusAlt": "statusAlt",
     "#code": "code"
 })
+
+## setup signature update condition
+
+#set($updateSignatureConditionExpression = "#statusCheck < :statusVerifiedBoundary")
+#set($updateSignatureConditionExpressionNames = { "#statusCheck": "status" })
+#set($updateSignatureConditionExpressionValues = { ":statusVerifiedBoundary": ${SIGNATURE_VERIFIED_LOWER_BOUND} })
 
 ## setup petition update
 
@@ -39,6 +46,11 @@
                 "expression": "${updateSignatureExpression}",
                 "expressionNames": $util.toJson($updateSignatureExpressionNames),
                 "expressionValues": $util.dynamodb.toMapValuesJson($updateSignatureExpressionValues)
+            },
+            "condition": {
+                "expression": "${updateSignatureConditionExpression}",
+                "expressionNames": $util.toJson($updateSignatureConditionExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($updateSignatureConditionExpressionValues)
             }
         },
         {
