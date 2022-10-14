@@ -8,8 +8,9 @@
 })
 
 #foreach ($item in $context.result.items)
+    #set($value = ($item.status > ${SIGNATURE_VERIFIED_LOWER_BOUND}))
     $util.quiet($item.put("status", $statusMap.get($item.status)))
-    $util.quiet($item.put("isVerified", $item.status > ${SIGNATURE_VERIFIED_LOWER_BOUND}))
+    $util.quiet($item.put("isVerified", $value))
 #end
 
 {
