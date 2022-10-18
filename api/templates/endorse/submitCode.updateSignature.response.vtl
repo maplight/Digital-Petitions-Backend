@@ -1,8 +1,13 @@
-#if (!$context.result.cancellationReasons || $context.result.cancellationReasons.isEmpty())
+#if (!$context.error && (!$context.result.cancellationReasons || $context.result.cancellationReasons.isEmpty()))
     $util.toJson({
         "error": false,
         "message": "Your signature has been verified correctly"
     })
+#elseif ($context.error)
+    $util.error(
+        "We could not process your request at the moment. Please try again later",
+        "UnknownError"
+    )
 #else
     #foreach ($entry in $context.result.cancellationReasons.entrySet())
         #if ($entry.key == "${PETITION_TABLE}" && $entry.value.type == "ConditionCheckFailed")
