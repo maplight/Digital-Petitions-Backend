@@ -2,11 +2,11 @@
 
 ## setup signature update
 
-#set($updateSignatureExpression = "SET #verifiedAt = :verifiedAt ADD #status :statusDelta, #statusAlt :statusAltDelta REMOVE #code")
+#set($updateSignatureExpression = "SET #verifiedAt = :verifiedAt ADD #status :statusDelta, #statusAlt :statusDeltaAlt REMOVE #code")
 
 #set($updateSignatureExpressionValues = { 
     ":statusDelta": ${SIGNATURE_VERIFIED_DELTA}, 
-    ":statusDeltaAlt": ${SIGNATURE_VERIFIED_R},
+    ":statusDeltaAlt": ${SIGNATURE_VERIFIED_DELTA_R},
     ":verifiedAt": $util.time.nowISO8601()
 })
 
