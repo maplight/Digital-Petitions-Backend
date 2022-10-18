@@ -70,8 +70,20 @@ export async function processVerificationMethod(
                 sendTo: match.email!
             };
 
-        case VerificationMethod.StateId:
-            return event.methodPayload?.join("|") === [match.personalId, match.birthDate].join("|")
+        case VerificationMethod.StateId: {
+            if (!event.methodPayload)
+                return {
+                    ...METHOD_FAILURE,
+                    error: "Missing required data"
+                };
+
+            const [id, birthDate] = event.methodPayload;
+            const onlyDate = birthDate.split("T")[0];
+
+            const data = [id, onlyDate].join("|");
+            const need = [match.personalId, match.birthDate].join("|");
+
+            return data === need
                 ? {
                       error: null,
                       code: "",
@@ -79,6 +91,7 @@ export async function processVerificationMethod(
                       sendTo: ""
                   }
                 : { ...METHOD_FAILURE, error: "Provided data does not match voter record" };
+        }
     }
 
     return METHOD_FAILURE;
