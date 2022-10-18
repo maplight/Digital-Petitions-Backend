@@ -1,15 +1,18 @@
 #set($item = $context.result)
 
-#set($statusMap = {
-    ${SIGNATURE_SUBMITTED}: "SUBMITTED",
-    ${SIGNATURE_VERIFIED}: "VERIFIED",
-    ${SIGNATURE_APPROVED_VERIFICATION_PENDING}: "APPROVED",
-    ${SIGNATURE_APPROVED}: "APPROVED",
-    ${SIGNATURE_REJECTED_VERIFICATION_PENDING}: "REJECTED",
-    ${SIGNATURE_REJECTED}: "REJECTED"
-})
+#if (${SIGNATURE_APPROVED} == $item.status || ${SIGNATURE_APPROVED_VERIFICATION_PENDING} == $item.status)
+    #set($target = "APPROVED")
+#elseif (${SIGNATURE_REJECTED} == $item.status || ${SIGNATURE_REJECTED_VERIFICATION_PENDING} == $item.status)
+    #set($target = "REJECTED")
+#elseif (${SIGNATURE_VERIFIED} == $item.status)
+    #set($target = "VERIFIED")
+#else
+    #set($target = "SUBMITTED")
+#end
 
-$util.quiet($item.put("status", $statusMap.get($item.status)))
-$util.quiet($item.put("isVerified", $item.status > ${SIGNATURE_VERIFIED_LOWER_BOUND}))
+#set($value = ($item.status > ${SIGNATURE_VERIFIED_LOWER_BOUND}))
+
+$util.quiet($item.put("status", $target))
+$util.quiet($item.put("isVerified", $value))
 
 $util.toJson($item)
