@@ -11,7 +11,8 @@
     #end
 
     #set($signature = $context.prev.result)
-    $util.quiet($signature.put("status", $signature.status + $statusInc))
+    #set($newStatus = $signature.status + $statusInc)
+    $util.quiet($signature.put("status", $newStatus))
 
     $util.toJson($context.prev.result)
 #end
