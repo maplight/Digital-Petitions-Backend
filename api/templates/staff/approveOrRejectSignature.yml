@@ -3,7 +3,7 @@
   field: approveSignature
   kind: PIPELINE
     - fetchSignature
-    - updateSignature
+    - updateSignatureApproval
   request: staff/approveOrRejectSignature.request.vtl
   response: staff/approveOrRejectSignature.response.vtl
 
@@ -12,6 +12,6 @@
   field: rejectSignature
   kind: PIPELINE
     - fetchSignature
-    - updateSignature
+    - updateSignatureApproval
   request: staff/approveOrRejectSignature.request.vtl
   response: staff/approveOrRejectSignature.response.vtl
