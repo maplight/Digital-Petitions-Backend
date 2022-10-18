@@ -32,7 +32,7 @@
 {
     "version": "2018-05-29",
     "operation": "TransactWriteItems",
-    "transactItems": {
+    "transactItems": [
         {
             "table": "${SIGNATURE_TABLE}",
             "operation": "UpdateItem",
@@ -58,5 +58,5 @@
                 "expressionValues": $util.dynamodb.toMapValuesJson($petitionUpdateExpressionValues)
             }
         }
-    }
+    ]
 }
