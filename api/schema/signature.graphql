@@ -60,6 +60,7 @@ input TargetSignatureInput {
 }
 
 type Signature @aws_cognito_user_pools {
+    PK: ID!
     signer: ID!
 
     name: String!
