@@ -27,7 +27,7 @@
         #set($status = ${SIGNATURE_VERIFIED})
         #set($statusAlt = ${SIGNATURE_VERIFIED_R})
 
-        $util.quiet($attributes.put("verifiedDate", $util.time.nowISO8601()))
+        $util.quiet($attributes.put("verifiedAt", $util.time.nowISO8601()))
     #end
 
     $util.quiet($attributes.put("status", $status))
