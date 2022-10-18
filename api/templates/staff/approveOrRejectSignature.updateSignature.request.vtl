@@ -21,7 +21,7 @@
 
 #set($signatureUpdateConditionExpression = "#target = :target AND (#previousStatus = :submitted OR #previousStatus = :verified)")
 #set($signatureUpdateConditionExpressionNames = { "#previousStatus": "status", "#target": "target" })
-#set($signatureUpdateConditionExpressionValues = { ":submitted": ${SIGNATURE_SUBMITTED}, ":verified": ${SIGNATURE_VERIFIED}, ":target": $data.petitionId })
+#set($signatureUpdateConditionExpressionValues = { ":submitted": ${SIGNATURE_SUBMITTED}, ":verified": ${SIGNATURE_VERIFIED}, ":target": $signature.target })
 
 ## build petition update expression
 
