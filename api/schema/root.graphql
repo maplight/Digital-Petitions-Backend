@@ -66,6 +66,9 @@ type Mutation {
     updateUserAccess(data: UpdateUserAccessInput!): User!
     @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
 
+    requestUserVerificationCodeResend(email: String!): Boolean!
+    @aws_iam
+
     updateSiteConfiguration(data: SiteConfigurationInput!): SiteConfiguration!
     @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
 }

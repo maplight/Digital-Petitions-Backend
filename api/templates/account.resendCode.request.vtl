@@ -1,0 +1,12 @@
+#set($payload = {
+    "type": "resend-code",
+    "userPoolId": "${COGNITO_USER_POOL}",
+    "email": $context.arguments.email,
+    "clientId": "${COGNITO_CLIENT_ID}"
+})
+
+{
+    "version": "2018-05-29",
+    "operation": "Invoke",
+    "payload": $util.toJson($payload)
+}

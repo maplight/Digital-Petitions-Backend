@@ -6,6 +6,7 @@ services:
     path: api
     params:
       userPoolId: ${backend-auth.userPoolId}
+      userPoolClientId: ${backend-auth.userPoolClientId}
       petitionTableArn: ${backend-data.petitionTableArn}
       petitionTableName: ${backend-data.petitionTableName}
       signatureTableArn: ${backend-data.signatureTableArn}

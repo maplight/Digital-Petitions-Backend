@@ -1,0 +1,5 @@
+- dataSource: UserDataSource
+  type: Mutation
+  field: requestUserVerificationCodeResend
+  request: account.resendCode.request.vtl
+  response: account.resendCode.response.vtl
