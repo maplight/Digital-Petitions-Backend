@@ -1,0 +1,60 @@
+DEFAULT_PAGE_SIZE: 10
+
+# petition status values
+STATUS_NEW: "A1"
+STATUS_CANCELED: "A2"
+STATUS_WITHDRAWN: "A3"
+STATUS_REJECTED: "A4"
+STATUS_NOT_QUALIFIED: "B1"
+STATUS_QUALIFIED: "B2"
+STATUS_ACTIVE: "C1"
+
+# petition status bounds for range queries
+STATUS_INACTIVE_PUBLIC_LOWER_BOUND: "B"
+STATUS_INACTIVE_UPPER_BOUND: "C"
+STATUS_INACTIVE_LOWER_BOUND: "A2"
+
+# signature status values
+# verification status precedes approval status
+SIGNATURE_SUBMITTED: 1
+SIGNATURE_APPROVED_VERIFICATION_PENDING: 2
+SIGNATURE_REJECTED_VERIFICATION_PENDING: 3
+SIGNATURE_VERIFIED: 11
+SIGNATURE_APPROVED: 12
+SIGNATURE_REJECTED: 13
+
+SIGNATURE_VERIFIED_LOWER_BOUND: 10
+
+SIGNATURE_VERIFIED_DELTA: 10
+SIGNATURE_VERIFIED_DELTA_R: 1
+
+# signature status values
+# approval status precedes verification status
+SIGNATURE_SUBMITTED_R: 11
+SIGNATURE_VERIFIED_R: 12
+SIGNATURE_APPROVED_VERIFICATION_PENDING_R: 21
+SIGNATURE_APPROVED_R: 22
+SIGNATURE_REJECTED_VERIFICATION_PENDING_R: 31
+SIGNATURE_REJECTED_R: 32
+
+# boundaries for range queries
+SIGNATURE_APPROVED_R_LO: 20
+SIGNATURE_REJECTED_R_LO: 30
+SIGNATURE_REJECTED_R_HI: 40
+
+# table name references
+PETITION_TABLE: ${self:custom.myPetitionTableName}
+SIGNATURE_TABLE: ${self:custom.mySignatureTableName}
+
+# user lambda request arguments mapping
+USER_PETITIONER: "petitioner"
+USER_GUEST: "city_staff_guest"
+USER_STAFF: "city_staff"
+USER_ADMIN: "admin"
+USER_NONE: "none"
+
+# values to be replaced in lambda invocations
+# that require them
+COGNITO_USER_POOL: ${self:custom.myUserPoolId}
+COGNITO_CLIENT_ID: ${self:custom.myUserPoolClientId}
+ASSETS_BUCKET_NAME: ${self:custom.myAssetsBucketName}

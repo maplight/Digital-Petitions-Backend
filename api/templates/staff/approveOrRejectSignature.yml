@@ -1,0 +1,19 @@
+- dataSource: NoneDataSource
+  type: Mutation
+  field: approveSignature
+  kind: PIPELINE
+  functions:
+    - fetchSignature
+    - updateSignatureApproval
+  request: staff/approveOrRejectSignature.request.vtl
+  response: staff/approveOrRejectSignature.response.vtl
+
+- dataSource: NoneDataSource
+  type: Mutation
+  field: rejectSignature
+  kind: PIPELINE
+  functions:
+    - fetchSignature
+    - updateSignatureApproval
+  request: staff/approveOrRejectSignature.request.vtl
+  response: staff/approveOrRejectSignature.response.vtl

@@ -14,17 +14,24 @@
         "signer": $data.token,
         "target": $data.id,
         "createdAt": $now,
-        "updatedAt": $now
+        "updatedAt": $now,
+        "method": $data.method
     })
 
     #if ($data.confirmationRequired)
-        #set($status = "${SIGNATURE_SUBMITTED}")
+        #set($status = ${SIGNATURE_SUBMITTED})
+        #set($statusAlt = ${SIGNATURE_SUBMITTED_R})
+
         $util.quiet($attributes.put("code", $data.code))
     #else
-        #set($status = "${SIGNATURE_VERIFIED}")
+        #set($status = ${SIGNATURE_VERIFIED})
+        #set($statusAlt = ${SIGNATURE_VERIFIED_R})
+
+        $util.quiet($attributes.put("verifiedAt", $util.time.nowISO8601()))
     #end
 
     $util.quiet($attributes.put("status", $status))
+    $util.quiet($attributes.put("statusAlt", $statusAlt))
 
     ## setup values to update the signature summary on the petition
 

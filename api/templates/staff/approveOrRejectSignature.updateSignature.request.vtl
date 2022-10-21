@@ -1,0 +1,62 @@
+#set($data = $context.arguments.data)
+#set($signature = $context.prev.result)
+
+#if ($context.info.fieldName == "approveSignature")
+    #set($statusInc = 1)
+    #set($statusAltInc = 10)
+    #set($updateSummaryField = "approvedSignatures")
+#else
+    #set($statusInc = 2)
+    #set($statusAltInc = 20)
+    #set($updateSummaryField = "rejectedSignatures")
+#end
+
+## build signature update expression
+
+#set($signatureUpdateExpression = "ADD #signatureStatus :delta, #signatureStatusAlt :deltaAlt")
+#set($signatureUpdateExpressionNames = { "#signatureStatus": "status", "#signatureStatusAlt": "statusAlt" })
+#set($signatureUpdateExpressionValues = { ":delta": $statusInc, ":deltaAlt": $statusAltInc })
+
+## build signature update condition expression
+
+#set($signatureUpdateConditionExpression = "#target = :target AND (#previousStatus = :submitted OR #previousStatus = :verified)")
+#set($signatureUpdateConditionExpressionNames = { "#previousStatus": "status", "#target": "target" })
+#set($signatureUpdateConditionExpressionValues = { ":submitted": ${SIGNATURE_SUBMITTED}, ":verified": ${SIGNATURE_VERIFIED}, ":target": $signature.target })
+
+## build petition update expression
+
+#set($petitionUpdateExpression = "ADD #targetField :one")
+#set($petitionUpdateExpressionNames = { "#targetField": "${updateSummaryField}" })
+#set($petitionUpdateExpressionValues = { ":one": 1 })
+
+{
+    "version": "2018-05-29",
+    "operation": "TransactWriteItems",
+    "transactItems": [
+        {
+            "table": "${SIGNATURE_TABLE}",
+            "operation": "UpdateItem",
+            "key": { "PK": $util.dynamodb.toDynamoDBJson($data.signatureId) },
+            "update": {
+                "expression": "${signatureUpdateExpression}",
+                "expressionNames": $util.toJson($signatureUpdateExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($signatureUpdateExpressionValues)
+            },
+            "condition": {
+                "expression": "${signatureUpdateConditionExpression}",
+                "expressionNames": $util.toJson($signatureUpdateConditionExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($signatureUpdateConditionExpressionValues)
+            }
+        },
+        {
+            "table": "${PETITION_TABLE}",
+            "operation": "UpdateItem",
+            "key": { "PK": $util.dynamodb.toDynamoDBJson($signature.target) },
+            "update": {
+                "expression": "${petitionUpdateExpression}",
+                "expressionNames": $util.toJson($petitionUpdateExpressionNames),
+                "expressionValues": $util.dynamodb.toMapValuesJson($petitionUpdateExpressionValues)
+            }
+        }
+    ]
+}

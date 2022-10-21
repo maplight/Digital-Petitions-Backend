@@ -8,7 +8,9 @@ Resources:
         - AttributeName: PK
           AttributeType: S
         - AttributeName: status
-          AttributeType: S
+          AttributeType: N
+        - AttributeName: statusAlt
+          AttributeType: N
         - AttributeName: target
           AttributeType: S
         - AttributeName: signer
@@ -26,6 +28,18 @@ Resources:
             - AttributeName: target
               KeyType: HASH
             - AttributeName: status
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+
+        - IndexName: byTargetAltIndex
+          KeySchema:
+            - AttributeName: target
+              KeyType: HASH
+            - AttributeName: statusAlt
               KeyType: RANGE
           Projection:
             ProjectionType: ALL

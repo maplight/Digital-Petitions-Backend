@@ -21,11 +21,19 @@ enum SignatureStatus {
 }
 
 enum SignatureStatusQuery {
-    SUBMITTED
-    VERIFIED
+    SUBMITTED                       # ok
+    VERIFIED                        # ok
+    VERIFICATION_PENDING            # ok
+
     APPROVED
+    APPROVED_AND_VERIFIED           # ok
+    APPROVED_VERIFICATION_PENDING   # ok
+
     REJECTED
-    ANY
+    REJECTED_AND_VERIFIED           # ok
+    REJECTED_VERIFICATION_PENDING   # ok
+
+    ANY                             # ok
 }
 
 input SignaturesByPetitionInput {
@@ -47,7 +55,12 @@ type SignatureConnection @aws_cognito_user_pools {
     token: ID
 }
 
+input TargetSignatureInput {
+    signatureId: ID!
+}
+
 type Signature @aws_cognito_user_pools {
+    PK: ID!
     signer: ID!
 
     name: String!
@@ -59,6 +72,10 @@ type Signature @aws_cognito_user_pools {
 
     createdAt: AWSDateTime!
     updatedAt: AWSDateTime!
+
+    verifiedAt: AWSDateTime
+    isVerified: Boolean!
+    method: VerificationMethod!
 }
 
 enum VerificationMethod {
