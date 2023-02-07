@@ -1,0 +1,11 @@
+- dataSource: SignatureDataSource
+  type: Mutation
+  field: batchRejectSignatures
+  request: staff/batchApproveOrRejectSignature.request.vtl
+  response: staff/batchApproveOrRejectSignature.response.vtl
+
+- dataSource: SignatureDataSource
+  type: Mutation
+  field: batchApproveSignatures
+  request: staff/batchApproveOrRejectSignature.request.vtl
+  response: staff/batchApproveOrRejectSignature.response.vtl

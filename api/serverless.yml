@@ -72,6 +72,7 @@ custom:
       - ${file(./templates/staff/selectUser.yml)}
       - ${file(./templates/staff/updateUserAccess.yml)}
       - ${file(./templates/staff/approveOrRejectSignature.yml)}
+      - ${file(./templates/staff/batchApproveOrRejectSignature.yml)}
       - ${file(./templates/listPetition.byType.yml)}
       - ${file(./templates/listPetition.byOwner.yml)}
       - ${file(./templates/petition.byId.yml)}

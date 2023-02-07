@@ -59,6 +59,11 @@ input TargetSignatureInput {
     signatureId: ID!
 }
 
+input BatchTargetSignatureInput {
+    targets: [ID!]!
+    petition: ID!
+}
+
 type Signature @aws_cognito_user_pools {
     PK: ID!
     signer: ID!

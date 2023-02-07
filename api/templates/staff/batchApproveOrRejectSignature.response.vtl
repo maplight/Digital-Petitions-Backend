@@ -1,0 +1,17 @@
+#set($data = $context.arguments.data)
+#set($ids = [])
+
+#if ($context.error || $context.result.cancellationReasons)
+    $util.error(
+        "The update operation failed. Please check the data you provided.",
+        "SignatureSaveFailed"
+    )
+#else
+    #foreach ($item in $context.result.keys)
+        #if ($item.PK != $data.petition)
+            $util.quiet($ids.add($item.PK))
+        #end
+    #end
+
+    $util.toJson($ids)
+#end

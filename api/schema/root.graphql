@@ -63,6 +63,12 @@ type Mutation {
     rejectSignature(data: TargetSignatureInput!): Signature
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
 
+    batchApproveSignatures(data: BatchTargetSignatureInput!): [ID!]!
+    @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
+
+    batchRejectSignatures(data: BatchTargetSignatureInput!): [ID!]!
+    @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
+
     createStaffUser(data: StaffUserInput!): User!
     @aws_cognito_user_pools(cognito_groups: ["AdminGroup"])
 
