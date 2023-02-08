@@ -19,7 +19,7 @@
         #set($mapped = $entry.value)
     #end
 
-    $util.quiet($payload.put($entry.key, $entry.value))
+    $util.quiet($payload.put($entry.key, $mapped))
 #end
 
 {
