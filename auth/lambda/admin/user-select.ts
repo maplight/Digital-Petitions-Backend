@@ -34,7 +34,7 @@ export async function handleSelectUser(
     let filter: string | undefined;
 
     if (event.searchEmail) {
-        filter = `email = \"${event.searchEmail}\"`;
+        filter = `email ^= \"${event.searchEmail}\"`;
     }
 
     try {
