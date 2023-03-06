@@ -22,7 +22,7 @@ $util.quiet($expressionValues.put(":one", 1))
 
 #set($conditionSet = {
     "owner": $context.identity.sub,
-    "version", $context.arguments.data.expectedVersion,
+    "version": $context.arguments.data.expectedVersion,
     "status": "${STATUS_ACTIVE}"
 })
 
