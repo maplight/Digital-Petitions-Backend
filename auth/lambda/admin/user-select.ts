@@ -20,9 +20,15 @@ function checkTypes(user: User, type?: AccessGroupKeys): boolean {
   return !type || user.permissions === type;
 }
 
+function checkEmail(user: User, email?: string): boolean {
+  return !email || user.email.toLowerCase().includes(email.toLowerCase());
+}
+
 function applyEventFilter(user: User, event: SelectUserEvent): boolean {
   return (
-    checkNames(user, event.searchName) && checkTypes(user, event.searchGroup)
+    checkNames(user, event.searchName) && 
+    checkTypes(user, event.searchGroup) &&
+    checkEmail(user, event.searchEmail)
   );
 }
 
@@ -32,29 +38,17 @@ export async function handleSelectUser(
 ): Promise<Option<Connection<User>>> {
   event.searchName = sanitizeIdentifier(event.searchName);
 
-  const clientSide = !!(event.searchName || event.searchGroup);
   const results: User[] = [];
 
   let lastToken: string | undefined = event.cursor;
   const pageLimit = event.limit ?? 10;
 
-  let filter: string | undefined;
-
-  if (event.searchEmail) {
-    filter = `email = \"${event.searchEmail}\"`;
-  }
-
   try {
     do {
       const input: ListUsersCommandInput = {
         UserPoolId: event.userPoolId,
-        Filter: filter,
         PaginationToken: lastToken,
       };
-
-      if (!clientSide) {
-        input.Limit = pageLimit;
-      }
 
       const command = new ListUsersCommand(input);
       const items = await client.send(command);
@@ -65,9 +59,8 @@ export async function handleSelectUser(
         items.Users?.map((user) =>
           attributeListToUser(user.Username!, user.Attributes)
         ) ?? [];
-      const match = clientSide
-        ? users.filter((user) => applyEventFilter(user, event))
-        : users;
+
+      const match = users.filter((user) => applyEventFilter(user, event))
 
       results.push(...match);
     } while (lastToken && results.length < pageLimit);
