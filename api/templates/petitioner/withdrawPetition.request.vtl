@@ -1,5 +1,5 @@
 #set($expressionNames = { "#status": "status" })
-#set($expressionValues = { ":status": ${STATUS_WITHDRAWN} })
+#set($expressionValues = { ":status": "${STATUS_WITHDRAWN}" })
 #set($expressionSet = { "#status": ":status" })
 
 $util.quiet($expressionSet.put("#updatedAt", ":updatedAt"))
