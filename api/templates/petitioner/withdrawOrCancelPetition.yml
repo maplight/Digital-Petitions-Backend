@@ -1,0 +1,11 @@
+- dataSource: PetitionDataSource
+  type: Mutation
+  field: withdrawPetition
+  request: petitioner/withdrawOrCancelPetition.request.vtl
+  response: petition.response.vtl
+
+- dataSource: PetitionDataSource
+  type: Mutation
+  field: cancelPetition
+  request: petitioner/withdrawOrCancelPetition.request.vtl
+  response: petition.response.vtl

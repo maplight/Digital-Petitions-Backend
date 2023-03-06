@@ -1,5 +1,13 @@
+#if ($context.info.fieldName == "cancelPetition")
+    #set($targetStatus = "${STATUS_CANCELED}")
+    #set($sourceStatusCheck = "${STATUS_NEW}")
+#else
+    #set($targetStatus = "${STATUS_WITHDRAWN}")
+    #set($sourceStatusCheck = "${STATUS_ACTIVE}")
+#end
+
 #set($expressionNames = { "#status": "status" })
-#set($expressionValues = { ":status": "${STATUS_WITHDRAWN}" })
+#set($expressionValues = { ":status": $targetStatus })
 #set($expressionSet = { "#status": ":status" })
 
 $util.quiet($expressionSet.put("#updatedAt", ":updatedAt"))
@@ -23,7 +31,7 @@ $util.quiet($expressionValues.put(":one", 1))
 #set($conditionSet = {
     "owner": $context.identity.sub,
     "version": $context.arguments.data.expectedVersion,
-    "status": "${STATUS_ACTIVE}"
+    "status": $sourceStatusCheck
 })
 
 #set($conditionNames = {})
