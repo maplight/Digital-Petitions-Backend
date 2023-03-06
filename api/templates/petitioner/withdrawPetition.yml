@@ -1,0 +1,5 @@
+- dataSource: PetitionDataSource
+  type: Mutation
+  field: withdrawPetition
+  request: petitioner/withdrawPetition.request.vtl
+  response: petition.response.vtl
