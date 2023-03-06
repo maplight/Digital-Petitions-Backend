@@ -66,7 +66,7 @@ custom:
       - ${file(./templates/petitioner/editPetition.issue.yml)}
       - ${file(./templates/petitioner/submitPetition.candidate.yml)}
       - ${file(./templates/petitioner/editPetition.candidate.yml)}
-      - ${file(./templates/petitioner/withdrawPetition.yml)}
+      - ${file(./templates/petitioner/withdrawOrCancelPetition.yml)}
       - ${file(./templates/staff/approveOrRejectPetition.yml)}
       - ${file(./templates/staff/createUser.yml)}
       - ${file(./templates/staff/deleteUser.yml)}
