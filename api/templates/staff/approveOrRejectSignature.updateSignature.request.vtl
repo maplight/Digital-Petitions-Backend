@@ -1,14 +1,39 @@
 #set($data = $context.arguments.data)
 #set($signature = $context.prev.result)
 
+#set($approvedDelta = 0)
+#set($rejectedDelta = 0)
+
 #if ($context.info.fieldName == "approveSignature")
-    #set($statusInc = 1)
-    #set($statusAltInc = 10)
-    #set($updateSummaryField = "approvedSignatures")
+    #if ($signature.status == ${SIGNATURE_APPROVED_VERIFICATION_PENDING} || $signature.status == ${SIGNATURE_APPROVED})
+        $util.error("This signature has been approved already", "BadRequest")
+    #elseif ($signature.status == ${SIGNATURE_SUBMITTED} || $signature.status == ${SIGNATURE_VERIFIED})
+        #set($statusInc = 1)
+        #set($statusAltInc = 10)
+
+        #set($approvedDelta = 1)
+    #else
+        #set($statusInc = -1)
+        #set($statusAltInc = -10)
+
+        #set($approvedDelta = 1)
+        #set($rejectedDelta = -1)
+    #end
 #else
-    #set($statusInc = 2)
-    #set($statusAltInc = 20)
-    #set($updateSummaryField = "rejectedSignatures")
+    #if ($signature.status == ${SIGNATURE_REJECTED_VERIFICATION_PENDING} || $signature.status == ${SIGNATURE_REJECTED})
+        $util.error("This signature has been rejected already", "BadRequest")
+    #elseif ($signature.status == ${SIGNATURE_SUBMITTED} || $signature.status == ${SIGNATURE_VERIFIED})
+        #set($statusInc = 2)
+        #set($statusAltInc = 20)
+
+        #set($rejectedDelta = 1)
+    #else
+        #set($statusInc = 1)
+        #set($statusAltInc = 10)
+
+        #set($approvedDelta = -1)
+        #set($rejectedDelta = 1)
+    #end
 #end
 
 ## build signature update expression
@@ -19,15 +44,15 @@
 
 ## build signature update condition expression
 
-#set($signatureUpdateConditionExpression = "#target = :target AND (#previousStatus = :submitted OR #previousStatus = :verified)")
-#set($signatureUpdateConditionExpressionNames = { "#previousStatus": "status", "#target": "target" })
-#set($signatureUpdateConditionExpressionValues = { ":submitted": ${SIGNATURE_SUBMITTED}, ":verified": ${SIGNATURE_VERIFIED}, ":target": $signature.target })
+#set($signatureUpdateConditionExpression = "#target = :target")
+#set($signatureUpdateConditionExpressionNames = { "#target": "target" })
+#set($signatureUpdateConditionExpressionValues = { ":target": $signature.target })
 
 ## build petition update expression
 
-#set($petitionUpdateExpression = "ADD #targetField :one")
-#set($petitionUpdateExpressionNames = { "#targetField": "${updateSummaryField}" })
-#set($petitionUpdateExpressionValues = { ":one": 1 })
+#set($petitionUpdateExpression = "ADD #approved :approvedDelta, #rejected :rejectedDelta")
+#set($petitionUpdateExpressionNames = { "#approved": "approvedSignatures", "#rejected": "rejectedSignatures" })
+#set($petitionUpdateExpressionValues = { ":approvedDelta": $approvedDelta, ":rejectedDelta": $rejectedDelta })
 
 {
     "version": "2018-05-29",
