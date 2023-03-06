@@ -57,6 +57,9 @@ type Mutation {
     rejectPetition(data: TargetPetitionInput!): Petition
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
 
+    withdrawPetition(data: TargetPetitionInput!): Petition
+    @aws_cognito_user_pools(cognito_groups: ["PetitionerGroup"])
+
     approveSignature(data: TargetSignatureInput!): Signature
     @aws_cognito_user_pools(cognito_groups: ["CityStaffGroup", "AdminGroup"])
 
