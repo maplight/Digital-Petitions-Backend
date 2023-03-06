@@ -31,7 +31,13 @@ $util.quiet($expressionValues.put(":one", 1))
 #set($conditionExpression = "")
 
 #foreach ($entry in $conditionSet.entrySet())
-    #set($conditionItem = "(#${entry.key} = :${entry.key})")
+    #if ($entry.key == "status")
+        #set($prop = "statusCheck")
+    #else
+        #set($prop = "${entry.key}")
+    #end
+
+    #set($conditionItem = "(#${prop} = :${prop})")
 
     #if ($conditionExpression != "")
         #set($conditionExpression = "${conditionExpression} AND ${conditionItem}")
@@ -39,8 +45,8 @@ $util.quiet($expressionValues.put(":one", 1))
         #set($conditionExpression = "${conditionItem}")
     #end
 
-    $util.quiet($conditionNames.put("#${entry.key}", $entry.key))
-    $util.quiet($conditionValues.put(":${entry.key}", $entry.value))
+    $util.quiet($conditionNames.put("#${prop}", $entry.key))
+    $util.quiet($conditionValues.put(":${prop}", $entry.value))
 #end
 
 {
