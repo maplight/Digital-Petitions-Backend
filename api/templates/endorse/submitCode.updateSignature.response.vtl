@@ -1,8 +1,5 @@
 #if (!$context.error && (!$context.result.cancellationReasons || $context.result.cancellationReasons.isEmpty()))
-    $util.toJson({
-        "error": false,
-        "message": "Your signature has been verified correctly"
-    })
+    $util.toJson($context.prev.result)
 #elseif ($context.error)
     $util.error(
         "We could not process your request at the moment. Please try again later",

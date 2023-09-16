@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@serverless/compose": "^1.2.4"
+  },
+  "scripts": {
+    "serverless": "serverless"
   }
 }
