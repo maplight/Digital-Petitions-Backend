@@ -6,7 +6,7 @@ jspm_packages
 .serverless
 
 # environment files
-.env*
+.env.local
 
 # frontend source and build files
 .app

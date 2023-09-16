@@ -1,0 +1,62 @@
+version: "3.8"
+
+x-shared-config:
+  app_image_name: &app_image_name
+    image: maplight/serverless:3.35.1-node18.17.1-alpine3.18
+
+  app_base: &app_base
+    <<: *app_image_name
+    env_file:
+      - .env
+      - .env.local
+    environment:
+      - HISTFILE=/app/log/.bash_history
+      - NODE_ENV=${NODE_ENV:-development}
+    ports:
+      - 4200:4200
+    stdin_open: true
+    tty: true
+    tmpfs:
+      - /tmp:exec,mode=755
+    user: "1069:1420"
+    volumes:
+      - .:/app:cached
+
+services:
+  # Top-level serverless compose
+  sc:
+    <<: *app_base
+    working_dir: /app
+
+  # Individual services (if needed)
+  api:
+    <<: *app_base
+    working_dir: /app/api
+
+  assets:
+      <<: *app_base
+      working_dir: /app/assets
+
+  auth:
+      <<: *app_base
+      working_dir: /app/auth
+
+  auth-public:
+      <<: *app_base
+      working_dir: /app/auth-public
+
+  data:
+      <<: *app_base
+      working_dir: /app/data
+
+  frontend:
+      <<: *app_base
+      working_dir: /app/frontend
+
+  mail:
+      <<: *app_base
+      working_dir: /app/mail
+
+  validation:
+      <<: *app_base
+      working_dir: /app/validation
