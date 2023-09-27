@@ -1,0 +1,4 @@
+- dataSource: PetitionDataSource
+  name: retrievePetition
+  request: endorse/submitCode.retrievePetition.request.vtl
+  response: endorse/submitCode.retrievePetition.response.vtl

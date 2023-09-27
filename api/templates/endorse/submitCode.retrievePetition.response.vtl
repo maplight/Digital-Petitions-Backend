@@ -1,0 +1,16 @@
+#set($petition = $context.result)
+
+#if ($petition.status != "${STATUS_ACTIVE}")
+    $util.error(
+        "This petition is either not active or does not exist",
+        "InvalidPetition"
+    )
+#else
+    #if ($petition.type == "CANDIDATE")
+        #set($context.prev.result.title = "${petition.name}")
+    #else
+        #set($context.prev.result.title = "${petition.title}")
+    #end
+
+    $util.toJson($context.prev.result)
+#end

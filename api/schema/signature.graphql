@@ -2,10 +2,10 @@ type SignatureSummary @aws_iam @aws_cognito_user_pools {
     required: Int
     verified: Int
 
-    approved: Int 
+    approved: Int
     @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup", "GuestStaffGroup"])
-    
-    rejected: Int 
+
+    rejected: Int
     @aws_cognito_user_pools(cognito_groups: ["AdminGroup", "CityStaffGroup", "GuestStaffGroup"])
 
     deadline: AWSDateTime
@@ -151,6 +151,10 @@ type SignatureVerification @aws_iam {
 }
 
 type CodeSubmissionResult @aws_iam {
-    error: Boolean!
-    message: String!
+    # petition data
+    id: ID
+    title: String
+
+    # possible errors coming from the pipeline
+    error: String
 }

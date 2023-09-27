@@ -94,6 +94,7 @@ custom:
       - ${file(./templates/endorse/verifySignature.processVerification.yml)}
       - ${file(./templates/endorse/verifySignature.storeSignature.yml)}
       - ${file(./templates/endorse/verifySignature.validatePetition.yml)}
+      - ${file(./templates/endorse/submitCode.retrievePetition.yml)}
       - ${file(./templates/endorse/submitCode.lookupSignatureId.yml)}
       - ${file(./templates/endorse/submitCode.updateSignature.yml)}
       - ${file(./templates/staff/approveOrRejectSignature.fetchSignature.yml)}
