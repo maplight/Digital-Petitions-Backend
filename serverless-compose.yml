@@ -30,7 +30,7 @@ services:
 
   backend-signature-validation:
     path: validation
-    params: 
+    params:
       identity: ${backend-mail.mailingIdentity}
 
   backend-data:
